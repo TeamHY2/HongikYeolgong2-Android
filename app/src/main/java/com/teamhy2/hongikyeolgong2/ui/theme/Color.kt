@@ -1,4 +1,4 @@
-package com.jwseo.hongikyeolgong2.ui.theme
+package com.teamhy2.hongikyeolgong2.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
