@@ -1,4 +1,4 @@
-package com.jwseo.hongikyeolgong2
+package com.teamhy2.hongikyeolgong2
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test

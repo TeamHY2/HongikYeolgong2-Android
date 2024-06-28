@@ -1,4 +1,4 @@
-package com.jwseo.hongikyeolgong2
+package com.teamhy2.hongikyeolgong2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jwseo.hongikyeolgong2.ui.theme.HongikYeolgong2Theme
+import com.teamhy2.hongikyeolgong2.ui.theme.HongikYeolgong2Theme
 
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
