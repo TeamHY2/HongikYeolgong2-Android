@@ -13,9 +13,4 @@ class ExampleUnitTest {
 	fun addition_isCorrect() {
 		assertEquals(4, 2 + 2)
 	}
-
-	@Test
-	fun `Ktlint 테스트용 잘못된 유닛 테스트`() {
-		assertEquals(3, 2 + 2)
-	}
 }
