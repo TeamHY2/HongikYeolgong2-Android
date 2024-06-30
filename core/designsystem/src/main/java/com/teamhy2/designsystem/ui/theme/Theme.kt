@@ -15,23 +15,26 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-	primary = Blue100,
-	secondary = Blue400,
-	tertiary = Yellow100,
-	background = Black
-)
+private val DarkColorScheme =
+	darkColorScheme(
+		primary = Blue100,
+		secondary = Blue400,
+		tertiary = Yellow100,
+		background = Black,
+	)
 
-private val LightColorScheme = lightColorScheme(
-	primary = Blue100,
-	secondary = Blue400,
-	tertiary = Yellow100,
-	background = Black
-)
+private val LightColorScheme =
+	lightColorScheme(
+		primary = Blue100,
+		secondary = Blue400,
+		tertiary = Yellow100,
+		background = Black,
+	)
 
-private val LocalHY2Typography = staticCompositionLocalOf<HY2Typography> {
-	error("No HY2Typography provided")
-}
+private val LocalHY2Typography =
+	staticCompositionLocalOf<HY2Typography> {
+		error("No HY2Typography provided")
+	}
 
 /*
 * HY2Theme
@@ -48,19 +51,19 @@ object HY2Theme {
 @Composable
 fun ProvideHY2Typography(
 	typography: HY2Typography,
-	content: @Composable () -> Unit
+	content: @Composable () -> Unit,
 ) {
 	val provideTypography = remember { typography.copy() }.apply { update(typography) }
 	CompositionLocalProvider(
 		LocalHY2Typography provides provideTypography,
-		content = content
+		content = content,
 	)
 }
 
 @Composable
 fun HY2Theme(
 	darkTheme: Boolean = isSystemInDarkTheme(),
-	content: @Composable () -> Unit
+	content: @Composable () -> Unit,
 ) {
 	val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 	val view = LocalView.current
@@ -81,8 +84,7 @@ fun HY2Theme(
 	ProvideHY2Typography(typography) {
 		MaterialTheme(
 			colorScheme = colorScheme,
-			content = content
+			content = content,
 		)
 	}
 }
-
