@@ -32,7 +32,7 @@ class HY2Typography(
 	body04: TextStyle,
 	body05: TextStyle,
 	body06: TextStyle,
-	caption: TextStyle
+	caption: TextStyle,
 ) {
 	var head: TextStyle by mutableStateOf(head)
 		private set
@@ -68,20 +68,21 @@ class HY2Typography(
 		body04: TextStyle = this.body04,
 		body05: TextStyle = this.body05,
 		body06: TextStyle = this.body06,
-		caption: TextStyle = this.caption
-	): HY2Typography = HY2Typography(
-		head,
-		title01,
-		title02,
-		title03,
-		body01,
-		body02,
-		body03,
-		body04,
-		body05,
-		body06,
-		caption
-	)
+		caption: TextStyle = this.caption,
+	): HY2Typography =
+		HY2Typography(
+			head,
+			title01,
+			title02,
+			title03,
+			body01,
+			body02,
+			body03,
+			body04,
+			body05,
+			body06,
+			caption,
+		)
 
 	fun update(other: HY2Typography) {
 		head = other.head
@@ -101,60 +102,71 @@ class HY2Typography(
 @Composable
 fun HY2Typography(): HY2Typography {
 	return HY2Typography(
-		head = TextStyle(
-			fontFamily = SuiteSemiBold,
-			fontSize = 18.sp,
-			lineHeight = 22.sp
-		),
-		title01 = TextStyle(
-			fontFamily = SuiteBold,
-			fontSize = 24.sp,
-			lineHeight = 30.sp
-		),
-		title02 = TextStyle(
-			fontFamily = PretendardSemiBold,
-			fontSize = 18.sp,
-			lineHeight = 22.sp
-		),
-		title03 = TextStyle(
-			fontFamily = PretendardSemiBold,
-			fontSize = 16.sp,
-			lineHeight = 26.sp
-		),
-		body01 = TextStyle(
-			fontFamily = SuiteExtraBold,
-			fontSize = 30.sp,
-			lineHeight = 32.sp
-		),
-		body02 = TextStyle(
-			fontFamily = SuiteSemiBold,
-			fontSize = 16.sp,
-			lineHeight = 20.sp
-		),
-		body03 = TextStyle(
-			fontFamily = SuiteMedium,
-			fontSize = 14.sp,
-			lineHeight = 32.sp
-		),
-		body04 = TextStyle(
-			fontFamily = SuiteMedium,
-			fontSize = 12.sp,
-			lineHeight = 15.sp
-		),
-		body05 = TextStyle(
-			fontFamily = PretendardRegular,
-			fontSize = 16.sp,
-			lineHeight = 26.sp
-		),
-		body06 = TextStyle(
-			fontFamily = PretendardRegular,
-			fontSize = 18.sp,
-			lineHeight = 26.sp
-		),
-		caption = TextStyle(
-			fontFamily = PretendardRegular,
-			fontSize = 12.sp,
-			lineHeight = 18.sp
-		)
+		head =
+			TextStyle(
+				fontFamily = SuiteSemiBold,
+				fontSize = 18.sp,
+				lineHeight = 22.sp,
+			),
+		title01 =
+			TextStyle(
+				fontFamily = SuiteBold,
+				fontSize = 24.sp,
+				lineHeight = 30.sp,
+			),
+		title02 =
+			TextStyle(
+				fontFamily = PretendardSemiBold,
+				fontSize = 18.sp,
+				lineHeight = 22.sp,
+			),
+		title03 =
+			TextStyle(
+				fontFamily = PretendardSemiBold,
+				fontSize = 16.sp,
+				lineHeight = 26.sp,
+			),
+		body01 =
+			TextStyle(
+				fontFamily = SuiteExtraBold,
+				fontSize = 30.sp,
+				lineHeight = 32.sp,
+			),
+		body02 =
+			TextStyle(
+				fontFamily = SuiteSemiBold,
+				fontSize = 16.sp,
+				lineHeight = 20.sp,
+			),
+		body03 =
+			TextStyle(
+				fontFamily = SuiteMedium,
+				fontSize = 14.sp,
+				lineHeight = 32.sp,
+			),
+		body04 =
+			TextStyle(
+				fontFamily = SuiteMedium,
+				fontSize = 12.sp,
+				lineHeight = 15.sp,
+			),
+		body05 =
+			TextStyle(
+				fontFamily = PretendardRegular,
+				fontSize = 16.sp,
+				lineHeight = 26.sp,
+			),
+		body06 =
+			TextStyle(
+				fontFamily = PretendardRegular,
+				fontSize = 18.sp,
+				lineHeight = 26.sp,
+			),
+		caption =
+			TextStyle(
+				fontFamily = PretendardRegular,
+				fontSize = 12.sp,
+				lineHeight = 18.sp,
+			),
 	)
 }
