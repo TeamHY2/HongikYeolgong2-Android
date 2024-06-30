@@ -40,7 +40,7 @@ fun Greeting(
 		text = "Hello $name!",
 		color = White,
 		style = HY2Theme.typography.caption,
-		modifier = modifier
+		modifier = modifier,
 	)
 }
 
