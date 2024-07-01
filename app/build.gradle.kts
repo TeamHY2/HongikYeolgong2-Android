@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-	namespace = "com.jwseo.hongikyeolgong2"
+	namespace = "com.teamhy2.hongikyeolgong2"
 	compileSdk = 34
 
 	defaultConfig {
-		applicationId = "com.jwseo.hongikyeolgong2"
+		applicationId = "com.teamhy2.hongikyeolgong2"
 		minSdk = 30
 		targetSdk = 34
 		versionCode = 1
@@ -50,6 +50,7 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:designsystem"))
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.lifecycle.runtime.ktx)
