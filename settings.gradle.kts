@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 rootProject.name = "HongikYeolgong2"
 include(":app")
 include(":core:designsystem")
+include(":calendar-domain")
