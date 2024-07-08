@@ -1,6 +1,4 @@
 plugins {
-	id("java-library")
-	alias(libs.plugins.jetbrains.kotlin.jvm)
 	`kotlin-dsl`
 	`kotlin-dsl-precompiled-script-plugins`
 }
@@ -10,7 +8,15 @@ dependencies {
 	implementation(libs.kotlin.gradlePlugin)
 }
 
-java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+gradlePlugin {
+	plugins {
+		register("androidHilt") {
+			id = "hongikyeolgong2.android.hilt"
+			implementationClass = "com.teamhy2.app.HiltAndroidPlugin"
+		}
+		register("kotlinHilt") {
+			id = "hongikyeolgong2.kotlin.hilt"
+			implementationClass = "com.teamhy2.app.HiltKotlinPlugin"
+		}
+	}
 }
