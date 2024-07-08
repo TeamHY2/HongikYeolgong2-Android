@@ -1,6 +1,4 @@
 import com.teamhy2.app.configureHiltAndroid
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.project
 import com.teamhy2.app.libs
 
 plugins {
@@ -18,7 +16,7 @@ configureHiltAndroid()
 
 dependencies {
 	// TODO: 사용하는 core 모듈의 의존성 추가
-	implementation(project("core:designsystem"))
+	implementation(project(":core:designsystem"))
 
 	val libs = project.extensions.libs
 	implementation(libs.findLibrary("hilt.navigation.compose").get())
