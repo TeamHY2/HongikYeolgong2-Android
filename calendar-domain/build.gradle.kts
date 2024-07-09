@@ -1,3 +1,3 @@
 plugins {
-	id("hongikyeolgong2.kotlin.library")
+    id("hongikyeolgong2.kotlin.library")
 }
