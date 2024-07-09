@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-fun Project.configureKotlinAndroid() {
+internal fun Project.configureKotlinAndroid() {
 	// Plugins
 	pluginManager.apply("org.jetbrains.kotlin.android")
 
@@ -40,7 +40,7 @@ fun Project.configureKotlinAndroid() {
 	configureKotlin()
 }
 
-fun Project.configureKotlin() {
+internal fun Project.configureKotlin() {
 	tasks.withType<KotlinCompile>().configureEach {
 		kotlinOptions {
 			jvmTarget = JavaVersion.VERSION_17.toString()
