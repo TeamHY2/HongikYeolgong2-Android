@@ -17,42 +17,40 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		enableEdgeToEdge()
-		setContent {
-			HY2Theme {
-				Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-					Greeting(
-						name = "Android",
-						modifier = Modifier.padding(innerPadding),
-					)
-				}
-			}
-		}
-	}
+        enableEdgeToEdge()
+        setContent {
+            HY2Theme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun Greeting(
-	name: String,
-	modifier: Modifier = Modifier,
+    name: String,
+    modifier: Modifier = Modifier,
 ) {
-	Text(
-		text = "Hello $name!",
-		color = White,
-		style = HY2Theme.typography.caption,
-		modifier = modifier,
-	)
+    Text(
+        text = "Hello $name!",
+        color = White,
+        style = HY2Theme.typography.caption,
+        modifier = modifier,
+    )
 }
 
 @Preview(showBackground = false)
 @Composable
 fun GreetingPreview() {
-	HY2Theme {
-		Greeting("Android")
-	}
+    HY2Theme {
+        Greeting("Android")
+    }
 }
