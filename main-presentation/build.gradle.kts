@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.teamhy2.hongikyeolgong2.feature.main"
+    namespace = "com.teamhy2.hongikyeolgong2.main.presentation"
 }
 
 dependencies {
