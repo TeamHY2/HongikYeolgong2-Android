@@ -1,4 +1,4 @@
-package com.teamhy2.hongikyeolgong2
+package com.teamhy2.feature
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -13,10 +13,10 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
-	@Test
-	fun useAppContext() {
-		// Context of the app under test.
-		val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-		assertEquals("com.teamhy2.hongikyeolgong2", appContext.packageName)
-	}
+    @Test
+    fun useAppContext() {
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        assertEquals("com.teamhy2.mylibrary.test", appContext.packageName)
+    }
 }
