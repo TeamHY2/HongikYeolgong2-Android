@@ -1,4 +1,4 @@
-package com.teamhy2.hongikyeolgong2
+package com.teamhy2.feature
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -16,25 +16,25 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme =
-	darkColorScheme(
-		primary = Blue100,
-		secondary = Blue400,
-		tertiary = Yellow100,
-		background = Black,
-	)
+    darkColorScheme(
+        primary = Blue100,
+        secondary = Blue400,
+        tertiary = Yellow100,
+        background = Black,
+    )
 
 private val LightColorScheme =
-	lightColorScheme(
-		primary = Blue100,
-		secondary = Blue400,
-		tertiary = Yellow100,
-		background = Black,
-	)
+    lightColorScheme(
+        primary = Blue100,
+        secondary = Blue400,
+        tertiary = Yellow100,
+        background = Black,
+    )
 
 private val LocalHY2Typography =
-	staticCompositionLocalOf<HY2Typography> {
-		error("No HY2Typography provided")
-	}
+    staticCompositionLocalOf<HY2Typography> {
+        error("No HY2Typography provided")
+    }
 
 /*
 * HY2Theme
@@ -42,49 +42,49 @@ private val LocalHY2Typography =
 * Typo를 변경하고 싶다면 HY2Theme.typography.title01 방식으로 접근
 * */
 object HY2Theme {
-	val typography: HY2Typography
-		@Composable
-		@ReadOnlyComposable
-		get() = LocalHY2Typography.current
+    val typography: HY2Typography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalHY2Typography.current
 }
 
 @Composable
 fun ProvideHY2Typography(
-	typography: HY2Typography,
-	content: @Composable () -> Unit,
+    typography: HY2Typography,
+    content: @Composable () -> Unit,
 ) {
-	val provideTypography = remember { typography.copy() }.apply { update(typography) }
-	CompositionLocalProvider(
-		LocalHY2Typography provides provideTypography,
-		content = content,
-	)
+    val provideTypography = remember { typography.copy() }.apply { update(typography) }
+    CompositionLocalProvider(
+        LocalHY2Typography provides provideTypography,
+        content = content,
+    )
 }
 
 @Composable
 fun HY2Theme(
-	darkTheme: Boolean = isSystemInDarkTheme(),
-	content: @Composable () -> Unit,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
 ) {
-	val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-	val view = LocalView.current
-	if (!view.isInEditMode) {
-		SideEffect {
-			val window = (view.context as Activity).window
-			val insetsController = WindowCompat.getInsetsController(window, view)
-			val statusBarColor = colorScheme.background.toArgb()
-			window.statusBarColor = statusBarColor
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            val statusBarColor = colorScheme.background.toArgb()
+            window.statusBarColor = statusBarColor
 
-			// 항상 다크테마이기 때문에 상태바 아이콘들을 밝은 톤으로 표시
-			insetsController.isAppearanceLightStatusBars = false
-		}
-	}
+            // 항상 다크테마이기 때문에 상태바 아이콘들을 밝은 톤으로 표시
+            insetsController.isAppearanceLightStatusBars = false
+        }
+    }
 
-	val typography = HY2Typography()
+    val typography = HY2Typography()
 
-	ProvideHY2Typography(typography) {
-		MaterialTheme(
-			colorScheme = colorScheme,
-			content = content,
-		)
-	}
+    ProvideHY2Typography(typography) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content,
+        )
+    }
 }
