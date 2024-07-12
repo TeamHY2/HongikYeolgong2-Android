@@ -37,35 +37,37 @@ fun HY2Switch(
 ) {
     val background: Color by animateColorAsState(
         targetValue = if (isChecked) checkedBackgroundColor else unCheckedBackgroundColor,
-        label = "backgroundColorAnimation"
+        label = "backgroundColorAnimation",
     )
     val offset: Dp by animateDpAsState(
         targetValue = if (isChecked) 23.dp else 3.dp,
-        label = "offsetAnimation"
+        label = "offsetAnimation",
     )
 
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = Modifier
-            .size(width = 50.dp, height = 50.dp)
-            .padding(vertical = 10.dp)
-            .clip(RoundedCornerShape(100.dp))
-            .background(background)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                onCheckedChanged(isChecked.not())
-            },
-        contentAlignment = Alignment.CenterStart
+        modifier =
+            Modifier
+                .size(width = 50.dp, height = 50.dp)
+                .padding(vertical = 10.dp)
+                .clip(RoundedCornerShape(100.dp))
+                .background(background)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                ) {
+                    onCheckedChanged(isChecked.not())
+                },
+        contentAlignment = Alignment.CenterStart,
     ) {
         Box(
-            modifier = Modifier
-                .offset(x = offset)
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(White)
+            modifier =
+                Modifier
+                    .offset(x = offset)
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(White),
         )
     }
 }
