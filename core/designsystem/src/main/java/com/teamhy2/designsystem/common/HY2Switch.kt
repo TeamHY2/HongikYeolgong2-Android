@@ -32,6 +32,7 @@ import com.teamhy2.designsystem.ui.theme.White
 fun HY2Switch(
     isChecked: Boolean,
     onCheckedChanged: (Boolean) -> Unit,
+    thumbColor: Color = White,
     checkedBackgroundColor: Color = Blue100,
     unCheckedBackgroundColor: Color = Gray200,
 ) {
@@ -67,7 +68,7 @@ fun HY2Switch(
                     .offset(x = offset)
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(White),
+                    .background(thumbColor),
         )
     }
 }
