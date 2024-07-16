@@ -143,10 +143,11 @@ class CalendarTest : BehaviorSpec({
         When("아무것도 없는 StudyDay List를 받았을 때") {
             date = LocalDate.of(2024, 2, 4)
             studyDays = emptyList()
-            calendar = Calendar(
-                initDate = date,
-                studyDays = studyDays,
-            )
+            calendar =
+                Calendar(
+                    initDate = date,
+                    studyDays = studyDays,
+                )
 
             actual = calendar.getStudyDaysByMonth()
 
@@ -157,26 +158,29 @@ class CalendarTest : BehaviorSpec({
 
         When("모든 날짜가 있는 StudyDay List를 받았을 때") {
             date = LocalDate.of(2024, 2, 4)
-            studyDays = listOf(
-                StudyDay(LocalDate.of(2024, 1, 2), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
-                StudyDay(LocalDate.of(2024, 1, 5), StudyRoomUsage.USED_ONCE_EXTENDED_TWICE),
-                StudyDay(LocalDate.of(2024, 2, 1), StudyRoomUsage.USED_ONCE),
-                StudyDay(LocalDate.of(2024, 2, 3), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
-                StudyDay(LocalDate.of(2024, 2, 4), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
-            )
-            calendar = Calendar(
-                initDate = date,
-                studyDays = studyDays,
-            )
-
-            actual = calendar.getStudyDaysByMonth()
-
-            Then("2024년 2월의 StudyDay List를 반환한다.") {
-                actual shouldBe listOf(
+            studyDays =
+                listOf(
+                    StudyDay(LocalDate.of(2024, 1, 2), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
+                    StudyDay(LocalDate.of(2024, 1, 5), StudyRoomUsage.USED_ONCE_EXTENDED_TWICE),
                     StudyDay(LocalDate.of(2024, 2, 1), StudyRoomUsage.USED_ONCE),
                     StudyDay(LocalDate.of(2024, 2, 3), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
                     StudyDay(LocalDate.of(2024, 2, 4), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
                 )
+            calendar =
+                Calendar(
+                    initDate = date,
+                    studyDays = studyDays,
+                )
+
+            actual = calendar.getStudyDaysByMonth()
+
+            Then("2024년 2월의 StudyDay List를 반환한다.") {
+                actual shouldBe
+                    listOf(
+                        StudyDay(LocalDate.of(2024, 2, 1), StudyRoomUsage.USED_ONCE),
+                        StudyDay(LocalDate.of(2024, 2, 3), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
+                        StudyDay(LocalDate.of(2024, 2, 4), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
+                    )
             }
         }
     }
