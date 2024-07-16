@@ -18,6 +18,10 @@ class Calendar(
         return YearMonth.from(date).atEndOfMonth().dayOfMonth
     }
 
+    fun moveToPreviousMonth() {
+        date = date.minusMonths(1)
+    }
+
     companion object {
         private const val DEFAULT_DATE_TIME_FORMAT_PATTERN = "MMM yyyy"
     }
