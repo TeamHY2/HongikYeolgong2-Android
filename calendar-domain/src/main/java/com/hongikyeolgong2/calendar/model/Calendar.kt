@@ -8,6 +8,7 @@ class Calendar(
     initDate: LocalDate = LocalDate.now(),
     private val dateTimeFormatter: DateTimeFormatter =
         DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT_PATTERN),
+    private val studyDays: List<StudyDay> = emptyList(),
 ) {
     private var date: LocalDate = initDate
 
@@ -24,6 +25,10 @@ class Calendar(
 
     fun moveToNextMonth() {
         date = date.plusMonths(1)
+    }
+
+    fun getStudyDaysByMonth(): List<StudyDay> {
+        return studyDays.filter { it.date.month == date.month }
     }
 
     companion object {
