@@ -3,6 +3,8 @@ package com.hongikyeolgong2.calendar.model
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class CalendarTest : BehaviorSpec({
     Given("LocalDate가 주어지면, 해당 달의 끝날짜를 알 수 있다.") {
@@ -37,6 +39,35 @@ class CalendarTest : BehaviorSpec({
 
             Then("29가 반환된다") {
                 actual shouldBe 29
+            }
+        }
+    }
+
+    Given("DateTimeFormatter 객체로 표시형식을 현재 캘린더 상태를 알 수 있다") {
+        var dateTimeFormatter: DateTimeFormatter
+        var date: LocalDate
+        var calendar: Calendar
+        var actual: String
+
+        When("MMM yyy 형식의 DateTimeFormatter 객체가 주어지면") {
+            date = LocalDate.of(2024, 1, 1)
+            dateTimeFormatter = DateTimeFormatter.ofPattern("MMM yyyy").withLocale(Locale.ENGLISH)
+            calendar = Calendar(date, dateTimeFormatter)
+            actual = calendar.now
+
+            Then("Jan 2024가 반환된다") {
+                actual shouldBe "Jan 2024"
+            }
+        }
+
+        When("yyyy-MM-dd 형식의 DateTimeFormatter 객체가 주어지면") {
+            date = LocalDate.of(2024, 1, 1)
+            dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)
+            calendar = Calendar(date, dateTimeFormatter)
+            actual = calendar.now
+
+            Then("2024-01-01이 반환된다") {
+                actual shouldBe "2024-01-01"
             }
         }
     }
