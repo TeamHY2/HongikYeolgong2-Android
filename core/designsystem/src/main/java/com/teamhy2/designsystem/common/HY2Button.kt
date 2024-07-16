@@ -50,7 +50,7 @@ fun HY2Button(
 
 @Preview(showBackground = true)
 @Composable
-fun HY2ButtonPreview() {
+private fun HY2ButtonPreview() {
     HY2Theme {
         Column {
             HY2Button(
