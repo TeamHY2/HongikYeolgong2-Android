@@ -20,12 +20,10 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
 private const val ROUNDED_CORNER_SIZE = 4
-private const val PADDING_SIZE = 8
 
 @Composable
 fun HY2Button(
     text: String,
-    modifier: Modifier = Modifier,
     backgroundColor: Color = Blue100,
     textColor: Color = White,
     onClick: () -> Unit,
@@ -39,9 +37,9 @@ fun HY2Button(
             ),
         shape = RoundedCornerShape(ROUNDED_CORNER_SIZE.dp),
         modifier =
-            modifier
+            Modifier
                 .fillMaxWidth()
-                .padding(PADDING_SIZE.dp)
+                .padding(8.dp)
                 .clip(RoundedCornerShape(ROUNDED_CORNER_SIZE.dp)),
     ) {
         Text(
