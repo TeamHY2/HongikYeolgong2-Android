@@ -22,6 +22,10 @@ class Calendar(
         date = date.minusMonths(1)
     }
 
+    fun moveToNextMonth() {
+        date = date.plusMonths(1)
+    }
+
     companion object {
         private const val DEFAULT_DATE_TIME_FORMAT_PATTERN = "MMM yyyy"
     }
