@@ -43,7 +43,7 @@ class CalendarTest : BehaviorSpec({
         }
     }
 
-    Given("DateTimeFormatter 객체로 표시형식을 현재 캘린더 상태를 알 수 있다") {
+    Given("DateTimeFormatter 객체를 통해 표시형식을 정하여 현재 캘린더 상태를 알 수 있다") {
         var dateTimeFormatter: DateTimeFormatter
         var date: LocalDate
         var calendar: Calendar
