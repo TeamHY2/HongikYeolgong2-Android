@@ -71,4 +71,35 @@ class CalendarTest : BehaviorSpec({
             }
         }
     }
+
+    Given("이전 달로 현재달을 변경할 수 있다.") {
+        var date: LocalDate
+        var calendar: Calendar
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.ENGLISH)
+        var actual: String
+
+        When("2024년 1월 1일 LocalDate를 이전달로 변경하면") {
+            date = LocalDate.of(2024, 1, 1)
+            calendar = Calendar(date, dateTimeFormatter)
+            calendar.moveToPreviousMonth()
+
+            actual = calendar.now
+
+            Then("2023-12-31을 반환한다.") {
+                actual shouldBe "2023-12-01"
+            }
+        }
+
+        When("2024년 2월 29일 LocalDate를 이전달로 변경하면") {
+            date = LocalDate.of(2024, 2, 29)
+            calendar = Calendar(date, dateTimeFormatter)
+            calendar.moveToPreviousMonth()
+
+            actual = calendar.now
+
+            Then("2024-01-29을 반환한다.") {
+                actual shouldBe "2024-01-29"
+            }
+        }
+    }
 })
