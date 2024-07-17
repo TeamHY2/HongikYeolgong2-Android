@@ -106,7 +106,6 @@ fun HY2Dialog(
 
 private val BUTTON_CORNER_RADIUS = 8.dp
 private val BUTTON_HEIGHT = 46.dp
-private val BUTTON_PADDING = PaddingValues(horizontal = 20.dp)
 
 @Composable
 private fun HY2DialogButton(
@@ -120,7 +119,7 @@ private fun HY2DialogButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         shape = RoundedCornerShape(BUTTON_CORNER_RADIUS),
-        contentPadding = BUTTON_PADDING,
+        contentPadding = PaddingValues(horizontal = 20.dp),
         modifier =
             modifier
                 .height(BUTTON_HEIGHT),
