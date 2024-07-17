@@ -45,6 +45,7 @@ fun HY2Dialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color = Gray800,
+    descriptionTextColor: Color = Gray100,
     leftButtonColor: Color = Blue100,
     rightButtonColor: Color = Gray600,
     leftButtonTextColor: Color = White,
@@ -73,7 +74,7 @@ fun HY2Dialog(
             ) {
                 Text(
                     text = description,
-                    color = Gray100,
+                    color = descriptionTextColor,
                     style = HY2Theme.typography.title02,
                     modifier = Modifier.padding(bottom = 16.dp),
                 )
