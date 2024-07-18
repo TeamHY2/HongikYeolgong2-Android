@@ -17,7 +17,8 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
-private const val ROUNDED_CORNER_SIZE = 4
+private const val BUTTON_ROUNDED_CORNER_SIZE = 4
+private const val BUTTON_HEIGHT = 44
 
 @Composable
 fun HY2Button(
@@ -34,11 +35,11 @@ fun HY2Button(
                 containerColor = backgroundColor,
                 contentColor = textColor,
             ),
-        shape = RoundedCornerShape(ROUNDED_CORNER_SIZE.dp),
+        shape = RoundedCornerShape(BUTTON_ROUNDED_CORNER_SIZE),
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(44.dp),
+                .height(BUTTON_HEIGHT.dp),
     ) {
         Text(
             text = text,
