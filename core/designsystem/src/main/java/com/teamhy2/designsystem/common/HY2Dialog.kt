@@ -32,8 +32,8 @@ import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
-private val DIALOG_MARGIN = 30.dp
-private val DIALOG_CORNER_RADIUS = RoundedCornerShape(8.dp)
+private const val DIALOG_MARGIN = 30
+private const val DIALOG_CORNER_RADIUS = 8
 
 @Composable
 fun HY2Dialog(
@@ -60,9 +60,9 @@ fun HY2Dialog(
         Surface(
             modifier =
                 modifier
-                    .width(screenWidth - DIALOG_MARGIN * 2)
+                    .width(screenWidth - DIALOG_MARGIN.dp * 2)
                     .wrapContentHeight(),
-            shape = DIALOG_CORNER_RADIUS,
+            shape = RoundedCornerShape(DIALOG_CORNER_RADIUS.dp),
             color = backgroundColor,
         ) {
             Column(
@@ -105,8 +105,8 @@ fun HY2Dialog(
     }
 }
 
-private val BUTTON_CORNER_RADIUS = 8.dp
-private val BUTTON_HEIGHT = 46.dp
+private const val BUTTON_CORNER_RADIUS = 8
+private const val BUTTON_HEIGHT = 46
 
 @Composable
 private fun HY2DialogButton(
@@ -119,11 +119,11 @@ private fun HY2DialogButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-        shape = RoundedCornerShape(BUTTON_CORNER_RADIUS),
+        shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
         contentPadding = PaddingValues(horizontal = 20.dp),
         modifier =
             modifier
-                .height(BUTTON_HEIGHT),
+                .height(BUTTON_HEIGHT.dp),
     ) {
         Text(
             text = text,
