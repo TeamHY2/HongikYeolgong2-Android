@@ -25,6 +25,7 @@ fun HY2Button(
     backgroundColor: Color = Blue100,
     textColor: Color = White,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
@@ -35,7 +36,7 @@ fun HY2Button(
             ),
         shape = RoundedCornerShape(ROUNDED_CORNER_SIZE.dp),
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .height(44.dp),
     ) {
