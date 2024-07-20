@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,10 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             HY2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding),
-                    )
+                    Hy2Calendar(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
