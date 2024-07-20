@@ -9,6 +9,7 @@ android {
 dependencies {
     // TODO: 사용하는 feature 모듈의 의존성 추가
     // ex) implementation(projects.feature.home)
+    implementation(projects.calendarPresentation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
