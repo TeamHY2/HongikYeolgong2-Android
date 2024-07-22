@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
@@ -25,7 +28,14 @@ class MainActivity : AppCompatActivity() {
         setContent {
             HY2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Hy2Calendar(modifier = Modifier.padding(innerPadding))
+                    Column(Modifier.padding(innerPadding)) {
+                        Hy2Calendar(
+                            calendar = Calendar(),
+                            onPreviousMonthClick = { /* TODO: 구현 필요 */ },
+                            onNextMonthClick = { /* TODO: 구현 필요 */ },
+                            modifier = Modifier.padding(horizontal = 26.dp),
+                        )
+                    }
                 }
             }
         }
