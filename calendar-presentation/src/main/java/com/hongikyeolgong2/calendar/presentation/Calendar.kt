@@ -1,6 +1,5 @@
 package com.hongikyeolgong2.calendar.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -13,13 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,29 +28,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
+import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.designsystem.R
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
-import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
-import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_next_month
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_previous_month
+import java.time.LocalDate
+
+private const val DAY_DEFAULT_MARGIN = 5
 
 @Composable
 fun Hy2Calendar(
-    calendar: Calendar,
+    title: String,
+    days: List<StudyDay>,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         CalendarHeader(
-            title = calendar.now,
+            title = title,
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
         )
+        Spacer(modifier = Modifier.height(12.dp))
         Row(modifier = Modifier.padding(bottom = 8.dp)) {
             DayOfWeek.entries.forEach { dayOfWeek ->
                 DayOfWeek(
@@ -60,10 +65,14 @@ fun Hy2Calendar(
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(7),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
+            horizontalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
         ) {
-            items(calendar.getMonth()) {
+            items((days.first().date.dayOfWeek.ordinal + 1) % 7) {
+                Box(modifier = Modifier.weight(1f))
+            }
+
+            items(days) {
                 Day(studyDay = it, modifier = Modifier.weight(1f))
             }
         }
@@ -126,35 +135,56 @@ fun DayOfWeek(
     )
 }
 
-@Composable
-fun Day(
-    studyDay: StudyDay,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier =
-            modifier
-                .height(33.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Gray800),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = studyDay.date.dayOfMonth.toString(),
-            style = HY2Typography().body03,
-            color = White,
-        )
-    }
-}
-
 @Preview
 @Composable
 private fun Hy2CalendarPreview() {
     HY2Theme {
+        val calendar by remember {
+            mutableStateOf(
+                Calendar(
+                    studyDays =
+                        listOf(
+                            StudyDay(
+                                date = LocalDate.now().withDayOfMonth(2),
+                                studyRoomUsage = StudyRoomUsage.USED_ONCE_EXTENDED_ONCE,
+                            ),
+                            StudyDay(
+                                date = LocalDate.now().withDayOfMonth(5),
+                                studyRoomUsage = StudyRoomUsage.USED_ONCE,
+                            ),
+                            StudyDay(
+                                date = LocalDate.now().withDayOfMonth(10),
+                                studyRoomUsage = StudyRoomUsage.USED_ONCE_EXTENDED_TWICE,
+                            ),
+                            StudyDay(
+                                date = LocalDate.now().withDayOfMonth(20),
+                                studyRoomUsage = StudyRoomUsage.NEVER_USED,
+                            ),
+                        ),
+                ),
+            )
+        }
+        var title by remember {
+            mutableStateOf(calendar.now)
+        }
+
+        var month by remember {
+            mutableStateOf(calendar.getMonth())
+        }
+
         Hy2Calendar(
-            calendar = Calendar(),
-            onPreviousMonthClick = {},
-            onNextMonthClick = {},
+            title = title,
+            days = month,
+            onPreviousMonthClick = {
+                calendar.moveToPreviousMonth()
+                title = calendar.now
+                month = calendar.getMonth()
+            },
+            onNextMonthClick = {
+                calendar.moveToNextMonth()
+                title = calendar.now
+                month = calendar.getMonth()
+            },
         )
     }
 }
