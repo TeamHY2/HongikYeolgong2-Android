@@ -3,11 +3,12 @@ package com.hongikyeolgong2.calendar.model
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class Calendar(
     initDate: LocalDate = LocalDate.now(),
     private val dateTimeFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT_PATTERN),
+        DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT_PATTERN).withLocale(Locale.ENGLISH),
     private val studyDays: List<StudyDay> = emptyList(),
 ) {
     private var date: LocalDate = initDate
