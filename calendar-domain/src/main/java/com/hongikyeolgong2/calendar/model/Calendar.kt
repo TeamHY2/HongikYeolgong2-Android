@@ -15,6 +15,22 @@ class Calendar(
     val now: String
         get() = dateTimeFormatter.format(date)
 
+    fun getMonth(): List<StudyDay> {
+        val studyDaysWithMonth = getStudyDaysByMonth()
+        val existingDays = studyDaysWithMonth.associateBy { it.date.dayOfMonth }
+
+        return (1..getLastDayOfMonth()).map { day ->
+            existingDays[day] ?: StudyDay(
+                date = date.withDayOfMonth(day),
+                studyRoomUsage = StudyRoomUsage.NEVER_USED,
+            )
+        }.sortedBy { it.date.dayOfMonth }
+    }
+
+    fun getStudyDaysByMonth(): List<StudyDay> {
+        return studyDays.filter { it.date.month == date.month }
+    }
+
     fun getLastDayOfMonth(): Int {
         return YearMonth.from(date).atEndOfMonth().dayOfMonth
     }
@@ -25,10 +41,6 @@ class Calendar(
 
     fun moveToNextMonth() {
         date = date.plusMonths(1)
-    }
-
-    fun getStudyDaysByMonth(): List<StudyDay> {
-        return studyDays.filter { it.date.month == date.month }
     }
 
     companion object {
