@@ -61,7 +61,7 @@ fun SettingButton(
             )
             Image(
                 painter = painterResource(R.drawable.ic_arrow_right),
-                contentDescription = null,
+                contentDescription = "$text 로 이동합니다.",
                 modifier = Modifier.size(ARROW_SIZE.dp),
             )
         }
