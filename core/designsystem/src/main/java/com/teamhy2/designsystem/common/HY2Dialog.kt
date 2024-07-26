@@ -88,7 +88,7 @@ fun HY2Dialog(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     HY2DialogButton(
-                        text = rightButtonText,
+                        text = leftButtonText,
                         onClick = onRightButtonClick,
                         buttonColor = rightButtonColor,
                         textColor = rightButtonTextColor,
@@ -96,7 +96,7 @@ fun HY2Dialog(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     HY2DialogButton(
-                        text = leftButtonText,
+                        text = rightButtonText,
                         onClick = onLeftButtonClick,
                         buttonColor = leftButtonColor,
                         textColor = leftButtonTextColor,
