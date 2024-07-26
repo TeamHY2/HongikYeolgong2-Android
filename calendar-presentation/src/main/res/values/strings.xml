@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="description_previous_month">previous month</string>
+    <string name="description_next_month">next month</string>
+</resources>
