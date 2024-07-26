@@ -62,7 +62,7 @@ fun Hy2Calendar(
 }
 
 @Composable
-fun CalendarHeader(
+private fun CalendarHeader(
     title: String,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
@@ -116,7 +116,7 @@ private fun CalendarDayOfWeeks() {
 }
 
 @Composable
-fun DayOfWeek(
+private fun DayOfWeek(
     name: String,
     modifier: Modifier = Modifier,
 ) {
@@ -130,7 +130,7 @@ fun DayOfWeek(
 }
 
 @Composable
-fun ColumnScope.CalendarBody(
+private fun ColumnScope.CalendarBody(
     days: List<StudyDay>,
     modifier: Modifier = Modifier,
 ) {
