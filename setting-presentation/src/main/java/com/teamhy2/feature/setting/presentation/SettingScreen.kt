@@ -1,0 +1,204 @@
+package com.teamhy2.feature.setting.presentation
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.teamhy2.designsystem.common.HY2Dialog
+import com.teamhy2.designsystem.ui.theme.Black
+import com.teamhy2.designsystem.ui.theme.Gray200
+import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.feature.setting.presentation.components.SettingButton
+import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
+import com.teamhy2.hongikyeolgong2.setting.presentation.R
+
+@Composable
+fun SettingsScreen(
+    navController: NavController,
+    state: SettingsState,
+    onEvent: (SettingsEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showWithdrawDialog by remember { mutableStateOf(false) }
+
+    if (showLogoutDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.setting_logout_dialog_description),
+            leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
+            rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
+            onLeftButtonClick = {
+                showLogoutDialog = false
+                onEvent(SettingsEvent.Logout)
+                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
+            },
+            onRightButtonClick = {
+                showLogoutDialog = false
+            },
+            onDismiss = { showLogoutDialog = false },
+        )
+    }
+
+    if (showWithdrawDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.setting_withdrawal_dialog_description),
+            leftButtonText = stringResource(R.string.setting_withdrawal_dialog_left_button_text),
+            rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
+            onLeftButtonClick = {
+                showWithdrawDialog = false
+                onEvent(SettingsEvent.Withdraw)
+                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
+            },
+            onRightButtonClick = {
+                showWithdrawDialog = false
+            },
+            onDismiss = { showWithdrawDialog = false },
+        )
+    }
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(Black),
+    ) {
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier.padding(start = 28.dp),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "홈 화면으로 돌아가는 버튼입니다.",
+            )
+        }
+        Column(
+            modifier =
+                Modifier
+                    .padding(start = 32.dp, end = 32.dp, top = 14.dp, bottom = 16.dp)
+                    .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SettingButton(
+                text = stringResource(R.string.setting_notice),
+                onClick = { /* navController.navigate("notice") */ },
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            SettingButton(
+                text = stringResource(R.string.setting_inquiry),
+                onClick = { /* navController.navigate("inquiry") */ },
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            SettingButtonWithSwitch(
+                text = stringResource(R.string.setting_notification_reminder),
+                isChecked = state.isNotificationSwitchChecked,
+                onCheckedChanged = {
+                    onEvent(SettingsEvent.NotificationSwitchChanged(it))
+                },
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_information),
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.setting_notification_reminder_description),
+                    color = Gray200,
+                    fontSize = 12.sp,
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.setting_logout),
+                    color = Gray300,
+                    style = HY2Theme.typography.body05,
+                    modifier = Modifier.clickable { showLogoutDialog = true },
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = "|",
+                    color = Gray300,
+                    style = HY2Theme.typography.body05,
+                )
+                Spacer(modifier = Modifier.width(24.dp))
+                Text(
+                    text = stringResource(R.string.setting_withdrawal),
+                    color = Gray300,
+                    style = HY2Theme.typography.body05,
+                    modifier = Modifier.clickable { showWithdrawDialog = true },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingsScreenRoot(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsState()
+    SettingsScreen(
+        navController = navController,
+        state = state,
+        onEvent = viewModel::onEvent,
+        modifier = modifier,
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenPreview() {
+    val navController = rememberNavController()
+
+    val state by remember { mutableStateOf(SettingsState(isNotificationSwitchChecked = true)) }
+
+    HY2Theme {
+        SettingsScreen(
+            navController = navController,
+            state = state,
+            onEvent = {},
+            modifier = Modifier,
+        )
+    }
+}
