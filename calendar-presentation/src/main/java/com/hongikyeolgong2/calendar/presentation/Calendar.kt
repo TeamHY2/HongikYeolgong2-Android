@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -55,27 +56,8 @@ fun Hy2Calendar(
             onNextMonthClick = onNextMonthClick,
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Row(modifier = Modifier.padding(bottom = 8.dp)) {
-            DayOfWeek.entries.forEach { dayOfWeek ->
-                DayOfWeek(
-                    name = dayOfWeek.abbreviation,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(7),
-            verticalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
-            horizontalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
-        ) {
-            items((days.first().date.dayOfWeek.ordinal + 1) % 7) {
-                Box(modifier = Modifier.weight(1f))
-            }
-
-            items(days) {
-                Day(studyDay = it, modifier = Modifier.weight(1f))
-            }
-        }
+        CalendarDayOfWeeks()
+        CalendarBody(days = days)
     }
 }
 
@@ -122,6 +104,18 @@ fun CalendarHeader(
 }
 
 @Composable
+private fun CalendarDayOfWeeks() {
+    Row(modifier = Modifier.padding(bottom = 8.dp)) {
+        DayOfWeek.entries.forEach { dayOfWeek ->
+            DayOfWeek(
+                name = dayOfWeek.abbreviation,
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
 fun DayOfWeek(
     name: String,
     modifier: Modifier = Modifier,
@@ -133,6 +127,27 @@ fun DayOfWeek(
         style = HY2Typography().body04,
         color = Gray300,
     )
+}
+
+@Composable
+fun ColumnScope.CalendarBody(
+    days: List<StudyDay>,
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(7),
+        verticalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
+        horizontalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
+        modifier = modifier,
+    ) {
+        items((days.first().date.dayOfWeek.ordinal + 1) % 7) {
+            Box(modifier = Modifier.weight(1f))
+        }
+
+        items(days) {
+            Day(studyDay = it, modifier = Modifier.weight(1f))
+        }
+    }
 }
 
 @Preview
