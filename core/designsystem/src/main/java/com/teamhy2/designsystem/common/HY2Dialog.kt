@@ -89,17 +89,17 @@ fun HY2Dialog(
                 ) {
                     HY2DialogButton(
                         text = leftButtonText,
-                        onClick = onRightButtonClick,
-                        buttonColor = rightButtonColor,
-                        textColor = rightButtonTextColor,
+                        onClick = onLeftButtonClick,
+                        buttonColor = leftButtonColor,
+                        textColor = leftButtonTextColor,
                         modifier = modifier.weight(1f),
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     HY2DialogButton(
                         text = rightButtonText,
-                        onClick = onLeftButtonClick,
-                        buttonColor = leftButtonColor,
-                        textColor = leftButtonTextColor,
+                        onClick = onRightButtonClick,
+                        buttonColor = rightButtonColor,
+                        textColor = rightButtonTextColor,
                         modifier = modifier.weight(1f),
                     )
                 }
@@ -142,8 +142,8 @@ private fun HY2DialogPreview() {
     HY2Theme {
         HY2Dialog(
             description = "로그아웃 하실 건가요?",
-            leftButtonText = "돌아가기",
-            rightButtonText = "로그아웃하기",
+            leftButtonText = "로그아웃하기",
+            rightButtonText = "돌아가기",
             onLeftButtonClick = { /* TODO */ },
             onRightButtonClick = { /* TODO */ },
             onDismiss = { /* TODO */ },
