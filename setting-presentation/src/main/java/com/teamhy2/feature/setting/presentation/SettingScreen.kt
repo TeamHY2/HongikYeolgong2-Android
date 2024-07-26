@@ -175,9 +175,10 @@ fun SettingsScreen(
 fun SettingsScreenRoot(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val viewModel: SettingsViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+
     SettingsScreen(
         navController = navController,
         state = state,
