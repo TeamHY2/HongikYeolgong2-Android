@@ -70,7 +70,7 @@ fun SettingButton(
 
 @Preview(showBackground = true)
 @Composable
-fun SettingItemPreview() {
+private fun SettingItemPreview() {
     HY2Theme {
         SettingButton(text = "공지사항", onClick = { })
     }
