@@ -7,6 +7,44 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class CalendarTest : BehaviorSpec({
+    Given("현재 날짜가 포함된 달의 모든 날을 가져올 수 있다.") {
+        var date: LocalDate
+        var calendar: Calendar
+        var actual: List<StudyDay>
+
+        When("2024년 1월 5일이 주어지면") {
+            date = LocalDate.of(2024, 1, 5)
+            calendar = Calendar(date)
+
+            Then("31개의 날들이 반환된다") {
+                actual = calendar.getMonth()
+                actual.size shouldBe 31
+            }
+
+            Then("순서를 유지한체 1일부터 31일 까지 반환된다") {
+                actual = calendar.getMonth()
+                actual.first().date shouldBe LocalDate.of(2024, 1, 1)
+                actual.last().date shouldBe LocalDate.of(2024, 1, 31)
+            }
+        }
+
+        When("2024년 2월 15일이 주어지면") {
+            date = LocalDate.of(2024, 2, 15)
+            calendar = Calendar(date)
+
+            Then("29개의 날들이 반환된다") {
+                actual = calendar.getMonth()
+                actual.size shouldBe 29
+            }
+
+            Then("윤년이기 때문에 1부터 29일까지 반환된다.") {
+                actual = calendar.getMonth()
+                actual.first().date shouldBe LocalDate.of(2024, 2, 1)
+                actual.last().date shouldBe LocalDate.of(2024, 2, 29)
+            }
+        }
+    }
+
     Given("LocalDate가 주어지면, 해당 달의 끝날짜를 알 수 있다.") {
         var date: LocalDate
         var calendar: Calendar
@@ -178,8 +216,14 @@ class CalendarTest : BehaviorSpec({
                 actual shouldBe
                     listOf(
                         StudyDay(LocalDate.of(2024, 2, 1), StudyRoomUsage.USED_ONCE),
-                        StudyDay(LocalDate.of(2024, 2, 3), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
-                        StudyDay(LocalDate.of(2024, 2, 4), StudyRoomUsage.USED_ONCE_EXTENDED_ONCE),
+                        StudyDay(
+                            LocalDate.of(2024, 2, 3),
+                            StudyRoomUsage.USED_ONCE_EXTENDED_ONCE,
+                        ),
+                        StudyDay(
+                            LocalDate.of(2024, 2, 4),
+                            StudyRoomUsage.USED_ONCE_EXTENDED_ONCE,
+                        ),
                     )
             }
         }
