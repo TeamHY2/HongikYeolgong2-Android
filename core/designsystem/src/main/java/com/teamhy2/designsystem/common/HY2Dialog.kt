@@ -48,10 +48,10 @@ fun HY2Dialog(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Gray800,
     descriptionTextColor: Color = Gray100,
-    leftButtonColor: Color = Blue100,
-    rightButtonColor: Color = Gray600,
-    leftButtonTextColor: Color = White,
-    rightButtonTextColor: Color = Gray200,
+    leftButtonColor: Color = Gray600,
+    rightButtonColor: Color = Blue100,
+    leftButtonTextColor: Color = Gray200,
+    rightButtonTextColor: Color = White,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
