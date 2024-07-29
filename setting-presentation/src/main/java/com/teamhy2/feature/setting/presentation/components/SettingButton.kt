@@ -1,16 +1,15 @@
 package com.teamhy2.feature.setting.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,35 +35,28 @@ fun SettingButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    Row(
         modifier =
             modifier
                 .fillMaxWidth()
                 .height(BUTTON_HEIGHT.dp)
                 .clip(RoundedCornerShape(CORNER_RADIUS.dp))
-                .clickable(onClick = onClick),
-        color = Gray800,
-        shape = RoundedCornerShape(CORNER_RADIUS.dp),
+                .background(Gray800)
+                .clickable(onClick = onClick)
+                .padding(start = PADDING_START.dp, end = PADDING_END.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(start = PADDING_START.dp, end = PADDING_END.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(
-                text = text,
-                color = Gray200,
-                style = HY2Theme.typography.body05,
-            )
-            Image(
-                painter = painterResource(R.drawable.ic_arrow_right),
-                contentDescription = "$text 로 이동합니다.",
-                modifier = Modifier.size(ARROW_SIZE.dp),
-            )
-        }
+        Text(
+            text = text,
+            color = Gray200,
+            style = HY2Theme.typography.body05,
+        )
+        Image(
+            painter = painterResource(R.drawable.ic_arrow_right),
+            contentDescription = "$text 로 이동합니다.",
+            modifier = Modifier.size(ARROW_SIZE.dp),
+        )
     }
 }
 
