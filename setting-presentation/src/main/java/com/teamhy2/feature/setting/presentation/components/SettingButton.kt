@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Gray200
@@ -54,7 +55,7 @@ fun SettingButton(
         )
         Image(
             painter = painterResource(R.drawable.ic_arrow_right),
-            contentDescription = "$text 로 이동합니다.",
+            contentDescription = stringResource(R.string.home_navigate_to, text),
             modifier = Modifier.size(ARROW_SIZE.dp),
         )
     }
