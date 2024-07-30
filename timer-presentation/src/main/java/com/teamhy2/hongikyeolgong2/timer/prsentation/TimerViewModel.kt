@@ -1,50 +1,48 @@
 package com.teamhy2.hongikyeolgong2.timer.prsentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
-import com.teamhy2.hongikyeolgong2.timer.usecase.TimerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalTime
+import javax.inject.Inject
 
-class TimerViewModel : ViewModel() {
-    private lateinit var timerUseCase: TimerUseCase
+@HiltViewModel
+class TimerViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private lateinit var timer: Timer
 
-    var remainingTime by mutableStateOf("")
-        private set
+        private val _startTime = MutableStateFlow("")
+        val startTime: StateFlow<String> = _startTime
 
-    var remainingMinutes by mutableStateOf(0L)
-        private set
+        private val _endTime = MutableStateFlow("")
+        val endTime: StateFlow<String> = _endTime
 
-    var formattedStartTime by mutableStateOf("")
-        private set
+        private val _leftTime = MutableStateFlow("")
+        val leftTime: StateFlow<String> = _leftTime
 
-    var formattedEndTime by mutableStateOf("")
-        private set
+        fun setTimer(
+            startTime: LocalTime,
+            duration: Duration,
+            events: Map<Long, () -> Unit>,
+        ) {
+            timer = Timer.create(startTime, duration, events)
+            _startTime.value = timer.formattedStartTime
+            _endTime.value = timer.formattedEndTime
+            _leftTime.value = timer.formattedLeftTime
+            startTimer()
+        }
 
-    fun setTimer(
-        startTime: LocalTime,
-        duration: Duration,
-    ) {
-        val timer = Timer(startTime, duration)
-        timerUseCase = TimerUseCase(timer)
-        formattedStartTime = timerUseCase.startTime
-        formattedEndTime = timerUseCase.endTime
-        remainingTime = timerUseCase.formattedRemainingTime
-        remainingMinutes = timerUseCase.remainingMinutes
-        startTimer()
-    }
-
-    private fun startTimer() {
-        viewModelScope.launch {
-            timerUseCase.timerEvents().collect { minutes ->
-                remainingTime = timerUseCase.formattedRemainingTime
-                remainingMinutes = minutes
+        private fun startTimer() {
+            viewModelScope.launch {
+                timer.emitTimerEvents().collect {
+                    _leftTime.value = timer.formattedLeftTime
+                }
             }
         }
     }
-}
