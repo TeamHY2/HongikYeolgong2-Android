@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,31 +23,29 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.Yellow100
 import com.teamhy2.hongikyeolgong2.timer.presentation.R
 
+private const val LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS = 30 * 60L
+
 @Composable
 fun HY2Timer(
-    remainingTime: String,
+    leftTime: String,
     startTime: String,
     endTime: String,
     modifier: Modifier = Modifier,
-    onTimeRemainingChange: ((Long) -> Unit)? = null,
 ) {
-    val remainingMinutes =
-        remainingTime.split(":").let {
-            it[0].toLong() * 60 + it[1].toLong()
+    val leftSeconds: Long =
+        if (leftTime.isNotEmpty()) {
+            leftTime.split(":").let {
+                it[0].toLong() * 60 + it[1].toLong()
+            }
+        } else {
+            0L
         }
 
-    LaunchedEffect(remainingMinutes) {
-        when (remainingMinutes) {
-            30L, 5L, 0L -> onTimeRemainingChange?.invoke(remainingMinutes)
-        }
-    }
-
-    val leftTimeTextColor = if (remainingMinutes < 30) Yellow100 else Gray100
+    val leftTimeTextColor =
+        if (leftSeconds < LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
 
     Column(
-        modifier =
-            modifier
-                .padding(16.dp),
+        modifier = modifier.padding(16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -113,31 +110,28 @@ fun HY2Timer(
         }
         Spacer(modifier = Modifier.height(32.dp))
         Text(
-            text = "Time Left",
+            text = stringResource(id = R.string.timer_time_left),
             style = HY2Theme.typography.body02,
             color = Gray300,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = remainingTime, style = HY2Theme.typography.body01, color = leftTimeTextColor)
+        Text(text = leftTime, style = HY2Theme.typography.body01, color = leftTimeTextColor)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HY2TimerPreview() {
+    val leftTime = "00:00:30"
+    val startTime = "11:30"
+    val endTime = "12:00"
+
     HY2Theme {
         HY2Timer(
-            remainingTime = "00:30:00",
-            startTime = "11:30",
-            endTime = "01:30",
+            leftTime = leftTime,
+            startTime = startTime,
+            endTime = endTime,
             modifier = Modifier.background(Black),
-            onTimeRemainingChange = { event ->
-                when (event) {
-                    30L -> println("30 minutes remaining event triggered")
-                    5L -> println("5 minutes remaining event triggered")
-                    0L -> println("Timer finished event triggered")
-                }
-            },
         )
     }
 }
