@@ -9,5 +9,5 @@ android {
 dependencies {
 
     implementation(projects.core.designsystem)
-    implementation(projects.settingData)
+    implementation(projects.settingDomain)
 }

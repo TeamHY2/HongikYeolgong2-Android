@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,8 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray200
@@ -38,13 +36,36 @@ import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
+import com.teamhy2.feature.setting.presentation.model.SettingsUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
+fun SettingsRoute(
+    onBackButtonClick: () -> Unit,
+    onNoticeClick: () -> Unit,
+    onInquiryClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
+    val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
+
+    SettingsScreen(
+        settingUiState = settingUiState,
+        onEvent = viewModel::onEvent,
+        onBackButtonClick = onBackButtonClick,
+        onNoticeClick = onNoticeClick,
+        onInquiryClick = onInquiryClick,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun SettingsScreen(
-    navController: NavController,
-    state: SettingsState,
+    settingUiState: SettingsUiState,
     onEvent: (SettingsEvent) -> Unit,
+    onBackButtonClick: () -> Unit,
+    onNoticeClick: () -> Unit,
+    onInquiryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -91,7 +112,7 @@ fun SettingsScreen(
                 .background(Black),
     ) {
         IconButton(
-            onClick = { navController.popBackStack() },
+            onClick = { onBackButtonClick() },
             modifier = Modifier.padding(start = 28.dp),
         ) {
             Image(
@@ -108,17 +129,17 @@ fun SettingsScreen(
         ) {
             SettingButton(
                 text = stringResource(R.string.setting_notice),
-                onClick = { /* navController.navigate("notice") */ },
+                onClick = { onNoticeClick() },
             )
             Spacer(modifier = Modifier.height(20.dp))
             SettingButton(
                 text = stringResource(R.string.setting_inquiry),
-                onClick = { /* navController.navigate("inquiry") */ },
+                onClick = { onInquiryClick() },
             )
             Spacer(modifier = Modifier.height(20.dp))
             SettingButtonWithSwitch(
                 text = stringResource(R.string.setting_notification_reminder),
-                isChecked = state.isNotificationSwitchChecked,
+                isChecked = settingUiState.isNotificationSwitchChecked,
                 onCheckedChanged = {
                     onEvent(SettingsEvent.NotificationSwitchChanged(it))
                 },
@@ -171,34 +192,18 @@ fun SettingsScreen(
     }
 }
 
-@Composable
-fun SettingsScreenRoot(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-) {
-    val viewModel: SettingsViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsState()
-
-    SettingsScreen(
-        navController = navController,
-        state = state,
-        onEvent = viewModel::onEvent,
-        modifier = modifier,
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenPreview() {
-    val navController = rememberNavController()
-
-    val state by remember { mutableStateOf(SettingsState(isNotificationSwitchChecked = true)) }
+    val state by remember { mutableStateOf(SettingsUiState(isNotificationSwitchChecked = true)) }
 
     HY2Theme {
         SettingsScreen(
-            navController = navController,
-            state = state,
+            settingUiState = state,
             onEvent = {},
+            onBackButtonClick = {},
+            onNoticeClick = {},
+            onInquiryClick = {},
             modifier = Modifier,
         )
     }

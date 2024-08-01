@@ -2,16 +2,14 @@ package com.teamhy2.feature.setting.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.teamhy2.feature.setting.data.datasource.SettingsDataSource
+import com.teamhy2.feature.setting.domain.repository.SettingsRepository
+import com.teamhy2.feature.setting.presentation.model.SettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class SettingsState(
-    val isNotificationSwitchChecked: Boolean = false,
-)
 
 sealed interface SettingsEvent {
     data class NotificationSwitchChanged(val isChecked: Boolean) : SettingsEvent
@@ -25,10 +23,10 @@ sealed interface SettingsEvent {
 class SettingsViewModel
     @Inject
     constructor(
-        private val dataSource: SettingsDataSource,
+        private val repository: SettingsRepository,
     ) : ViewModel() {
-        private val _state = MutableStateFlow(SettingsState())
-        val state: StateFlow<SettingsState> = _state
+        private val _settingUiState = MutableStateFlow(SettingsUiState())
+        val settingUiState: StateFlow<SettingsUiState> = _settingUiState
 
         init {
             loadNotificationSwitchState()
@@ -36,8 +34,10 @@ class SettingsViewModel
 
         private fun loadNotificationSwitchState() {
             viewModelScope.launch {
-                val isChecked = dataSource.getNotificationSwitchState()
-                _state.value = state.value.copy(isNotificationSwitchChecked = isChecked)
+                repository.notificationSwitchState.collectLatest { isChecked ->
+                    _settingUiState.value =
+                        settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
+                }
             }
         }
 
@@ -45,8 +45,9 @@ class SettingsViewModel
             when (event) {
                 is SettingsEvent.NotificationSwitchChanged -> {
                     viewModelScope.launch {
-                        dataSource.saveNotificationSwitchState(event.isChecked)
-                        _state.value = state.value.copy(isNotificationSwitchChecked = event.isChecked)
+                        repository.saveNotificationSwitchState(event.isChecked)
+                        _settingUiState.value =
+                            settingUiState.value.copy(isNotificationSwitchChecked = event.isChecked)
                     }
                 }
 
