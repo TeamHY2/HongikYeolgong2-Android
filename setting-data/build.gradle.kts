@@ -7,4 +7,8 @@ android {
 }
 
 dependencies {
+
+    implementation(projects.settingDomain)
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
