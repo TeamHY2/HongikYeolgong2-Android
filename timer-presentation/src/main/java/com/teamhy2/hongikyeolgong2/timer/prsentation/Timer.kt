@@ -32,21 +32,22 @@ fun HY2Timer(
     endTime: String,
     modifier: Modifier = Modifier,
 ) {
-    val leftSeconds: Long =
-        if (leftTime.isNotEmpty()) {
-            leftTime.split(":").let {
-                it[0].toLong() * 60 + it[1].toLong()
-            }
-        } else {
-            0L
-        }
-
-    val leftTimeTextColor =
-        if (leftSeconds < LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
-
     Column(
         modifier = modifier.padding(16.dp),
     ) {
+        StartEndSection(startTime = startTime, endTime = endTime)
+        Spacer(modifier = Modifier.height(32.dp))
+        TimeLeftSection(leftTime = leftTime)
+    }
+}
+
+@Composable
+fun StartEndSection(
+    startTime: String,
+    endTime: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -108,7 +109,27 @@ fun HY2Timer(
                         .padding(bottom = 4.dp),
             )
         }
-        Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+fun TimeLeftSection(
+    leftTime: String,
+    modifier: Modifier = Modifier,
+) {
+    val leftSeconds: Long =
+        if (leftTime.isNotEmpty()) {
+            leftTime.split(":").let {
+                it[0].toLong() * 60 + it[1].toLong()
+            }
+        } else {
+            0L
+        }
+
+    val leftTimeTextColor =
+        if (leftSeconds < LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
+
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.timer_time_left),
             style = HY2Theme.typography.body02,
@@ -132,6 +153,40 @@ private fun HY2TimerPreview() {
             startTime = startTime,
             endTime = endTime,
             modifier = Modifier.background(Black),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StartEndSectionPreview() {
+    val startTime = "11:30"
+    val endTime = "12:00"
+
+    HY2Theme {
+        StartEndSection(
+            startTime = startTime,
+            endTime = endTime,
+            modifier =
+                Modifier
+                    .background(Black)
+                    .padding(16.dp),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TimeLeftSectionPreview() {
+    val leftTime = "00:00:30"
+
+    HY2Theme {
+        TimeLeftSection(
+            leftTime = leftTime,
+            modifier =
+                Modifier
+                    .background(Black)
+                    .padding(16.dp),
         )
     }
 }
