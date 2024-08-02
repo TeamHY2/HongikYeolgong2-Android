@@ -3,7 +3,7 @@ package com.teamhy2.feature.setting.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
-import com.teamhy2.feature.setting.presentation.model.SettingsUiState
+import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +25,8 @@ class SettingsViewModel
     constructor(
         private val repository: SettingsRepository,
     ) : ViewModel() {
-        private val _settingUiState = MutableStateFlow(SettingsUiState())
-        val settingUiState: StateFlow<SettingsUiState> = _settingUiState
+        private val _settingUiState = MutableStateFlow(SettingUiState())
+        val settingUiState: StateFlow<SettingUiState> = _settingUiState
 
         init {
             loadNotificationSwitchState()

@@ -36,7 +36,7 @@ import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
-import com.teamhy2.feature.setting.presentation.model.SettingsUiState
+import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
@@ -61,7 +61,7 @@ fun SettingRoute(
 
 @Composable
 fun SettingScreen(
-    settingUiState: SettingsUiState,
+    settingUiState: SettingUiState,
     onEvent: (SettingsEvent) -> Unit,
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
@@ -195,7 +195,7 @@ fun SettingScreen(
 @Preview(showBackground = true)
 @Composable
 private fun SettingScreenPreview() {
-    val state by remember { mutableStateOf(SettingsUiState(isNotificationSwitchChecked = true)) }
+    val state by remember { mutableStateOf(SettingUiState(isNotificationSwitchChecked = true)) }
 
     HY2Theme {
         SettingScreen(
