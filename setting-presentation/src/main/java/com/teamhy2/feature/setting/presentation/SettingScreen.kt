@@ -40,7 +40,7 @@ import com.teamhy2.feature.setting.presentation.model.SettingsUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
-fun SettingsRoute(
+fun SettingRoute(
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
@@ -49,7 +49,7 @@ fun SettingsRoute(
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
 
-    SettingsScreen(
+    SettingScreen(
         settingUiState = settingUiState,
         onEvent = viewModel::onEvent,
         onBackButtonClick = onBackButtonClick,
@@ -60,7 +60,7 @@ fun SettingsRoute(
 }
 
 @Composable
-fun SettingsScreen(
+fun SettingScreen(
     settingUiState: SettingsUiState,
     onEvent: (SettingsEvent) -> Unit,
     onBackButtonClick: () -> Unit,
@@ -194,11 +194,11 @@ fun SettingsScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun SettingsScreenPreview() {
+private fun SettingScreenPreview() {
     val state by remember { mutableStateOf(SettingsUiState(isNotificationSwitchChecked = true)) }
 
     HY2Theme {
-        SettingsScreen(
+        SettingScreen(
             settingUiState = state,
             onEvent = {},
             onBackButtonClick = {},
