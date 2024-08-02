@@ -11,8 +11,10 @@ class Timer(
     private val duration: Duration,
     private val events: Map<Long, () -> Unit>,
 ) {
-    private var endTime: LocalTime = startTime.plusSeconds(duration.seconds)
-    private var leftTime: Duration = duration
+    var endTime: LocalTime = startTime.plusSeconds(duration.seconds)
+        private set
+    var leftTime: Duration = duration
+        private set
 
     init {
         require(events.keys.containsAll(EVENT_TIMES)) {
@@ -44,7 +46,7 @@ class Timer(
                 tick()
                 events[leftSeconds]?.invoke()
                 emit(leftSeconds)
-                delay(1000)
+                delay(DELAY_MILLIS)
             }
             emit(leftSeconds)
         }
@@ -64,6 +66,7 @@ class Timer(
         const val THIRTY_MINUTES_SECONDS: Long = 30 * 60L
         const val FIVE_MINUTES_SECONDS: Long = 5 * 60L
         const val TIME_OVER_SECONDS: Long = 0L
+        private const val DELAY_MILLIS: Long = 1000L
 
         private val EVENT_TIMES: List<Long> = listOf(THIRTY_MINUTES_SECONDS, FIVE_MINUTES_SECONDS, TIME_OVER_SECONDS)
     }

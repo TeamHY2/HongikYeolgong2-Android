@@ -31,7 +31,7 @@ class TimerViewModel
             duration: Duration,
             events: Map<Long, () -> Unit>,
         ) {
-            timer = Timer.create(startTime, duration, events)
+            timer = Timer(startTime, duration, events)
             _startTime.value = timer.formattedStartTime
             _endTime.value = timer.formattedEndTime
             _leftTime.value = timer.formattedLeftTime
