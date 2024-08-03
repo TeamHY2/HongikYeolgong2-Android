@@ -24,6 +24,7 @@ rootProject.name = "HongikYeolgong2"
 include(":app")
 include(":core:designsystem")
 include(":calendar-domain")
+include(":calendar-presentation")
 include(":main-presentation")
 include(":setting-presentation")
 include(":setting-data")
