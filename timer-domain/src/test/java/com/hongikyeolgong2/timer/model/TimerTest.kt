@@ -32,7 +32,7 @@ class TimerTest : BehaviorSpec({
 
             Then("startTime에 duration이 더해진 endTime이 반환된다.") {
                 actualEndTime = timer.endTime
-                actualEndTime shouldBe startTime.plusSeconds(duration.seconds)
+                actualEndTime shouldBe LocalTime.of(17, 30)
             }
         }
     }
