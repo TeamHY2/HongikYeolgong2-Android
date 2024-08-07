@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.runTest
 import java.time.Duration
 import java.time.LocalTime
@@ -85,10 +84,7 @@ class TimerTest : BehaviorSpec({
 
             Then("Timer 이벤트가 10번 발생한다.") {
                 runTest {
-                    val eventsTimes =
-                        timer.emitTimerEvents().onEach {
-                            println(it)
-                        }.count()
+                    val eventsTimes = timer.emitTimerEvents().count()
                     eventsTimes shouldBe 10
                 }
             }
