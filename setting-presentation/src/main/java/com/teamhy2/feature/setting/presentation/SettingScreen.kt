@@ -117,7 +117,7 @@ fun SettingScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_back),
-                contentDescription = "홈 화면으로 돌아가는 버튼입니다.",
+                contentDescription = stringResource(R.string.setting_back_button_description),
             )
         }
         Column(
@@ -129,12 +129,12 @@ fun SettingScreen(
         ) {
             SettingButton(
                 text = stringResource(R.string.setting_notice),
-                onClick = { onNoticeClick() },
+                onClick = onNoticeClick,
             )
             Spacer(modifier = Modifier.height(20.dp))
             SettingButton(
                 text = stringResource(R.string.setting_inquiry),
-                onClick = { onInquiryClick() },
+                onClick = onInquiryClick,
             )
             Spacer(modifier = Modifier.height(20.dp))
             SettingButtonWithSwitch(

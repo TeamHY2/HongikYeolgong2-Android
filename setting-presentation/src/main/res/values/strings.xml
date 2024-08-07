@@ -14,6 +14,9 @@
     <string name="setting_withdrawal_dialog_left_button_text">회원탈퇴하기</string>
     <string name="setting_withdrawal_dialog_right_button_text">돌아가기</string>
     <string name="setting_withdrawal_dialog_description">회원탈퇴 하실 건가요?</string>
+    <string name="setting_back_button_description">홈 화면으로 돌아가는 버튼입니다.</string>
+
+    <!-- home -->
     <string name="home_navigate_to">%1$s 로 이동합니다.</string>
 
 </resources>
