@@ -20,5 +20,10 @@ android {
 
 dependencies {
     implementation(projects.mainPresentation)
+
+    implementation(projects.settingPresentation)
+    implementation(projects.settingData)
+    implementation(projects.settingDomain)
+
     implementation(projects.core.designsystem)
 }

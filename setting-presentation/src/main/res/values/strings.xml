@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">setting-presentation</string>
+
+    <!-- setting -->
+    <string name="setting_notice">공지사항</string>
+    <string name="setting_inquiry">문의사항</string>
+    <string name="setting_notification_reminder">열람실 종료 시간 알림</string>
+    <string name="setting_notification_reminder_description">열람실 종료 10분, 30분 전에 알림을 보내 연장을 돕습니다.</string>
+    <string name="setting_logout">로그아웃</string>
+    <string name="setting_withdrawal">회원탈퇴</string>
+    <string name="setting_logout_dialog_description">로그아웃 하실 건가요?</string>
+    <string name="setting_logout_dialog_left_button_text">로그아웃하기</string>
+    <string name="setting_logout_dialog_right_button_text">돌아가기</string>
+    <string name="setting_withdrawal_dialog_left_button_text">회원탈퇴하기</string>
+    <string name="setting_withdrawal_dialog_right_button_text">돌아가기</string>
+    <string name="setting_withdrawal_dialog_description">회원탈퇴 하실 건가요?</string>
+    <string name="setting_back_button_description">홈 화면으로 돌아가는 버튼입니다.</string>
+
+    <!-- home -->
+    <string name="home_navigate_to">%1$s 로 이동합니다.</string>
+
+</resources>
