@@ -18,11 +18,6 @@ class LocalSettingsDataSource
     constructor(
         @ApplicationContext private val context: Context,
     ) {
-        companion object {
-            private val NOTIFICATION_SWITCH_STATE_KEY =
-                booleanPreferencesKey("notification_switch_state")
-        }
-
         val notificationSwitchState: Flow<Boolean> =
             context.dataStore.data
                 .map { preferences ->
@@ -33,5 +28,10 @@ class LocalSettingsDataSource
             context.dataStore.edit { preferences ->
                 preferences[NOTIFICATION_SWITCH_STATE_KEY] = isChecked
             }
+        }
+
+        companion object {
+            private val NOTIFICATION_SWITCH_STATE_KEY =
+                booleanPreferencesKey("notification_switch_state")
         }
     }
