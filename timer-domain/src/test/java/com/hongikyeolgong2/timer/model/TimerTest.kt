@@ -3,7 +3,9 @@ package com.hongikyeolgong2.timer.model
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.runTest
 import java.time.Duration
 import java.time.LocalTime
@@ -42,7 +44,7 @@ class TimerTest : BehaviorSpec({
         var duration: Duration
         var timer: Timer
 
-        When("타이머가 시작되면") {
+        When("11:30에 타이머가 시작되면 ") {
             startTime = LocalTime.of(11, 30)
             duration = Duration.ofSeconds(3600) // 01:00:00
             timer =
@@ -67,7 +69,7 @@ class TimerTest : BehaviorSpec({
         var duration: Duration
         var timer: Timer
 
-        When("타이머가 시작돠면") {
+        When("11:30에 타이머가 시작되고 10초를 재면") {
             startTime = LocalTime.of(11, 30)
             duration = Duration.ofSeconds(10)
             timer =
@@ -81,10 +83,13 @@ class TimerTest : BehaviorSpec({
                     ),
                 )
 
-            Then("각 초마다 남은 시간을 emit한다.") {
+            Then("Timer 이벤트가 10번 발생한다.") {
                 runTest {
-                    val firstTick = timer.emitTimerEvents().first()
-                    firstTick shouldBe 9L
+                    val eventsTimes =
+                        timer.emitTimerEvents().onEach {
+                            println(it)
+                        }.count()
+                    eventsTimes shouldBe 10
                 }
             }
         }
@@ -95,7 +100,7 @@ class TimerTest : BehaviorSpec({
         var duration: Duration
         var timer: Timer
 
-        When("타이머가 시작되면") {
+        When("11:30에 타이머가 시작되고 10초를 재면") {
             startTime = LocalTime.of(11, 30)
             duration = Duration.ofSeconds(10)
             timer =
@@ -109,7 +114,7 @@ class TimerTest : BehaviorSpec({
                     ),
                 )
 
-            Then("타이머가 매초마다 남은시간을 1초씩 감소한다.") {
+            Then("1초뒤 남은 시간 9초를 반환 한다.") {
                 runTest {
                     timer.emitTimerEvents().first()
                     timer.leftTime.seconds shouldBe 9L

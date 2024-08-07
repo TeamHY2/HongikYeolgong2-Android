@@ -48,7 +48,6 @@ class Timer(
                 emit(leftSeconds)
                 delay(DELAY_MILLIS)
             }
-            emit(leftSeconds)
         }
 
     private fun isTimeOver(): Boolean {
