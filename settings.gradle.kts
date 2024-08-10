@@ -22,7 +22,15 @@ dependencyResolutionManagement {
 
 rootProject.name = "HongikYeolgong2"
 include(":app")
+include(":app:auth")
+
 include(":core:designsystem")
+
 include(":calendar-domain")
 include(":calendar-presentation")
+
 include(":main-presentation")
+
+include(":onboarding-presentation")
+include(":onboarding-data")
+include(":onboarding-domain")
