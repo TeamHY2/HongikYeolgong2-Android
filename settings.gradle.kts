@@ -31,6 +31,13 @@ include(":calendar-presentation")
 
 include(":main-presentation")
 
+include(":setting-presentation")
+include(":setting-data")
+include(":setting-domain")
+
+include(":timer-domain")
+include(":timer-presentation")
+
 include(":onboarding-presentation")
 include(":onboarding-data")
 include(":onboarding-domain")
