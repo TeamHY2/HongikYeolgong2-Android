@@ -48,10 +48,10 @@ fun HY2Dialog(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Gray800,
     descriptionTextColor: Color = Gray100,
-    leftButtonColor: Color = Blue100,
-    rightButtonColor: Color = Gray600,
-    leftButtonTextColor: Color = White,
-    rightButtonTextColor: Color = Gray200,
+    leftButtonColor: Color = Gray600,
+    rightButtonColor: Color = Blue100,
+    leftButtonTextColor: Color = Gray200,
+    rightButtonTextColor: Color = White,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
@@ -88,18 +88,18 @@ fun HY2Dialog(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     HY2DialogButton(
-                        text = rightButtonText,
-                        onClick = onRightButtonClick,
-                        buttonColor = rightButtonColor,
-                        textColor = rightButtonTextColor,
-                        modifier = modifier.weight(1f),
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    HY2DialogButton(
                         text = leftButtonText,
                         onClick = onLeftButtonClick,
                         buttonColor = leftButtonColor,
                         textColor = leftButtonTextColor,
+                        modifier = modifier.weight(1f),
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    HY2DialogButton(
+                        text = rightButtonText,
+                        onClick = onRightButtonClick,
+                        buttonColor = rightButtonColor,
+                        textColor = rightButtonTextColor,
                         modifier = modifier.weight(1f),
                     )
                 }
@@ -142,8 +142,8 @@ private fun HY2DialogPreview() {
     HY2Theme {
         HY2Dialog(
             description = "로그아웃 하실 건가요?",
-            leftButtonText = "돌아가기",
-            rightButtonText = "로그아웃하기",
+            leftButtonText = "로그아웃하기",
+            rightButtonText = "돌아가기",
             onLeftButtonClick = { /* TODO */ },
             onRightButtonClick = { /* TODO */ },
             onDismiss = { /* TODO */ },

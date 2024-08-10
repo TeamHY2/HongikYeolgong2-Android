@@ -14,6 +14,9 @@ dependencies {
     implementation(projects.calendarDomain)
     implementation(projects.onboardingPresentation)
 
+    implementation(projects.timerPresentation)
+    implementation(projects.timerDomain)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

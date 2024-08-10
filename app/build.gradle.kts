@@ -22,6 +22,11 @@ android {
 
 dependencies {
     implementation(projects.mainPresentation)
+
+    implementation(projects.settingPresentation)
+    implementation(projects.settingData)
+    implementation(projects.settingDomain)
+
     implementation(projects.core.designsystem)
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)
