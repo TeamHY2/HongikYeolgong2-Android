@@ -27,12 +27,43 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
 @Composable
-fun HY2WebViewHeader(
+fun HY2WebView(
     titleText: String,
+    url: String,
     onCloseButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isDarkTheme = isSystemInDarkTheme()
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(if (isDarkTheme) Black else White),
+    ) {
+        HY2WebViewHeader(
+            titleText = titleText,
+            onCloseButtonClick = onCloseButtonClick,
+            isDarkTheme = isDarkTheme,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        HY2WebViewBody(
+            url = url,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+        )
+    }
+}
+
+@Composable
+fun HY2WebViewHeader(
+    titleText: String,
+    onCloseButtonClick: () -> Unit,
+    isDarkTheme: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val backgroundColor = if (isDarkTheme) Black else White
     val iconColor = if (isDarkTheme) White else Black
     val textColor = if (isDarkTheme) White else Black
@@ -82,41 +113,16 @@ fun HY2WebViewBody(
     )
 }
 
-@Composable
-fun HY2WebView(
-    titleText: String,
-    url: String,
-    onCloseButtonClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .background(if (isSystemInDarkTheme()) Black else White),
-    ) {
-        HY2WebViewHeader(
-            titleText = titleText,
-            onCloseButtonClick = onCloseButtonClick,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        HY2WebViewBody(
-            url = url,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun HY2WebViewHeaderLightThemePreview() {
+    val isDarkTheme = isSystemInDarkTheme()
+
     HY2Theme {
         HY2WebViewHeader(
             titleText = "좌석",
             onCloseButtonClick = { },
+            isDarkTheme,
         )
     }
 }
@@ -127,10 +133,13 @@ private fun HY2WebViewHeaderLightThemePreview() {
 )
 @Composable
 private fun HY2WebViewHeaderDarkThemePreview() {
+    val isDarkTheme = isSystemInDarkTheme()
+
     HY2Theme {
         HY2WebViewHeader(
             titleText = "좌석",
             onCloseButtonClick = { },
+            isDarkTheme,
         )
     }
 }
