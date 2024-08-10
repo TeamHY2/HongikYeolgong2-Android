@@ -1,6 +1,6 @@
 plugins {
     id("hongikyeolgong2.android.feature")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -8,13 +8,11 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    implementation("com.google.firebase:firebase-analytics-ktx")
-
     // TODO: 사용하는 feature 모듈의 의존성 추가
     // ex) implementation(projects.feature.home)
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)
+    implementation(projects.onboardingPresentation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -26,4 +24,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    implementation(libs.firebase.ui.auth)
 }
