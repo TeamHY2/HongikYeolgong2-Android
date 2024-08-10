@@ -14,7 +14,6 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.onboarding.OnboardingScreen
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             // 구글 로그인 성공시 로직
             // val user = FirebaseAuth.getInstance().currentUser
-
         } else {
             Log.d("auth", "로그인 실패 ${response?.error?.message}")
         }
