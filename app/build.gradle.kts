@@ -1,5 +1,7 @@
 plugins {
     id("hongikyeolgong2.android.application")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -26,4 +28,7 @@ dependencies {
     implementation(projects.settingDomain)
 
     implementation(projects.core.designsystem)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 }
