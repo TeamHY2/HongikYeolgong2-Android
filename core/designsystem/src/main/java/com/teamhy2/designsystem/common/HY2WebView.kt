@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -71,25 +73,33 @@ fun HY2WebViewHeader(
     Box(
         modifier =
             modifier
+                .height(52.dp)
                 .fillMaxWidth()
-                .background(backgroundColor)
-                .padding(vertical = 14.dp, horizontal = 28.dp),
+                .background(backgroundColor),
     ) {
         Text(
             text = titleText,
             style = HY2Theme.typography.title02,
             color = textColor,
-            modifier = Modifier.align(Alignment.Center),
+            modifier =
+                Modifier
+                    .align(Alignment.Center),
         )
-        Image(
-            painter = painterResource(id = R.drawable.ic_close),
-            contentDescription = stringResource(R.string.hy2_web_view_close_button),
-            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(iconColor),
+        Box(
             modifier =
                 Modifier
                     .align(Alignment.CenterEnd)
+                    .padding(end = 28.dp)
+                    .size(40.dp)
                     .clickable(onClick = onCloseButtonClick),
-        )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_close),
+                contentDescription = stringResource(R.string.hy2_web_view_close_button),
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(iconColor),
+                modifier = Modifier.align(Alignment.Center),
+            )
+        }
     }
 }
 
@@ -98,19 +108,23 @@ fun HY2WebViewBody(
     url: String,
     modifier: Modifier = Modifier,
 ) {
-    AndroidView(
+    Box(
         modifier = modifier.fillMaxSize(),
-        factory = { context ->
-            WebView(context).apply {
-                settings.javaScriptEnabled = true
-                webViewClient = WebViewClient()
-                loadUrl(url)
-            }
-        },
-        update = { webView ->
-            webView.loadUrl(url)
-        },
-    )
+    ) {
+        AndroidView(
+            modifier = modifier.fillMaxSize(),
+            factory = { context ->
+                WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    webViewClient = WebViewClient()
+                    loadUrl(url)
+                }
+            },
+            update = { webView ->
+                webView.loadUrl(url)
+            },
+        )
+    }
 }
 
 @Preview(showBackground = true)
