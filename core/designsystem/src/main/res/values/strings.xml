@@ -3,4 +3,8 @@
 
     <!-- HY2WebView -->
     <string name="hy2_web_view_close_button">현재 화면을 닫을 수 있는 버튼입니다.</string>
+
+    <!-- HY2TimePicker-->
+    <string name="time_picker_cancel">취소</string>
+    <string name="time_picker_confirm">확인</string>
 </resources>
