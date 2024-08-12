@@ -1,6 +1,7 @@
 package com.teamhy2.feature.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -8,64 +9,64 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.teamhy2.designsystem.common.HY2TimePicker
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.onboarding.OnboardingScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val signInLauncher =
+        registerForActivityResult(
+            FirebaseAuthUIActivityResultContract(),
+        ) { res ->
+            this.onSignInResult(res)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val auth = Firebase.auth.currentUser
+        Log.d("auth", "onCreate: ${auth?.email}")
+
         enableEdgeToEdge()
         setContent {
-            var isOpenDialog by rememberSaveable { mutableStateOf(true) }
-
             HY2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
-                        Text("Hello World!", color = White)
-                        if (isOpenDialog) {
-                            HY2TimePicker(
-                                title = "열람실 이용 시작 시간",
-                                onSelected = { /* TODO */ },
-                                onCancelled = { isOpenDialog = false },
-                                onDismiss = { isOpenDialog = false },
-                            )
-                        }
+                        OnboardingScreen(onGoogleLoginClick = ::createSignInIntent)
                     }
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "Hello $name!",
-        color = White,
-        style = HY2Theme.typography.caption,
-        modifier = modifier,
-    )
-}
+    private fun createSignInIntent() {
+        val providers =
+            arrayListOf(
+                AuthUI.IdpConfig.GoogleBuilder().build(),
+            )
 
-@Preview(showBackground = false)
-@Composable
-fun GreetingPreview() {
-    HY2Theme {
-        Greeting("Android")
+        val signInIntent =
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build()
+        signInLauncher.launch(signInIntent)
+    }
+
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        val response = result.idpResponse
+        if (result.resultCode == RESULT_OK) {
+            // 구글 로그인 성공시 로직
+            // val user = FirebaseAuth.getInstance().currentUser
+        } else {
+            Log.d("auth", "로그인 실패 ${response?.error?.message}")
+        }
     }
 }
