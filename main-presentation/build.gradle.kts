@@ -1,5 +1,6 @@
 plugins {
     id("hongikyeolgong2.android.feature")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -11,6 +12,10 @@ dependencies {
     // ex) implementation(projects.feature.home)
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)
+    implementation(projects.onboardingPresentation)
+
+    implementation(projects.timerPresentation)
+    implementation(projects.timerDomain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -22,4 +27,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    implementation(libs.firebase.ui.auth)
 }
