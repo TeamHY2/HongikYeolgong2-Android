@@ -53,6 +53,7 @@ import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.designsystem.util.pixelsToDp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.time.LocalTime
@@ -87,10 +88,10 @@ fun HY2TimePicker(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier =
-                modifier
-                    .width(screenWidth - DIALOG_MARGIN.dp * 2)
-                    .wrapContentHeight()
-                    .background(Gray800, RoundedCornerShape(DIALOG_CORNER_RADIUS.dp)),
+            modifier
+                .width(screenWidth - DIALOG_MARGIN.dp * 2)
+                .wrapContentHeight()
+                .background(Gray800, RoundedCornerShape(DIALOG_CORNER_RADIUS.dp)),
         ) {
             val hours: List<String> =
                 remember {
@@ -117,9 +118,9 @@ fun HY2TimePicker(
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 68.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 68.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Picker(
@@ -155,9 +156,9 @@ fun HY2TimePicker(
             Spacer(modifier = Modifier.height(42.dp))
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
             ) {
                 HY2DialogButton(
                     text = stringResource(R.string.time_picker_cancel),
@@ -233,10 +234,10 @@ fun Picker(
             flingBehavior = flingBehavior,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(itemHeightDp * visibleItemsCount)
-                    .fadingEdge(fadingEdgeGradient),
+            Modifier
+                .fillMaxWidth()
+                .height(itemHeightDp * visibleItemsCount)
+                .fadingEdge(fadingEdgeGradient),
         ) {
             items(listScrollCount) { index ->
                 Text(
@@ -245,9 +246,9 @@ fun Picker(
                     style = HY2Typography().title01,
                     color = White,
                     modifier =
-                        Modifier
-                            .onSizeChanged { size -> itemHeightPixels.intValue = size.height }
-                            .then(textModifier),
+                    Modifier
+                        .onSizeChanged { size -> itemHeightPixels.intValue = size.height }
+                        .then(textModifier),
                 )
             }
         }
@@ -261,9 +262,6 @@ private fun Modifier.fadingEdge(brush: Brush) =
             drawContent()
             drawRect(brush = brush, blendMode = BlendMode.DstIn)
         }
-
-@Composable
-private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
 @Composable
 fun rememberPickerState() = remember { PickerState() }
