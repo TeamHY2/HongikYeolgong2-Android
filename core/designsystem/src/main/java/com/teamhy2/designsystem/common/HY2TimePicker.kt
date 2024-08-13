@@ -61,6 +61,7 @@ private const val DIALOG_MARGIN = 22
 private const val DIALOG_CORNER_RADIUS = 8
 private const val DIALOG_BACKGROUND_DIM_AMOUNT = 0.75f
 private const val TIME_PICKER_NUMBER_FORMAT = "%02d"
+private const val PICKER_DEFAULT_VISIBLE_ITEMS_COUNT = 3
 
 @SuppressLint("DefaultLocale")
 @Composable
@@ -193,7 +194,7 @@ fun Picker(
     modifier: Modifier = Modifier,
     state: PickerState = rememberPickerState(),
     startIndex: Int = 0,
-    visibleItemsCount: Int = 3,
+    visibleItemsCount: Int = PICKER_DEFAULT_VISIBLE_ITEMS_COUNT,
     textModifier: Modifier = Modifier,
 ) {
     val visibleItemsMiddle = visibleItemsCount / 2
