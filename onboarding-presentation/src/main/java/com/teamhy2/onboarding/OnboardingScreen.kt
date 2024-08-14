@@ -109,11 +109,11 @@ private const val DOT_INDICATOR_SPACING = 4
 
 @Composable
 fun DotsIndicator(
-    modifier: Modifier = Modifier,
     count: Int,
     index: Int,
     activeColor: Color = Yellow100,
     inactiveColor: Color = Gray300,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
