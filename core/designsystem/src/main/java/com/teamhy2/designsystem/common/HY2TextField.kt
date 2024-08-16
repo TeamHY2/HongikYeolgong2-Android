@@ -139,15 +139,11 @@ fun HY2TextField(
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Box {
-            if (isError) {
-                Text(
-                    text = errorText,
-                    style = HY2Typography().caption,
-                    color = Yellow300,
-                )
-            }
-        }
+        Text(
+            text = if (isError) errorText else "",
+            style = HY2Typography().caption,
+            color = Yellow300,
+        )
     }
 }
 
