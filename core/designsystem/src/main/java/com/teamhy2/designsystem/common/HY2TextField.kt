@@ -71,13 +71,13 @@ fun HY2TextField(
             value = value,
             onValueChange = onValueChange,
             modifier =
-            modifier
-                .background(
-                    color = Gray800,
-                    shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
-                )
-                .height(48.dp)
-                .fillMaxWidth(),
+                modifier
+                    .background(
+                        color = Gray800,
+                        shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
+                    )
+                    .height(48.dp)
+                    .fillMaxWidth(),
             cursorBrush = SolidColor(Gray200),
             interactionSource = interactionSource,
             textStyle = HY2Typography().body05.copy(color = Gray200),
@@ -102,12 +102,12 @@ fun HY2TextField(
                 }
             Row(
                 modifier =
-                modifierWithBorder
-                    .background(
-                        color = Gray800,
-                        shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
-                    )
-                    .focusRequester(focusRequester),
+                    modifierWithBorder
+                        .background(
+                            color = Gray800,
+                            shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
+                        )
+                        .focusRequester(focusRequester),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
@@ -115,7 +115,7 @@ fun HY2TextField(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Spacer(modifier = Modifier.width(16.dp))
-                    if (!hasFocused && value.isBlank()) {
+                    if (hasFocused.not() && value.isBlank()) {
                         Text(
                             text = hintText,
                             style = MaterialTheme.typography.titleMedium,
