@@ -53,9 +53,9 @@ fun HY2TextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hintText: String = "",
-    errorText: String = "",
+    supportingText: String = "",
     isEnabled: Boolean = true,
-    isError: Boolean = false,
+    isInvalid: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -71,13 +71,13 @@ fun HY2TextField(
             value = value,
             onValueChange = onValueChange,
             modifier =
-                modifier
-                    .background(
-                        color = Gray800,
-                        shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
-                    )
-                    .height(48.dp)
-                    .fillMaxWidth(),
+            modifier
+                .background(
+                    color = Gray800,
+                    shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
+                )
+                .height(48.dp)
+                .fillMaxWidth(),
             cursorBrush = SolidColor(Gray200),
             interactionSource = interactionSource,
             textStyle = HY2Typography().body05.copy(color = Gray200),
@@ -94,7 +94,7 @@ fun HY2TextField(
                 if (hasFocused) {
                     Modifier.border(
                         DEFAULT_BORDER_WIDTH.dp,
-                        if (isError) Yellow300 else borderColor,
+                        if (isInvalid) Yellow300 else borderColor,
                         RoundedCornerShape(DEFAULT_RADIUS.dp),
                     )
                 } else {
@@ -102,12 +102,12 @@ fun HY2TextField(
                 }
             Row(
                 modifier =
-                    modifierWithBorder
-                        .background(
-                            color = Gray800,
-                            shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
-                        )
-                        .focusRequester(focusRequester),
+                modifierWithBorder
+                    .background(
+                        color = Gray800,
+                        shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
+                    )
+                    .focusRequester(focusRequester),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
@@ -140,7 +140,7 @@ fun HY2TextField(
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = if (isError) errorText else "",
+            text = if (isInvalid) supportingText else "",
             style = HY2Typography().caption,
             color = Yellow300,
         )
@@ -167,8 +167,8 @@ private fun HY2TextFieldErrorPreview() {
         HY2TextField(
             value = "abc",
             onValueChange = {},
-            isError = true,
-            errorText = "*올바른 형식의 이름이 아닙니다",
+            isInvalid = true,
+            supportingText = "*올바른 형식의 이름이 아닙니다",
         )
     }
 }
