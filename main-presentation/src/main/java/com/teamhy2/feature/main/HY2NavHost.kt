@@ -16,7 +16,7 @@ import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.onboardingScreen
 
 @Composable
-fun AppNavHost(
+fun HY2NavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
