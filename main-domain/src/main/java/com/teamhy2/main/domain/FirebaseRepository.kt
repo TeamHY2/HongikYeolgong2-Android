@@ -1,5 +1,5 @@
 package com.teamhy2.main.domain
 
 interface FirebaseRepository {
-    suspend fun fetchWebViewUrls()
+    suspend fun fetchWebViewUrls(): Map<String, String>
 }
