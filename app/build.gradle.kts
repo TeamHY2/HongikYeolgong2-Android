@@ -22,6 +22,8 @@ android {
 
 dependencies {
     implementation(projects.mainPresentation)
+    implementation(projects.mainData)
+    implementation(projects.mainDomain)
 
     implementation(projects.settingPresentation)
     implementation(projects.settingData)
