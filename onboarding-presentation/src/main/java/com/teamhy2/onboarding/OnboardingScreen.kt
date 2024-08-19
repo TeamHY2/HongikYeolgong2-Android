@@ -33,17 +33,17 @@ import com.teamhy2.onboarding.presentation.R
 
 @Composable
 fun OnboardingRoute(
-    modifier: Modifier = Modifier,
     onGoogleLoginClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    OnboardingScreen(onGoogleLoginClick = onGoogleLoginClick)
+    OnboardingScreen(onGoogleLoginClick = onGoogleLoginClick, modifier = modifier)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
-    modifier: Modifier = Modifier,
     onGoogleLoginClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val onboardingImages =
         listOf(
