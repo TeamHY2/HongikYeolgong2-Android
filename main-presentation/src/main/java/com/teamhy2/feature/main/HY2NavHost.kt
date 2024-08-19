@@ -44,7 +44,6 @@ fun HY2NavHost(
                 onGoogleLoginClick = navController::navigateToMain,
             )
 
-            // TODO onSeatingChartClick 스크린 연결 필요
             mainScreen(
                 onSettingClick = navController::navigateToSetting,
                 onSeatingChartClick = navController::navigateToSeatingChart,
