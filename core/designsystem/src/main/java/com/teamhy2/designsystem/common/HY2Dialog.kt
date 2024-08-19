@@ -112,7 +112,7 @@ private const val BUTTON_CORNER_RADIUS = 8
 private const val BUTTON_HEIGHT = 46
 
 @Composable
-private fun HY2DialogButton(
+internal fun HY2DialogButton(
     text: String,
     onClick: () -> Unit,
     buttonColor: Color,
