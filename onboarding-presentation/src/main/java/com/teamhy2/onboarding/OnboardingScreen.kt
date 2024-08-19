@@ -15,18 +15,18 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 
 @Composable
 fun OnboardingRoute(
-    modifier: Modifier = Modifier,
     onGoogleLoginClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    OnboardingScreen(onGoogleLoginClick = onGoogleLoginClick)
+    OnboardingScreen(onGoogleLoginClick = onGoogleLoginClick, modifier = modifier)
 }
 
 @Composable
 fun OnboardingScreen(
-    modifier: Modifier = Modifier,
     onGoogleLoginClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.weight(1f))
         AndroidView(
             factory = {

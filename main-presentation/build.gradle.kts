@@ -12,10 +12,14 @@ dependencies {
     // ex) implementation(projects.feature.home)
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)
+
     implementation(projects.onboardingPresentation)
 
     implementation(projects.timerPresentation)
     implementation(projects.timerDomain)
+
+    implementation(projects.settingPresentation)
+    implementation(projects.settingDomain)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
