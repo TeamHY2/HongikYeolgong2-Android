@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
-                        AppNavHost(navController = rememberNavController())
+                        HY2NavHost(navController = rememberNavController())
                     }
                 }
             }
