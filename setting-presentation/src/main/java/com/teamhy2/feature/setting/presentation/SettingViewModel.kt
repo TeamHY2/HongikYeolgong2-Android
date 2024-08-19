@@ -7,6 +7,7 @@ import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class SettingsViewModel
         private val repository: SettingsRepository,
     ) : ViewModel() {
         private val _settingUiState = MutableStateFlow(SettingUiState())
-        val settingUiState: StateFlow<SettingUiState> = _settingUiState
+        val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
 
         init {
             loadNotificationSwitchState()
