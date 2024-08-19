@@ -43,6 +43,9 @@ fun MainScreen(
         Button(onClick = onSettingClick) {
             Text(text = "Setting")
         }
+        Button(onClick = onSeatingChartClick) {
+            Text(text = "SeatingChart")
+        }
     }
 }
 
