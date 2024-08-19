@@ -16,6 +16,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -26,9 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.SignInButton
 import com.teamhy2.designsystem.ui.theme.Black
-import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.designsystem.ui.theme.Yellow100
 import com.teamhy2.onboarding.presentation.R
 
 @Composable
@@ -47,10 +47,9 @@ fun OnboardingScreen(
 ) {
     val onboardingImages =
         listOf(
-            R.drawable.img_test_1,
-            R.drawable.img_test_2,
-            R.drawable.img_test_3,
-            R.drawable.img_test_4,
+            R.drawable.img_onboarding1,
+            R.drawable.img_onboarding2,
+            R.drawable.img_onboarding3,
         )
 
     val pagerState = rememberPagerState(pageCount = { onboardingImages.size })
@@ -104,31 +103,46 @@ fun OnboardingScreen(
     }
 }
 
-private const val DOT_INDICATOR_SIZE = 8
-private const val DOT_INDICATOR_SPACING = 4
+private const val DOT_INDICATOR_ACTIVE_SIZE = 16
+private const val DOT_INDICATOR_INACTIVE_SIZE = 9
+private const val DOT_INDICATOR_SPACING = 6
 
 @Composable
 fun DotsIndicator(
     count: Int,
     index: Int,
-    activeColor: Color = Yellow100,
-    inactiveColor: Color = Gray300,
+    inactiveColor: Color = Gray600,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(count) { iteration ->
-            val color = if (index == iteration) activeColor else inactiveColor
-            Box(
-                modifier =
-                    Modifier
-                        .padding(DOT_INDICATOR_SPACING.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(DOT_INDICATOR_SIZE.dp),
-            )
+            when (index == iteration) {
+                true -> {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_onboarding_star),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .padding(DOT_INDICATOR_SPACING.dp)
+                                .size(DOT_INDICATOR_ACTIVE_SIZE.dp),
+                    )
+                }
+
+                false -> {
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(DOT_INDICATOR_SPACING.dp)
+                                .clip(CircleShape)
+                                .background(inactiveColor)
+                                .size(DOT_INDICATOR_INACTIVE_SIZE.dp),
+                    )
+                }
+            }
         }
     }
 }
