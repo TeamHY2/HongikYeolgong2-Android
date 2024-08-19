@@ -8,7 +8,7 @@ import kotlinx.coroutines.tasks.await
 class FirebaseRepositoryImp : FirebaseRepository {
     private val firestore = FirebaseFirestore.getInstance()
 
-    override suspend fun fetchWebViewUrls(): Map<String, String> {
+    override suspend fun fetchFirebaseUrls(): Map<String, String> {
         val urlMap = mutableMapOf<String, String>()
 
         try {
