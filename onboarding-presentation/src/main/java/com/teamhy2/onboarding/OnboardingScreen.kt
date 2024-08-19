@@ -64,6 +64,7 @@ fun OnboardingScreen(
             state = pagerState,
             modifier =
                 Modifier
+                    .padding(top = 55.dp)
                     .weight(1f)
                     .fillMaxWidth(),
         ) { page ->
@@ -120,27 +121,33 @@ fun DotsIndicator(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         repeat(count) { iteration ->
-            when (index == iteration) {
-                true -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_onboarding_star),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .padding(DOT_INDICATOR_SPACING.dp)
-                                .size(DOT_INDICATOR_ACTIVE_SIZE.dp),
-                    )
-                }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .padding(DOT_INDICATOR_SPACING.dp)
+                        .size(16.dp),
+            ) {
+                when (index == iteration) {
+                    true -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_onboarding_star),
+                            contentDescription = null,
+                            modifier =
+                                Modifier
+                                    .size(DOT_INDICATOR_ACTIVE_SIZE.dp),
+                        )
+                    }
 
-                false -> {
-                    Box(
-                        modifier =
-                            Modifier
-                                .padding(DOT_INDICATOR_SPACING.dp)
-                                .clip(CircleShape)
-                                .background(inactiveColor)
-                                .size(DOT_INDICATOR_INACTIVE_SIZE.dp),
-                    )
+                    false -> {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(DOT_INDICATOR_INACTIVE_SIZE.dp)
+                                    .clip(CircleShape)
+                                    .background(inactiveColor),
+                        )
+                    }
                 }
             }
         }
