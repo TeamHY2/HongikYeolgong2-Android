@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.onboarding.OnboardingScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,9 +37,11 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             HY2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                ) { innerPadding ->
                     Column(Modifier.padding(innerPadding)) {
-                        OnboardingScreen(onGoogleLoginClick = ::createSignInIntent)
+                        HY2NavHost(navController = rememberNavController())
                     }
                 }
             }
