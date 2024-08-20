@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inquiry_title">문의</string>
+    <string name="notice_title">공지</string>
+    <string name="seating_chart_title">좌석</string>
+</resources>
