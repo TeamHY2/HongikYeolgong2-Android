@@ -2,7 +2,9 @@ package com.teamhy2.feature.main.webviews.inquiry
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.teamhy2.designsystem.common.HY2WebView
+import com.teamhy2.hongikyeolgong2.main.presentation.R
 
 @Composable
 fun InquiryRoute(
@@ -24,7 +26,7 @@ fun InquiryScreen(
     modifier: Modifier = Modifier,
 ) {
     HY2WebView(
-        titleText = "문의",
+        titleText = stringResource(R.string.inquiry_title),
         url = url,
         onCloseButtonClick = onCloseButtonClick,
         modifier = modifier,
