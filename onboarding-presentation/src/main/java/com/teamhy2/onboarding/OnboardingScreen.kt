@@ -120,7 +120,7 @@ fun DotsIndicator(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        repeat(count) { iteration ->
+        repeat(count) { dotIndex ->
             Box(
                 contentAlignment = Alignment.Center,
                 modifier =
@@ -128,7 +128,7 @@ fun DotsIndicator(
                         .padding(DOT_INDICATOR_SPACING.dp)
                         .size(16.dp),
             ) {
-                when (index == iteration) {
+                when (index == dotIndex) {
                     true -> {
                         Image(
                             painter = painterResource(id = R.drawable.ic_onboarding_star),
