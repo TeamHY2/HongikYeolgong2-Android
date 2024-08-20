@@ -89,8 +89,8 @@ fun OnboardingScreen(
         )
         AndroidView(
             factory = {
-                SignInButton(it).apply {
-                    setOnClickListener {
+                SignInButton(it).also { signInButton ->
+                    signInButton.setOnClickListener {
                         onGoogleLoginClick()
                     }
                 }
