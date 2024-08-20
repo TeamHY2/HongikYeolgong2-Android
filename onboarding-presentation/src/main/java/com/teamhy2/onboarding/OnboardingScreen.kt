@@ -88,12 +88,12 @@ fun OnboardingScreen(
             index = pagerState.currentPage,
         )
         AndroidView(
-            factory = {
-                SignInButton(it).also { signInButton ->
-                    signInButton.setOnClickListener {
-                        onGoogleLoginClick()
-                    }
+            factory = { context ->
+                val signInButton = SignInButton(context)
+                signInButton.setOnClickListener {
+                    onGoogleLoginClick()
                 }
+                signInButton
             },
             modifier =
                 Modifier
