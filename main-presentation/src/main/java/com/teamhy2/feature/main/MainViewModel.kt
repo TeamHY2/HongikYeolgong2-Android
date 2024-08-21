@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.main.model.MainUiState
-import com.teamhy2.main.domain.FirebaseRepository
+import com.teamhy2.main.domain.WebViewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class MainViewModel
     @Inject
     constructor(
-        private val firebaseRepository: FirebaseRepository,
+        private val webViewRepository: WebViewRepository,
     ) : ViewModel() {
         private val _mainUiState = MutableStateFlow(MainUiState())
         val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
@@ -32,7 +32,7 @@ class MainViewModel
 
         private fun getFirebaseUrls() {
             viewModelScope.launch {
-                val urlList = firebaseRepository.fetchFirebaseUrls()
+                val urlList = webViewRepository.fetchFirebaseUrls()
                 urls = urlList.toMap()
             }
         }
