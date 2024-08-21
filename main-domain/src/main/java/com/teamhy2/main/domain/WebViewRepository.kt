@@ -1,5 +1,5 @@
 package com.teamhy2.main.domain
 
-interface FirebaseRepository {
+interface WebViewRepository {
     suspend fun fetchFirebaseUrls(): Map<String, String>
 }
