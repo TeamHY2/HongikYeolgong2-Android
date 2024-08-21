@@ -1,5 +1,5 @@
 plugins {
-    id("hongikyeolgong2.android.feature")
+    id("hongikyeolgong2.android.library")
 }
 
 android {
