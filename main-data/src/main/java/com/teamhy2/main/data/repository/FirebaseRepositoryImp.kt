@@ -4,29 +4,32 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.main.domain.FirebaseRepository
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class FirebaseRepositoryImp : FirebaseRepository {
-    private val firestore = FirebaseFirestore.getInstance()
+class FirebaseRepositoryImp
+    @Inject
+    constructor() : FirebaseRepository {
+        private val firestore = FirebaseFirestore.getInstance()
 
-    override suspend fun fetchFirebaseUrls(): Map<String, String> {
-        val urlMap = mutableMapOf<String, String>()
+        override suspend fun fetchFirebaseUrls(): Map<String, String> {
+            val urlMap = mutableMapOf<String, String>()
 
-        try {
-            val result = firestore.collection(FIREBASE_URLS_COLLECTION).get().await()
-            for (document in result) {
-                val url = document.getString(FIREBASE_URLS_DOCUMENT_ID)
-                if (url != null) {
-                    urlMap[document.id] = url
+            try {
+                val result = firestore.collection(FIREBASE_URLS_COLLECTION).get().await()
+                for (document in result) {
+                    val url = document.getString(FIREBASE_URLS_DOCUMENT_ID)
+                    if (url != null) {
+                        urlMap[document.id] = url
+                    }
                 }
+            } catch (e: Exception) {
+                Log.d("FirebaseRepositoryImp", "Error ", e)
             }
-        } catch (e: Exception) {
-            Log.d("FirebaseRepositoryImp", "Error ", e)
+            return urlMap
         }
-        return urlMap
-    }
 
-    companion object {
-        private const val FIREBASE_URLS_COLLECTION = "Link"
-        private const val FIREBASE_URLS_DOCUMENT_ID = "url"
+        companion object {
+            private const val FIREBASE_URLS_COLLECTION = "Link"
+            private const val FIREBASE_URLS_DOCUMENT_ID = "url"
+        }
     }
-}
