@@ -6,7 +6,7 @@ import com.teamhy2.main.domain.FirebaseRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseRepositoryImp
+class DefaultFirebaseRepository
     @Inject
     constructor() : FirebaseRepository {
         private val firestore = FirebaseFirestore.getInstance()
