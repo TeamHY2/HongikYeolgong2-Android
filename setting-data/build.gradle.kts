@@ -1,5 +1,5 @@
 plugins {
-    id("hongikyeolgong2.android.feature")
+    id("hongikyeolgong2.android.library")
 }
 
 android {
@@ -7,8 +7,6 @@ android {
 }
 
 dependencies {
-
     implementation(projects.settingDomain)
-
     implementation(libs.datastore.preferences)
 }
