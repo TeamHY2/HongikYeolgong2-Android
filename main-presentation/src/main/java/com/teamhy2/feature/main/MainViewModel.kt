@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.main.model.MainUiState
-import com.teamhy2.main.domain.HomeContentRepository
 import com.teamhy2.main.domain.WebViewRepository
+import com.teamhy2.main.domain.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ class MainViewModel
     @Inject
     constructor(
         private val webViewRepository: WebViewRepository,
-        private val homeContentRepository: HomeContentRepository,
+        private val wiseSayingRepository: WiseSayingRepository,
     ) : ViewModel() {
         private val _mainUiState = MutableStateFlow(MainUiState())
         val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
@@ -44,7 +44,7 @@ class MainViewModel
             viewModelScope.launch {
                 _mainUiState.value =
                     mainUiState.value.copy(
-                        wiseSaying = homeContentRepository.fetchWiseSaying(),
+                        wiseSaying = wiseSayingRepository.fetchWiseSaying(),
                     )
             }
         }
