@@ -59,12 +59,12 @@ fun HY2TextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val hasFocused by interactionSource.collectIsFocusedAsState()
     val transition = updateTransition(hasFocused, label = "onHasFocused")
     val borderColor by transition.animateColor(label = "borderColorTransition") { if (it) Gray400 else Gray800 }
-    val focusRequester = remember { FocusRequester() }
 
     Column {
         BasicTextField(
