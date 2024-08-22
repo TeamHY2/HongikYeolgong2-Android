@@ -13,5 +13,5 @@ import javax.inject.Singleton
 abstract class WiseSayingModule {
     @Binds
     @Singleton
-    abstract fun bindHomeContentRepository(impl: DefaultWiseSayingRepository): WiseSayingRepository
+    abstract fun bindWiseSayingRepository(impl: DefaultWiseSayingRepository): WiseSayingRepository
 }
