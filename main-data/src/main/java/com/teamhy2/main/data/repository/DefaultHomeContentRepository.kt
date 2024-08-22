@@ -1,6 +1,7 @@
 package com.teamhy2.main.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.teamhy2.main.domain.HomeContentRepository
 import com.teamhy2.main.model.WiseSaying
 import kotlinx.coroutines.tasks.await
@@ -13,7 +14,7 @@ class DefaultHomeContentRepository
         private val firestore = FirebaseFirestore.getInstance()
 
         override suspend fun fetchWiseSaying(): WiseSaying {
-            val result = firestore.collection(WISE_SAYINGS_COLLECTION).get().await()
+            val result: QuerySnapshot = firestore.collection(WISE_SAYINGS_COLLECTION).get().await()
             if (result.isEmpty) return WiseSaying("", "")
 
             val randomIndex = Random.nextInt(result.size())
