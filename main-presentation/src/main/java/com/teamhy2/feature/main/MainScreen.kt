@@ -1,7 +1,9 @@
 package com.teamhy2.feature.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,8 +13,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.feature.main.component.WiseSayingComponent
 import com.teamhy2.feature.main.model.MainUiState
 
 @Composable
@@ -39,7 +44,17 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     uiState: MainUiState,
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(Black),
+    ) {
+        WiseSayingComponent(
+            quote = uiState.wiseSaying.quote,
+            author = uiState.wiseSaying.author,
+            modifier = Modifier.height(140.dp),
+        )
         Button(onClick = onSettingClick) {
             Text(text = "Setting")
         }
