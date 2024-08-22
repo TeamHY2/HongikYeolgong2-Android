@@ -2,15 +2,15 @@ package com.teamhy2.main.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.teamhy2.main.domain.HomeContentRepository
+import com.teamhy2.main.domain.WiseSayingRepository
 import com.teamhy2.main.model.WiseSaying
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.random.Random
 
-class DefaultHomeContentRepository
+class DefaultWiseSayingRepository
     @Inject
-    constructor() : HomeContentRepository {
+    constructor() : WiseSayingRepository {
         private val firestore = FirebaseFirestore.getInstance()
 
         override suspend fun fetchWiseSaying(): WiseSaying {
