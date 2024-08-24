@@ -29,6 +29,9 @@ dependencies {
     implementation(projects.settingData)
     implementation(projects.settingDomain)
 
+    implementation(projects.timerPresentation)
+    implementation(projects.timerDomain)
+
     implementation(projects.core.designsystem)
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)
