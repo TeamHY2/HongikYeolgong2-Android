@@ -97,6 +97,14 @@ class MainViewModel
             _mainUiState.value = mainUiState.value.copy(selectedTime = selectedTime)
         }
 
+        fun updateStudyRoomExtendDialogVisibility(isVisible: Boolean) {
+            _mainUiState.value = mainUiState.value.copy(isStudyRoomExtendDialog = isVisible)
+        }
+
+        fun updateStudyRoomEndDialogVisibility(isVisible: Boolean) {
+            _mainUiState.value = mainUiState.value.copy(isStudyRoomEndDialog = isVisible)
+        }
+
         fun updateCalendarMonth(isNextMonth: Boolean) {
             val updatedCalendar =
                 mainUiState.value.calendar.apply {

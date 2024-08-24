@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
+import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray100
@@ -69,6 +70,46 @@ fun MainRoute(
         )
     }
 
+    if (uiState.isStudyRoomExtendDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.main_extend_dialog_title),
+            leftButtonText = stringResource(R.string.main_extend_dialog_negative_button),
+            rightButtonText = stringResource(R.string.main_extend_dialog_postitive_button),
+            onLeftButtonClick = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+            },
+            onRightButtonClick = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+                mainViewModel.updateTimerRunning(false)
+            },
+            onDismiss = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+            },
+        )
+    }
+
+    if (uiState.isStudyRoomEndDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.main_end_dialog_title),
+            leftButtonText = stringResource(R.string.main_end_dialog_negative_button),
+            rightButtonText = stringResource(R.string.main_end_dialog_positive_button),
+            onLeftButtonClick = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+            },
+            onRightButtonClick = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+                startTimer(
+                    LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                    mainViewModel,
+                    timerViewModel,
+                )
+            },
+            onDismiss = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+            },
+        )
+    }
+
     MainScreen(
         uiState = uiState,
         timerState = timerState,
@@ -78,16 +119,14 @@ fun MainRoute(
         onStudyRoomStartClick = {
             mainViewModel.updateTimePickerVisibility(true)
         },
-        onPreviousMonthClick = { mainViewModel.updateCalendarMonth(isNextMonth = false) },
-        onNextMonthClick = { mainViewModel.updateCalendarMonth(isNextMonth = true) },
+        onPreviousMonthClick = { mainViewModel.updateCalendarMonth(false) },
+        onNextMonthClick = { mainViewModel.updateCalendarMonth(true) },
         onStudyRoomExtendClick = {
-            startTimer(
-                LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
-                mainViewModel,
-                timerViewModel,
-            )
+            mainViewModel.updateStudyRoomExtendDialogVisibility(true)
         },
-        onStudyRoomEndClick = { mainViewModel.updateTimerRunning(false) },
+        onStudyRoomEndClick = {
+            mainViewModel.updateStudyRoomExtendDialogVisibility(true)
+        },
     )
 }
 

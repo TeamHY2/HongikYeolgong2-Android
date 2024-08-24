@@ -8,6 +8,8 @@ import java.time.LocalTime
 data class MainUiState(
     val isTimerRunning: Boolean = false,
     val isTimePickerVisible: Boolean = false,
+    val isStudyRoomExtendDialog: Boolean = false,
+    val isStudyRoomEndDialog: Boolean = false,
     val wiseSaying: WiseSaying = WiseSaying("", ""),
     val selectedTime: LocalTime = LocalTime.now(),
     val calendar: Calendar = Calendar(studyDays = emptyList()),
