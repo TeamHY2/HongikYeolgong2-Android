@@ -1,6 +1,5 @@
 package com.teamhy2.designsystem.common
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -56,6 +55,8 @@ import com.teamhy2.designsystem.util.pixelsToDp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.time.LocalTime
+import java.time.ZoneId
+import java.util.Locale
 
 private const val DIALOG_MARGIN = 22
 private const val DIALOG_CORNER_RADIUS = 8
@@ -63,14 +64,13 @@ private const val DIALOG_BACKGROUND_DIM_AMOUNT = 0.75f
 private const val TIME_PICKER_NUMBER_FORMAT = "%02d"
 private const val PICKER_DEFAULT_VISIBLE_ITEMS_COUNT = 3
 
-@SuppressLint("DefaultLocale")
 @Composable
 fun HY2TimePicker(
     title: String,
     onSelected: (LocalTime) -> Unit,
     onCancelled: () -> Unit,
     modifier: Modifier = Modifier,
-    localtime: LocalTime = LocalTime.now(),
+    localtime: LocalTime = LocalTime.now(ZoneId.of("Asia/Seoul")),
     onDismiss: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -94,12 +94,12 @@ fun HY2TimePicker(
         ) {
             val hours: List<String> =
                 remember {
-                    (1..12).map { String.format(TIME_PICKER_NUMBER_FORMAT, it) }
+                    (1..12).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
                 }
             val hourState: PickerState = rememberPickerState()
             val minutes: List<String> =
                 remember {
-                    (0..59).map { String.format(TIME_PICKER_NUMBER_FORMAT, it) }
+                    (0..59).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
                 }
             val minuteState: PickerState = rememberPickerState()
             val meridiem: List<String> =
@@ -126,7 +126,14 @@ fun HY2TimePicker(
                     state = hourState,
                     items = hours,
                     visibleItemsCount = 3,
-                    startIndex = hours.indexOf(localtime.hour.toString()),
+                    startIndex =
+                        hours.indexOf(
+                            String.format(
+                                Locale.KOREA,
+                                TIME_PICKER_NUMBER_FORMAT,
+                                ((localtime.hour) % 12),
+                            ),
+                        ),
                     modifier = Modifier.weight(0.33f),
                     textModifier = Modifier.padding(8.dp),
                 )
