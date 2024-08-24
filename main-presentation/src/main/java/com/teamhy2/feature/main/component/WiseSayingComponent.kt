@@ -27,8 +27,7 @@ fun WiseSayingComponent(
     Column(
         modifier =
             modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(

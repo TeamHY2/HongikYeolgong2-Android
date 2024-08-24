@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,7 +34,7 @@ fun HY2Timer(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier.fillMaxWidth(),
     ) {
         StartEndSection(startTime = startTime, endTime = endTime)
         Spacer(modifier = Modifier.height(32.dp))
@@ -119,15 +120,22 @@ fun TimeLeftSection(
 ) {
     val leftSeconds: Long =
         if (leftTime.isNotEmpty()) {
-            leftTime.split(":").let {
-                it[0].toLong() * 60 + it[1].toLong()
+            val parts = leftTime.split(":")
+            if (parts.size == 3) {
+                // leftTime이 "HH:MM:SS" 형식일 경우
+                parts[0].toLong() * 3600 + parts[1].toLong() * 60 + parts[2].toLong()
+            } else if (parts.size == 2) {
+                // leftTime이 "MM:SS" 형식일 경우
+                parts[0].toLong() * 60 + parts[1].toLong()
+            } else {
+                0L
             }
         } else {
             0L
         }
 
     val leftTimeTextColor =
-        if (leftSeconds < LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
+        if (leftSeconds <= LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
 
     Column(modifier = modifier) {
         Text(
