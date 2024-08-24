@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hongikyeolgong2.calendar.model.Calendar
+import com.hongikyeolgong2.calendar.model.StudyDay
+import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.main.domain.WebViewRepository
 import com.teamhy2.main.domain.WiseSayingRepository
@@ -13,6 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +36,7 @@ class MainViewModel
         init {
             getFirebaseUrls()
             getWiseSaying()
+            getCalendarData()
         }
 
         private fun getFirebaseUrls() {
@@ -43,9 +49,47 @@ class MainViewModel
         private fun getWiseSaying() {
             viewModelScope.launch {
                 _mainUiState.value =
-                    mainUiState.value.copy(
+                    _mainUiState.value.copy(
                         wiseSaying = wiseSayingRepository.fetchWiseSaying(),
                     )
             }
+        }
+
+        private fun getCalendarData() {
+            val initialCalendar =
+                Calendar(
+                    studyDays =
+                        listOf(
+                            StudyDay(
+                                date = LocalDate.now().withDayOfMonth(1),
+                                studyRoomUsage = StudyRoomUsage.USED_ONCE,
+                            ),
+                        ),
+                )
+            _mainUiState.value = mainUiState.value.copy(calendar = initialCalendar)
+        }
+
+        fun updateTimePickerVisibility(isVisible: Boolean) {
+            _mainUiState.value = mainUiState.value.copy(isTimePickerVisible = isVisible)
+        }
+
+        fun updateTimerRunning(isTimerRunning: Boolean) {
+            _mainUiState.value = mainUiState.value.copy(isTimerRunning = isTimerRunning)
+        }
+
+        fun updateSelectedTime(selectedTime: LocalTime) {
+            _mainUiState.value = mainUiState.value.copy(selectedTime = selectedTime)
+        }
+
+        fun updateCalendarMonth(isNextMonth: Boolean) {
+            val updatedCalendar =
+                mainUiState.value.calendar.apply {
+                    if (isNextMonth) {
+                        moveToNextMonth()
+                    } else {
+                        moveToPreviousMonth()
+                    }
+                }
+            _mainUiState.value = mainUiState.value.copy(calendar = updatedCalendar)
         }
     }
