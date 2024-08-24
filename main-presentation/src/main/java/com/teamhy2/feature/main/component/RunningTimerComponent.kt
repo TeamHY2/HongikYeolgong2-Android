@@ -67,8 +67,8 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
     HY2Theme {
         RunningTimerComponent(
             timerState = dummyTimerState,
-            onStudyRoomExtendClick = { /* Handle extend click */ },
-            onStudyRoomEndClick = { /* Handle end click */ },
+            onStudyRoomExtendClick = { },
+            onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
         )
     }
@@ -87,8 +87,8 @@ fun TimerScreenPreview_MoreThanExtendThreshold() {
     HY2Theme {
         RunningTimerComponent(
             timerState = dummyTimerState,
-            onStudyRoomExtendClick = { /* Handle extend click */ },
-            onStudyRoomEndClick = { /* Handle end click */ },
+            onStudyRoomExtendClick = { },
+            onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
         )
     }
