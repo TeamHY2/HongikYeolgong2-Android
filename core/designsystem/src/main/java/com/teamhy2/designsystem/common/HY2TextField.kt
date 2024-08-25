@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,18 +65,17 @@ fun HY2TextField(
     val transition = updateTransition(hasFocused, label = "onHasFocused")
     val borderColor by transition.animateColor(label = "borderColorTransition") { if (it) Gray400 else Gray800 }
 
-    Column {
+    Column(modifier = modifier) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
             modifier =
-                modifier
+                Modifier
                     .background(
                         color = Gray800,
                         shape = RoundedCornerShape(DEFAULT_RADIUS.dp),
                     )
-                    .height(48.dp)
-                    .fillMaxWidth(),
+                    .height(48.dp),
             cursorBrush = SolidColor(Gray200),
             interactionSource = interactionSource,
             textStyle = HY2Typography().body05.copy(color = Gray200),
