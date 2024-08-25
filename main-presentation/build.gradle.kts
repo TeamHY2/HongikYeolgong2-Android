@@ -16,6 +16,7 @@ dependencies {
     implementation(projects.calendarDomain)
 
     implementation(projects.onboardingPresentation)
+    implementation(projects.onboardingDomain)
 
     implementation(projects.timerPresentation)
     implementation(projects.timerDomain)
