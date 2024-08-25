@@ -85,15 +85,15 @@ fun SignUpScreen(
 ) {
     Column(
         modifier =
-        modifier
-            .background(Black)
-            .padding(horizontal = 32.dp),
+            modifier
+                .background(Black)
+                .padding(horizontal = 32.dp),
     ) {
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(52.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             Text(
@@ -171,19 +171,19 @@ private fun HY2GradientMainButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier =
-        modifier
-            .fillMaxWidth()
-            .paint(
-                painter =
-                painterResource(
-                    id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
+            modifier
+                .fillMaxWidth()
+                .paint(
+                    painter =
+                        painterResource(
+                            id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
+                        ),
+                    contentScale = ContentScale.Fit,
+                )
+                .clickable(
+                    enabled = enabled,
+                    onClick = onClick,
                 ),
-                contentScale = ContentScale.Fit,
-            )
-            .clickable(
-                enabled = enabled,
-                onClick = onClick,
-            ),
     ) {
         Text(
             text = text,
