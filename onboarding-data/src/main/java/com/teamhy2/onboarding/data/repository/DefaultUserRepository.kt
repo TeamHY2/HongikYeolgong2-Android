@@ -11,51 +11,52 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DefaultUserRepository
-@Inject
-constructor() : UserRepository {
-    private val firestore = FirebaseFirestore.getInstance()
-    override suspend fun checkUserExists(uid:String): Boolean {
-        val result: QuerySnapshot = firestore.collection(FIREBASE_USER_COLLECTION).get().await()
-        val user: DocumentSnapshot? =
-            result.documents.find { it.id == uid }
-        user?.let { return true }
-        return false
-    }
+    @Inject
+    constructor() : UserRepository {
+        private val firestore = FirebaseFirestore.getInstance()
 
-    override suspend fun checkNicknameDuplication(nickname: String): Boolean {
-        try {
+        override suspend fun checkUserExists(uid: String): Boolean {
             val result: QuerySnapshot = firestore.collection(FIREBASE_USER_COLLECTION).get().await()
-            result.documents.find { it.getString(NICKNAME_KEY) == nickname }
-                ?.let { return true }
-        } catch (e: Exception) {
-            Log.d("checkNicknameDuplication", "Error ", e)
+            val user: DocumentSnapshot? =
+                result.documents.find { it.id == uid }
+            user?.let { return true }
+            return false
         }
 
-        return false
-    }
+        override suspend fun checkNicknameDuplication(nickname: String): Boolean {
+            try {
+                val result: QuerySnapshot = firestore.collection(FIREBASE_USER_COLLECTION).get().await()
+                result.documents.find { it.getString(NICKNAME_KEY) == nickname }
+                    ?.let { return true }
+            } catch (e: Exception) {
+                Log.d("checkNicknameDuplication", "Error ", e)
+            }
 
-    override suspend fun signUp(
-        nickname: String,
-        department: String,
-    ) {
-        val user =
-            hashMapOf(
-                NICKNAME_KEY to nickname,
-                DEPARTMENT_KEY to department,
-                EMAIL_KEY to Firebase.auth.currentUser?.email,
-                ID_KEY to Firebase.auth.currentUser?.uid,
-            )
+            return false
+        }
 
-        firestore.collection(FIREBASE_USER_COLLECTION)
-            .document(Firebase.auth.currentUser?.uid!!)
-            .set(user)
-    }
+        override suspend fun signUp(
+            nickname: String,
+            department: String,
+        ) {
+            val user =
+                hashMapOf(
+                    NICKNAME_KEY to nickname,
+                    DEPARTMENT_KEY to department,
+                    EMAIL_KEY to Firebase.auth.currentUser?.email,
+                    ID_KEY to Firebase.auth.currentUser?.uid,
+                )
 
-    companion object {
-        private const val FIREBASE_USER_COLLECTION = "User"
-        private const val NICKNAME_KEY = "nickname"
-        private const val DEPARTMENT_KEY = "department"
-        private const val EMAIL_KEY = "email"
-        private const val ID_KEY = "id"
+            firestore.collection(FIREBASE_USER_COLLECTION)
+                .document(Firebase.auth.currentUser?.uid!!)
+                .set(user)
+        }
+
+        companion object {
+            private const val FIREBASE_USER_COLLECTION = "User"
+            private const val NICKNAME_KEY = "nickname"
+            private const val DEPARTMENT_KEY = "department"
+            private const val EMAIL_KEY = "email"
+            private const val ID_KEY = "id"
+        }
     }
-}
