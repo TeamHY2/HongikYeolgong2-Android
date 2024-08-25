@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="onboarding_app_description_image">%1$d 번 앱 설명 그림 입니다.</string>
+
+    <!-- signUp Screen -->
+    <string name="sign_up_title">회원가입</string>
+    <string name="sign_up_nickname_hint">닉네임을 입력해주세요</string>
+    <string name="sign_up_nickname_supporting_text">*특수문자와 띄어쓰기를 사용할 수 없어요.</string>
+    <string name="sign_up_duplication_check">중복확인</string>
+    <string name="sign_up_nickname_title">닉네임</string>
+    <string name="sign_up_department_title">학과</string>
+    <string name="sign_up_department_hint">영문, 숫자 5글자 이상 입력해주세요.</string>
+    <string name="sign_up_sign_up_button_text">가입하기</string>
 </resources>
