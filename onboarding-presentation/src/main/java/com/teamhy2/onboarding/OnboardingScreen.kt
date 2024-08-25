@@ -34,9 +34,16 @@ import com.teamhy2.onboarding.presentation.R
 @Composable
 fun OnboardingRoute(
     onGoogleLoginClick: () -> Unit,
+    onGoogleLoginDone: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    OnboardingScreen(onGoogleLoginClick = onGoogleLoginClick, modifier = modifier)
+    OnboardingScreen(
+        onGoogleLoginClick = {
+            onGoogleLoginClick()
+            onGoogleLoginDone()
+        },
+        modifier = modifier,
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
