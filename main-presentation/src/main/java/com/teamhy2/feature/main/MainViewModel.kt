@@ -1,6 +1,5 @@
 package com.teamhy2.feature.main
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -53,7 +52,6 @@ class MainViewModel
 
             viewModelScope.launch {
                 _userExists.value = userRepository.checkUserExists(uid)
-                Log.d("Bandal", "checkUserExists: ${_userExists.value}")
             }
         }
 
