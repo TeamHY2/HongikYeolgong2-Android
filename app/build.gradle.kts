@@ -25,9 +25,16 @@ dependencies {
     implementation(projects.mainData)
     implementation(projects.mainDomain)
 
+    implementation(projects.onboardingPresentation)
+    implementation(projects.onboardingData)
+    implementation(projects.onboardingDomain)
+
     implementation(projects.settingPresentation)
     implementation(projects.settingData)
     implementation(projects.settingDomain)
+
+    implementation(projects.timerPresentation)
+    implementation(projects.timerDomain)
 
     implementation(projects.core.designsystem)
     implementation(platform(libs.firebase.bom))

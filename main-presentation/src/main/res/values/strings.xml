@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- main -->
+    <string name="main_start_study_room">열람실 이용 시작</string>
+    <string name="main_logo_description">홍익열공이 로고 입니다.</string>
+    <string name="main_setting_button_description">세팅 메뉴로 가는 버튼입니다.</string>
+    <string name="main_extend_study_room">열람실 이용 연장</string>
+    <string name="main_end_study_room">열람실 이용 종료</string>
+    <string name="main_study_room_use_start_time">열람실 이용 시간</string>
+    <string name="main_seating_chart">좌석</string>
+
+    <!-- webViews -->
     <string name="inquiry_title">문의</string>
     <string name="notice_title">공지</string>
     <string name="seating_chart_title">좌석</string>

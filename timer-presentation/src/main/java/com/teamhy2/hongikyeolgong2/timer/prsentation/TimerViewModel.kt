@@ -3,6 +3,7 @@ package com.teamhy2.hongikyeolgong2.timer.prsentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
+import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,14 +18,8 @@ class TimerViewModel
     constructor() : ViewModel() {
         private lateinit var timer: Timer
 
-        private val _startTime = MutableStateFlow("")
-        val startTime: StateFlow<String> = _startTime
-
-        private val _endTime = MutableStateFlow("")
-        val endTime: StateFlow<String> = _endTime
-
-        private val _leftTime = MutableStateFlow("")
-        val leftTime: StateFlow<String> = _leftTime
+        private val _timerState = MutableStateFlow(TimerUiModel())
+        val timerState: StateFlow<TimerUiModel> = _timerState
 
         fun setTimer(
             startTime: LocalTime,
@@ -32,16 +27,23 @@ class TimerViewModel
             events: Map<Long, () -> Unit>,
         ) {
             timer = Timer(startTime, duration, events)
-            _startTime.value = timer.formattedStartTime
-            _endTime.value = timer.formattedEndTime
-            _leftTime.value = timer.formattedLeftTime
+            _timerState.value =
+                TimerUiModel(
+                    startTime = timer.formattedStartTime,
+                    endTime = timer.formattedEndTime,
+                    leftTime = timer.formattedLeftTime,
+                    isRunning = true,
+                )
             startTimer()
         }
 
         private fun startTimer() {
             viewModelScope.launch {
                 timer.emitTimerEvents().collect {
-                    _leftTime.value = timer.formattedLeftTime
+                    _timerState.value =
+                        _timerState.value.copy(
+                            leftTime = timer.formattedLeftTime,
+                        )
                 }
             }
         }
