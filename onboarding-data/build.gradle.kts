@@ -3,9 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.teamhy2.onboarding.data"
+    namespace = "com.teamhy2.hongikyeolgong2.onboarding.data"
 }
 
 dependencies {
     implementation(projects.onboardingDomain)
+    implementation(projects.app.auth)
+
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.ui.auth)
 }

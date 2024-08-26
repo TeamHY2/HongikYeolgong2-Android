@@ -52,20 +52,18 @@ fun HY2DropdownTextField(
     ExposedDropdownMenuBox(
         modifier = modifier.wrapContentWidth(),
         expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        },
+        onExpandedChange = { expanded = !expanded },
     ) {
         HY2TextField(
             value = value,
-            onValueChange = { text -> if (text !== value) onValueChanged(text) },
+            onValueChange = { text -> if (text != value) onValueChanged(text) },
             hintText = hintText,
             focusRequester = focusRequester,
             modifier = Modifier.menuAnchor(),
         )
 
         DropdownMenu(
-            expanded = options.isNotEmpty(),
+            expanded = expanded,
             onDismissRequest = {},
             properties = PopupProperties(focusable = false),
             offset = DpOffset(x = 0.dp, y = (-16).dp),
@@ -77,7 +75,7 @@ fun HY2DropdownTextField(
                     .clip(RoundedCornerShape(8.dp))
                     .exposedDropdownSize(),
         ) {
-            options.forEach { selectionOption ->
+            options.filter { it.contains(value) }.forEach { selectionOption ->
                 HY2DropdownMenuItem(
                     value = selectionOption,
                     isSelected = selectionOption == value,
