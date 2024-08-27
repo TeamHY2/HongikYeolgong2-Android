@@ -44,14 +44,14 @@ fun InitTimerComponent(
                     .height(BUTTON_HEIGHT.dp)
                     .fillMaxWidth(),
         ) {
-            MainImageButton(
+            BackgroundImageButton(
                 imageResId = R.drawable.img_seating_chart_button_background,
                 text = stringResource(R.string.main_seating_chart),
                 onClick = onSeatingChartClick,
                 modifier = Modifier.weight(70f),
             )
             Spacer(modifier = Modifier.weight(12f))
-            MainImageButton(
+            BackgroundImageButton(
                 imageResId = R.drawable.img_study_room_start_button_background,
                 text = stringResource(R.string.main_start_study_room),
                 onClick = onStudyRoomStartClick,
