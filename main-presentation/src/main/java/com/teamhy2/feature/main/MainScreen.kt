@@ -33,7 +33,6 @@ import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
@@ -49,6 +48,8 @@ fun MainRoute(
 
     val timerViewModel: TimerViewModel = hiltViewModel()
     val timerState by timerViewModel.timerState.collectAsState()
+
+    mainViewModel.updateTimerStateFromTimerViewModel(timerState)
 
     if (uiState.isTimePickerVisible) {
         HY2TimePicker(
@@ -112,7 +113,6 @@ fun MainRoute(
 
     MainScreen(
         uiState = uiState,
-        timerState = timerState,
         modifier = modifier,
         onSettingClick = onSettingClick,
         onSeatingChartClick = onSeatingChartClick,
@@ -163,7 +163,6 @@ fun MainScreen(
     onStudyRoomEndClick: () -> Unit,
     modifier: Modifier = Modifier,
     uiState: MainUiState,
-    timerState: TimerUiModel,
 ) {
     Column(
         modifier =
@@ -188,7 +187,6 @@ fun MainScreen(
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
             uiState = uiState,
-            timerState = timerState,
             modifier = Modifier,
         )
     }
@@ -231,7 +229,6 @@ private fun MainBody(
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     uiState: MainUiState,
-    timerState: TimerUiModel,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -244,7 +241,9 @@ private fun MainBody(
         when (uiState.isTimerRunning) {
             true -> {
                 RunningTimerComponent(
-                    timerState = timerState,
+                    startTime = uiState.startTime,
+                    endTime = uiState.endTime,
+                    leftTime = uiState.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                     modifier = Modifier.height(308.dp),
@@ -275,12 +274,6 @@ private fun MainBody(
 @Composable
 private fun MainScreenPreview() {
     val state = MainUiState()
-    val timerState =
-        TimerUiModel(
-            startTime = "11:30",
-            endTime = "12:00",
-            leftTime = "00:15:30",
-        )
 
     HY2Theme {
         MainScreen(
@@ -292,7 +285,6 @@ private fun MainScreenPreview() {
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             uiState = state,
-            timerState = timerState,
         )
     }
 }
