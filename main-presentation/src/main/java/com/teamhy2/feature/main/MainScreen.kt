@@ -75,13 +75,17 @@ fun MainRoute(
         HY2Dialog(
             description = stringResource(R.string.main_extend_dialog_title),
             leftButtonText = stringResource(R.string.main_extend_dialog_negative_button),
-            rightButtonText = stringResource(R.string.main_extend_dialog_postitive_button),
+            rightButtonText = stringResource(R.string.main_extend_dialog_positive_button),
             onLeftButtonClick = {
                 mainViewModel.updateStudyRoomExtendDialogVisibility(false)
             },
             onRightButtonClick = {
                 mainViewModel.updateStudyRoomExtendDialogVisibility(false)
-                mainViewModel.updateTimerRunning(false)
+                startTimer(
+                    LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                    mainViewModel,
+                    timerViewModel,
+                )
             },
             onDismiss = {
                 mainViewModel.updateStudyRoomExtendDialogVisibility(false)
@@ -99,11 +103,7 @@ fun MainRoute(
             },
             onRightButtonClick = {
                 mainViewModel.updateStudyRoomEndDialogVisibility(false)
-                startTimer(
-                    LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
-                    mainViewModel,
-                    timerViewModel,
-                )
+                mainViewModel.updateTimerRunning(false)
             },
             onDismiss = {
                 mainViewModel.updateStudyRoomEndDialogVisibility(false)
