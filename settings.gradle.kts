@@ -38,6 +38,7 @@ include(":setting-data")
 include(":setting-domain")
 
 include(":timer-domain")
+include(":timer-data")
 include(":timer-presentation")
 
 include(":onboarding-presentation")
