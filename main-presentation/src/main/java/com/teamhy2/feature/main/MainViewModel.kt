@@ -9,6 +9,7 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.model.MainUiState
+import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import com.teamhy2.main.domain.WebViewRepository
 import com.teamhy2.main.domain.WiseSayingRepository
 import com.teamhy2.onboarding.domain.repository.UserRepository
@@ -115,5 +116,14 @@ class MainViewModel
                     }
                 }
             _mainUiState.value = mainUiState.value.copy(calendar = updatedCalendar)
+        }
+
+        fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
+            _mainUiState.value =
+                _mainUiState.value.copy(
+                    startTime = timerState.startTime,
+                    endTime = timerState.endTime,
+                    leftTime = timerState.leftTime,
+                )
         }
     }
