@@ -125,7 +125,7 @@ fun MainRoute(
             mainViewModel.updateStudyRoomExtendDialogVisibility(true)
         },
         onStudyRoomEndClick = {
-            mainViewModel.updateStudyRoomExtendDialogVisibility(true)
+            mainViewModel.updateStudyRoomEndDialogVisibility(true)
         },
     )
 }
@@ -189,7 +189,7 @@ fun MainScreen(
             onStudyRoomEndClick = onStudyRoomEndClick,
             uiState = uiState,
             timerState = timerState,
-            modifier = Modifier.padding(bottom = 36.dp),
+            modifier = Modifier,
         )
     }
 }
@@ -260,12 +260,13 @@ private fun MainBody(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(34.dp))
+        Spacer(modifier = Modifier.weight(1f))
         Hy2Calendar(
             title = uiState.calendar.now,
             days = uiState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
+            modifier = Modifier.padding(bottom = 24.dp),
         )
     }
 }
