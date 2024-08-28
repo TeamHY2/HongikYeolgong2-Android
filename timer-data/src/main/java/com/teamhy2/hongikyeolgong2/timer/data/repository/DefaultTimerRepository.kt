@@ -1,5 +1,6 @@
 package com.teamhy2.hongikyeolgong2.timer.data.repository
 
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
 import kotlinx.coroutines.tasks.await
@@ -8,10 +9,10 @@ import javax.inject.Inject
 class DefaultTimerRepository
     @Inject
     constructor() : TimerRepository {
-        private val firestore = FirebaseFirestore.getInstance()
+        private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
         override suspend fun getStudyRoomHourDuration(): Long {
-            val documentSnapshot =
+            val documentSnapshot: DocumentSnapshot =
                 firestore.collection(STUDY_ROOM_COLLECTION)
                     .document(STUDY_ROOM_DOCUMENT_ID)
                     .get()
