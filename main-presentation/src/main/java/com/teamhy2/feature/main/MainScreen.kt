@@ -187,7 +187,6 @@ fun MainScreen(
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
             uiState = uiState,
-            modifier = Modifier,
         )
     }
 }
