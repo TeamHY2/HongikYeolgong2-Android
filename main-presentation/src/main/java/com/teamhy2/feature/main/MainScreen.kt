@@ -154,12 +154,13 @@ private fun startTimer(
                 onSendNotification(PushText.THIRTY_MINUTES)
             },
             Timer.TEN_MINUTES_SECONDS to {
-                onSendNotification(PushText.TEN_MINUTES)
             },
+                onSendNotification(PushText.TEN_MINUTES)
             Timer.TIME_OVER_SECONDS to {
                 mainViewModel.updateTimerRunning(false)
-            },
-        ),
+                    mainViewModel.addStudyDay()
+                },
+            ),
     )
 }
 
