@@ -10,7 +10,7 @@ class DefaultTimerRepository
     constructor() : TimerRepository {
         private val firestore = FirebaseFirestore.getInstance()
 
-        override suspend fun fetchStudyRoomHourDuration(): Long {
+        override suspend fun getStudyRoomHourDuration(): Long {
             val documentSnapshot =
                 firestore.collection(STUDY_ROOM_COLLECTION)
                     .document(STUDY_ROOM_DOCUMENT_ID)
