@@ -33,8 +33,6 @@ import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import java.time.Duration
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
