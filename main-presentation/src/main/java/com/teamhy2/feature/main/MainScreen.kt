@@ -33,7 +33,6 @@ import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -137,18 +136,18 @@ private fun startTimer(
 ) {
     timerViewModel.setTimer(
         startTime,
-        Duration.ofMinutes(30),
-        mapOf(
-            Timer.THIRTY_MINUTES_SECONDS to {
-                // TODO: 30분 로컬 푸시 알람 요청
-            },
-            Timer.FIVE_MINUTES_SECONDS to {
-                // TODO: 5분 로컬 푸시 알람 요청
-            },
-            Timer.TIME_OVER_SECONDS to {
-                mainViewModel.updateTimerRunning(false)
-            },
-        ),
+        events =
+            mapOf(
+                Timer.THIRTY_MINUTES_SECONDS to {
+                    // TODO: 30분 로컬 푸시 알람 요청
+                },
+                Timer.FIVE_MINUTES_SECONDS to {
+                    // TODO: 5분 로컬 푸시 알람 요청
+                },
+                Timer.TIME_OVER_SECONDS to {
+                    mainViewModel.updateTimerRunning(false)
+                },
+            ),
     )
 }
 
