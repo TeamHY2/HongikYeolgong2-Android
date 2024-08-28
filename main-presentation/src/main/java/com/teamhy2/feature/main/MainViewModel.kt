@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
+import com.teamhy2.main.domain.StudyDayRepository
 import com.teamhy2.main.domain.WebViewRepository
 import com.teamhy2.main.domain.WiseSayingRepository
 import com.teamhy2.onboarding.domain.repository.UserRepository
@@ -30,6 +33,7 @@ class MainViewModel
         private val webViewRepository: WebViewRepository,
         private val wiseSayingRepository: WiseSayingRepository,
         private val userRepository: UserRepository,
+        private val studyDayRepository: StudyDayRepository,
         val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _mainUiState = MutableStateFlow(MainUiState())
@@ -37,6 +41,10 @@ class MainViewModel
 
         var urls by mutableStateOf<Map<String, String>>(emptyMap())
             private set
+
+        val userUid: String by lazy {
+            Firebase.auth.currentUser?.uid ?: ""
+        }
 
         private val _userExists: MutableStateFlow<Boolean> = MutableStateFlow(true)
         val userExists: StateFlow<Boolean> = _userExists.asStateFlow()
@@ -127,5 +135,16 @@ class MainViewModel
                     endTime = timerState.endTime,
                     leftTime = timerState.leftTime,
                 )
+        }
+
+        fun addStudyDay() {
+            val uid = userUid
+            val startTime = mainUiState.value.startTime
+
+            if (uid.isNotEmpty() && startTime != null) {
+                viewModelScope.launch {
+                    studyDayRepository.addStudyDay(uid, startTime)
+                }
+            }
         }
     }
