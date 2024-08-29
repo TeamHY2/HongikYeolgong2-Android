@@ -12,9 +12,15 @@ fun NavController.navigateToSignUp() {
     }
 }
 
-fun NavGraphBuilder.signUpScreen(onSignUpButtonClicked: () -> Unit) {
+fun NavGraphBuilder.signUpScreen(
+    onSignUpButtonClicked: () -> Unit,
+    alreadySignedUp: () -> Unit,
+) {
     composable(route = ROUTE) {
-        SignUpRoute(onSignUpButtonClicked = onSignUpButtonClicked)
+        SignUpRoute(
+            onSignUpButtonClicked = onSignUpButtonClicked,
+            alreadySignedUp = alreadySignedUp,
+        )
     }
 }
 
