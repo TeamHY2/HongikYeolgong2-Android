@@ -10,6 +10,8 @@ android {
 dependencies {
     // TODO: 사용하는 feature 모듈의 의존성 추가
     // ex) implementation(projects.feature.home)
+    implementation(projects.app.notification)
+
     implementation(projects.mainDomain)
 
     implementation(projects.calendarPresentation)
@@ -36,4 +38,5 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.firebase.ui.auth)
+    implementation(libs.accompanist.permissions)
 }
