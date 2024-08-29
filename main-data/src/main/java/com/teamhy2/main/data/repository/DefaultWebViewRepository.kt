@@ -2,7 +2,7 @@ package com.teamhy2.main.data.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.teamhy2.main.domain.WebViewRepository
+import com.teamhy2.main.domain.repository.WebViewRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 

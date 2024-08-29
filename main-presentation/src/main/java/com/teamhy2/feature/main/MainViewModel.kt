@@ -13,9 +13,9 @@ import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
-import com.teamhy2.main.domain.StudyDayRepository
-import com.teamhy2.main.domain.WebViewRepository
-import com.teamhy2.main.domain.WiseSayingRepository
+import com.teamhy2.main.domain.repository.StudyDayRepository
+import com.teamhy2.main.domain.repository.WebViewRepository
+import com.teamhy2.main.domain.repository.WiseSayingRepository
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

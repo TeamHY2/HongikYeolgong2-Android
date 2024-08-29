@@ -1,4 +1,4 @@
-package com.teamhy2.main.model
+package com.teamhy2.main.domain.model
 
 data class WiseSaying(
     val quote: String,
