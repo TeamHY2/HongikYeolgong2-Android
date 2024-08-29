@@ -1,4 +1,5 @@
 [versions]
+accompanistPermissions = "0.31.1-alpha"
 agp = "8.3.2"
 firebaseBom = "33.1.2"
 firebaseUiAuth = "7.2.0"
@@ -34,6 +35,7 @@ datastore = "1.0.0"
 firebaseFirestoreKtx = "25.0.0"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

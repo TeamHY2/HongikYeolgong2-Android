@@ -18,6 +18,7 @@ import com.teamhy2.feature.main.webviews.seatingChart.navigation.navigateToSeati
 import com.teamhy2.feature.main.webviews.seatingChart.navigation.seatingChartScreen
 import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
+import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.navigateToSignUp
 import com.teamhy2.onboarding.navigation.onboardingScreen
@@ -28,6 +29,7 @@ fun HY2NavHost(
     navController: NavHostController,
     urls: Map<String, String>,
     googleSignIn: () -> Unit,
+    onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
 ) {
@@ -54,6 +56,7 @@ fun HY2NavHost(
             mainScreen(
                 onSettingClick = navController::navigateToSetting,
                 onSeatingChartClick = navController::navigateToSeatingChart,
+                onSendNotification = onSendNotification,
             )
 
             seatingChartScreen(

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_title">홍익열공이 열람실 연장 알림!</string>
+    <string name="notification_content_thirty_minutes_remain">열람실 시간 종료 30분 전이에요.\n지금부터 열람실 연장이 가능해요!</string>
+    <string name="notification_content_ten_minutes_remain">열람실 시간 종료 10분 전이에요.\n열람실 연장이 필요하다면 서둘러주세요!</string>
+</resources>

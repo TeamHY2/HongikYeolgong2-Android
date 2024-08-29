@@ -30,6 +30,7 @@ import com.teamhy2.feature.main.component.InitTimerComponent
 import com.teamhy2.feature.main.component.RunningTimerComponent
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
+import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
@@ -41,6 +42,7 @@ import java.time.temporal.ChronoUnit
 fun MainRoute(
     onSettingClick: () -> Unit,
     onSeatingChartClick: () -> Unit,
+    onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
@@ -58,7 +60,7 @@ fun MainRoute(
                     updateTimePickerVisibility(false)
                     updateTimerRunning(true)
                 }
-                startTimer(selectedTime, mainViewModel, timerViewModel)
+                startTimer(selectedTime, mainViewModel, timerViewModel, onSendNotification)
             },
             onCancelled = {
                 mainViewModel.updateTimePickerVisibility(false)
@@ -85,6 +87,7 @@ fun MainRoute(
                 LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
                 mainViewModel,
                 timerViewModel,
+                onSendNotification,
             )
         },
         onStudyRoomEndClick = { mainViewModel.updateTimerRunning(false) },
@@ -95,16 +98,19 @@ private fun startTimer(
     startTime: LocalTime,
     mainViewModel: MainViewModel,
     timerViewModel: TimerViewModel,
+    onSendNotification: (PushText) -> Unit,
 ) {
     timerViewModel.setTimer(
         startTime,
-        Duration.ofMinutes(30),
+        Duration.ofMinutes(31),
         mapOf(
             Timer.THIRTY_MINUTES_SECONDS to {
                 // TODO: 30분 로컬 푸시 알람 요청
+                onSendNotification(PushText.THIRTY_MINUTES)
             },
             Timer.FIVE_MINUTES_SECONDS to {
                 // TODO: 5분 로컬 푸시 알람 요청
+                onSendNotification(PushText.TEN_MINUTES)
             },
             Timer.TIME_OVER_SECONDS to {
                 mainViewModel.updateTimerRunning(false)

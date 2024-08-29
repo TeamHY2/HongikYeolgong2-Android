@@ -37,7 +37,12 @@ dependencies {
     implementation(projects.timerDomain)
 
     implementation(projects.core.designsystem)
+    implementation(projects.app.notification)
+    implementation(projects.app.auth)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+
+    implementation(libs.accompanist.permissions)
 }
