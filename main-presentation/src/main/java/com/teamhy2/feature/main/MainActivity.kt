@@ -29,6 +29,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.navigation.Main
+import com.teamhy2.onboarding.OnboardingViewModel
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.SignUp
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             this.onSignInResult(res)
         }
 
-    private val mainViewModel: MainViewModel by viewModels()
+    private val onboardingViewModel: OnboardingViewModel by viewModels()
 
     @OptIn(ExperimentalPermissionsApi::class)
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         val auth = Firebase.auth.currentUser
         Log.d("auth", "onCreate: ${auth?.email}")
 
-        mainViewModel.checkUserExists(auth?.uid)
+        onboardingViewModel.checkUserExists(auth?.uid)
 
         var startDestination: String
         if (auth == null) {
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             startDestination = Main.ROUTE
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    mainViewModel.userExists.collect { userExists ->
+                    onboardingViewModel.userExists.collect { userExists ->
                         startDestination =
                             if (userExists) {
                                 Main.ROUTE
@@ -73,7 +74,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         enableEdgeToEdge()
         setContent {
             HY2Theme {
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     Column(Modifier.padding(innerPadding)) {
                         HY2NavHost(
                             navController = rememberNavController(),
-                            urls = mainViewModel.urls,
+                            urls = onboardingViewModel.urls,
                             googleSignIn = ::createSignInIntent,
                             startDestination = startDestination,
                             onSendNotification = { pushText ->
@@ -124,6 +124,10 @@ class MainActivity : AppCompatActivity() {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             Log.d("auth", "로그인 성공 ${Firebase.auth.currentUser?.email}")
+            val auth = Firebase.auth.currentUser
+            if (auth != null) {
+                onboardingViewModel.checkUserExists(auth.uid)
+            }
         } else {
             Log.d("auth", "로그인 실패 ${response?.error?.message}")
         }
