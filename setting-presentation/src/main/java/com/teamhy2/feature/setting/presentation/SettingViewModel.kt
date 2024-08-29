@@ -17,10 +17,6 @@ import javax.inject.Inject
 
 sealed interface SettingsEvent {
     data class NotificationSwitchChanged(val isChecked: Boolean) : SettingsEvent
-
-    object Logout : SettingsEvent
-
-    object Withdraw : SettingsEvent
 }
 
 @HiltViewModel
@@ -51,13 +47,18 @@ class SettingsViewModel
                 is SettingsEvent.NotificationSwitchChanged -> {
                     updateNotificationSwitchState(event.isChecked)
                 }
-
-                SettingsEvent.Logout -> {
-                }
-
-                SettingsEvent.Withdraw -> {
-                }
             }
+        }
+
+        fun onLogoutClick(context: Context) {
+            AuthUI.getInstance().signOut(context)
+        }
+
+        fun onWithdrawClick(context: Context) {
+            viewModelScope.launch {
+                userRepository.withdraw()
+            }
+            AuthUI.getInstance().signOut(context)
         }
 
         private fun updateNotificationSwitchState(isChecked: Boolean) {
@@ -66,16 +67,5 @@ class SettingsViewModel
                 _settingUiState.value =
                     settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
             }
-        }
-
-        fun performLogout(context: Context) {
-            AuthUI.getInstance().signOut(context)
-        }
-
-        fun performWithdraw(context: Context) {
-            viewModelScope.launch {
-                userRepository.withdraw()
-            }
-            AuthUI.getInstance().signOut(context)
         }
     }

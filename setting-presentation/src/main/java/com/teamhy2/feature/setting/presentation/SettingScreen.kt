@@ -35,6 +35,7 @@ import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.feature.setting.presentation.SettingsEvent.NotificationSwitchChanged
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
@@ -54,21 +55,15 @@ fun SettingRoute(
 
     SettingScreen(
         settingUiState = settingUiState,
-        onEvent = { event ->
-            when (event) {
-                SettingsEvent.Logout -> {
-                    viewModel.performLogout(context)
-                    onLogoutOrWithdrawComplete()
-                }
-
-                SettingsEvent.Withdraw -> {
-                    viewModel.performWithdraw(context)
-                    onLogoutOrWithdrawComplete()
-                }
-
-                else -> viewModel.onEvent(event)
-            }
+        onLogoutClick = {
+            viewModel.onLogoutClick(context)
+            onLogoutOrWithdrawComplete()
         },
+        onWithdrawClick = {
+            viewModel.onWithdrawClick(context)
+            onLogoutOrWithdrawComplete()
+        },
+        onEvent = {},
         onBackButtonClick = onBackButtonClick,
         onNoticeClick = onNoticeClick,
         onInquiryClick = onInquiryClick,
@@ -79,6 +74,8 @@ fun SettingRoute(
 @Composable
 fun SettingScreen(
     settingUiState: SettingUiState,
+    onLogoutClick: () -> Unit,
+    onWithdrawClick: () -> Unit,
     onEvent: (SettingsEvent) -> Unit,
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
@@ -95,7 +92,7 @@ fun SettingScreen(
             rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
             onLeftButtonClick = {
                 showLogoutDialog = false
-                onEvent(SettingsEvent.Logout)
+                onLogoutClick()
             },
             onRightButtonClick = {
                 showLogoutDialog = false
@@ -111,7 +108,7 @@ fun SettingScreen(
             rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
             onLeftButtonClick = {
                 showWithdrawDialog = false
-                onEvent(SettingsEvent.Withdraw)
+                onWithdrawClick()
             },
             onRightButtonClick = {
                 showWithdrawDialog = false
@@ -156,7 +153,7 @@ fun SettingScreen(
                 text = stringResource(R.string.setting_notification_reminder),
                 isChecked = settingUiState.isNotificationSwitchChecked,
                 onCheckedChanged = {
-                    onEvent(SettingsEvent.NotificationSwitchChanged(it))
+                    onEvent(NotificationSwitchChanged(it))
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -215,6 +212,8 @@ private fun SettingScreenPreview() {
     HY2Theme {
         SettingScreen(
             settingUiState = state,
+            onLogoutClick = {},
+            onWithdrawClick = {},
             onEvent = {},
             onBackButtonClick = {},
             onNoticeClick = {},
