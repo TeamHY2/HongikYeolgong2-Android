@@ -34,6 +34,7 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
+import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -86,6 +87,7 @@ fun MainRoute(
                     LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
                     mainViewModel,
                     timerViewModel,
+                    onSendNotification,
                 )
             },
             onDismiss = {
