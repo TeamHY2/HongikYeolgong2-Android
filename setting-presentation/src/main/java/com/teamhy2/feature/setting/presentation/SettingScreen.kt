@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,14 +45,30 @@ fun SettingRoute(
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     SettingScreen(
         settingUiState = settingUiState,
-        onEvent = viewModel::onEvent,
+        onEvent = { event ->
+            when (event) {
+                SettingsEvent.Logout -> {
+                    viewModel.performLogout(context)
+                    onLogoutOrWithdrawComplete()
+                }
+
+                SettingsEvent.Withdraw -> {
+                    viewModel.performWithdraw(context)
+                    onLogoutOrWithdrawComplete()
+                }
+
+                else -> viewModel.onEvent(event)
+            }
+        },
         onBackButtonClick = onBackButtonClick,
         onNoticeClick = onNoticeClick,
         onInquiryClick = onInquiryClick,
@@ -79,7 +96,6 @@ fun SettingScreen(
             onLeftButtonClick = {
                 showLogoutDialog = false
                 onEvent(SettingsEvent.Logout)
-                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
             },
             onRightButtonClick = {
                 showLogoutDialog = false
@@ -96,7 +112,6 @@ fun SettingScreen(
             onLeftButtonClick = {
                 showWithdrawDialog = false
                 onEvent(SettingsEvent.Withdraw)
-                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
             },
             onRightButtonClick = {
                 showWithdrawDialog = false
