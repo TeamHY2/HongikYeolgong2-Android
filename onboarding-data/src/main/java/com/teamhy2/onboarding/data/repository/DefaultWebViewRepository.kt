@@ -1,14 +1,13 @@
-package com.teamhy2.main.data.repository
+package com.teamhy2.onboarding.data.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.teamhy2.main.domain.repository.WebViewRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DefaultWebViewRepository
     @Inject
-    constructor() : WebViewRepository {
+    constructor() : com.teamhy2.onboarding.domain.repository.WebViewRepository {
         private val firestore = FirebaseFirestore.getInstance()
 
         override suspend fun fetchFirebaseUrls(): Map<String, String> {
