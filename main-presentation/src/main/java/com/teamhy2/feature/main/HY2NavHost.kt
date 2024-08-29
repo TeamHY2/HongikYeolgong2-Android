@@ -52,6 +52,7 @@ fun HY2NavHost(
 
             signUpScreen(
                 onSignUpButtonClicked = navController::popUpToMain,
+                alreadySignedUp = navController::popUpToMain,
             )
 
             mainScreen(

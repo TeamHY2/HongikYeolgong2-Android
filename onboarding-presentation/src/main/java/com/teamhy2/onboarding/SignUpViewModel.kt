@@ -2,6 +2,8 @@ package com.teamhy2.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.teamhy2.onboarding.domain.model.NicknameValidation
 import com.teamhy2.onboarding.domain.repository.DepartmentRepository
 import com.teamhy2.onboarding.domain.repository.UserRepository
@@ -36,9 +38,13 @@ class SignUpViewModel
         private val _department: MutableStateFlow<String> = MutableStateFlow("")
         val department: StateFlow<String> = _department.asStateFlow()
 
+        private val _isUserAlreadySignedUp: MutableStateFlow<Boolean> = MutableStateFlow(false)
+        val isUserAlreadySignedUp: StateFlow<Boolean> = _isUserAlreadySignedUp.asStateFlow()
+
         init {
             viewModelScope.launch {
                 getAllDepartments()
+                checkIfUserAlreadySignedUp()
             }
         }
 
@@ -60,6 +66,11 @@ class SignUpViewModel
                         departments = departmentRepository.getAllDepartments(),
                     )
             }
+        }
+
+        private suspend fun checkIfUserAlreadySignedUp() {
+            val uid = Firebase.auth.currentUser?.uid ?: ""
+            _isUserAlreadySignedUp.value = userRepository.checkUserExists(uid)
         }
 
         private fun checkNicknameValidation() {
