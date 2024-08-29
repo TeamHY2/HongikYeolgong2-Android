@@ -14,12 +14,14 @@ fun NavGraphBuilder.settingScreen(
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onLogoutOrWithdrawComplete: () -> Unit,
 ) {
     composable(route = ROUTE) {
         SettingRoute(
             onBackButtonClick = onBackButtonClick,
             onNoticeClick = onNoticeClick,
             onInquiryClick = onInquiryClick,
+            onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
         )
     }
 }
