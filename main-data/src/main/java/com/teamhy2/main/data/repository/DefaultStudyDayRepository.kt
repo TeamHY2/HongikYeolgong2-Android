@@ -27,12 +27,12 @@ class DefaultStudyDayRepository
                 startTimeParsed = startTimeParsed.minusDays(1)
             }
 
-            val duration = ChronoUnit.MINUTES.between(startTimeParsed, now)
+            val duration = ChronoUnit.SECONDS.between(startTimeParsed, now)
 
             val studyDay =
                 StudyDay(
                     date = LocalDate.now(),
-                    minuteDuration = duration,
+                    secondDuration = duration,
                 )
 
             val userDocRef = firestore.collection(USERS_COLLECTION).document(uid)
