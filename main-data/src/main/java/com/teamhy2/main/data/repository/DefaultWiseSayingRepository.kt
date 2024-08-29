@@ -2,8 +2,8 @@ package com.teamhy2.main.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.teamhy2.main.domain.WiseSayingRepository
-import com.teamhy2.main.model.WiseSaying
+import com.teamhy2.main.domain.model.WiseSaying
+import com.teamhy2.main.domain.repository.WiseSayingRepository
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.random.Random
