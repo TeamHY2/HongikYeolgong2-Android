@@ -16,11 +16,12 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.prsentation.HY2Timer
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 
 @Composable
 fun RunningTimerComponent(
-    timerState: TimerUiModel,
+    startTime: String,
+    endTime: String,
+    leftTime: String,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     extendThreshold: String = "00:30:00",
@@ -31,13 +32,13 @@ fun RunningTimerComponent(
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         HY2Timer(
-            leftTime = timerState.leftTime,
-            startTime = timerState.startTime,
-            endTime = timerState.endTime,
+            leftTime = leftTime,
+            startTime = startTime,
+            endTime = endTime,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (timerState.leftTime <= extendThreshold) {
+        if (leftTime <= extendThreshold) {
             HY2Button(
                 text = stringResource(R.string.main_extend_study_room),
                 onClick = onStudyRoomExtendClick,
@@ -57,16 +58,11 @@ fun RunningTimerComponent(
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview_LessThanExtendThreshold() {
-    val dummyTimerState =
-        TimerUiModel(
+    HY2Theme {
+        RunningTimerComponent(
             startTime = "11:30",
             endTime = "12:00",
             leftTime = "00:14:03",
-        )
-
-    HY2Theme {
-        RunningTimerComponent(
-            timerState = dummyTimerState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
@@ -77,16 +73,11 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview_MoreThanExtendThreshold() {
-    val dummyTimerState =
-        TimerUiModel(
+    HY2Theme {
+        RunningTimerComponent(
             startTime = "11:30",
             endTime = "12:00",
             leftTime = "00:45:00",
-        )
-
-    HY2Theme {
-        RunningTimerComponent(
-            timerState = dummyTimerState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
