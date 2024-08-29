@@ -21,7 +21,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 
 @Composable
-fun MainImageButton(
+fun BackgroundImageButton(
     imageResId: Int,
     text: String,
     onClick: () -> Unit,
@@ -52,8 +52,8 @@ fun MainImageButton(
 
 @Preview(showBackground = true)
 @Composable
-fun MainImageButtonPreview() {
-    MainImageButton(
+fun BackgroundImageButtonPreview() {
+    BackgroundImageButton(
         imageResId = R.drawable.img_seating_chart_button_background,
         text = "좌석",
         onClick = { },

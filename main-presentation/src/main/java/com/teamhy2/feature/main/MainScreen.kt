@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
+import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray100
@@ -33,8 +34,6 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
-import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -50,6 +49,8 @@ fun MainRoute(
 
     val timerViewModel: TimerViewModel = hiltViewModel()
     val timerState by timerViewModel.timerState.collectAsState()
+
+    mainViewModel.updateTimerStateFromTimerViewModel(timerState)
 
     if (uiState.isTimePickerVisible) {
         HY2TimePicker(
@@ -71,18 +72,58 @@ fun MainRoute(
         )
     }
 
+    if (uiState.isStudyRoomExtendDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.main_extend_dialog_title),
+            leftButtonText = stringResource(R.string.main_extend_dialog_negative_button),
+            rightButtonText = stringResource(R.string.main_extend_dialog_positive_button),
+            onLeftButtonClick = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+            },
+            onRightButtonClick = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+                startTimer(
+                    LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                    mainViewModel,
+                    timerViewModel,
+                )
+            },
+            onDismiss = {
+                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
+            },
+        )
+    }
+
+    if (uiState.isStudyRoomEndDialog) {
+        HY2Dialog(
+            description = stringResource(R.string.main_end_dialog_title),
+            leftButtonText = stringResource(R.string.main_end_dialog_negative_button),
+            rightButtonText = stringResource(R.string.main_end_dialog_positive_button),
+            onLeftButtonClick = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+            },
+            onRightButtonClick = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+                mainViewModel.updateTimerRunning(false)
+            },
+            onDismiss = {
+                mainViewModel.updateStudyRoomEndDialogVisibility(false)
+            },
+        )
+    }
+
     MainScreen(
         uiState = uiState,
-        timerState = timerState,
         modifier = modifier,
         onSettingClick = onSettingClick,
         onSeatingChartClick = onSeatingChartClick,
         onStudyRoomStartClick = {
             mainViewModel.updateTimePickerVisibility(true)
         },
-        onPreviousMonthClick = { mainViewModel.updateCalendarMonth(isNextMonth = false) },
-        onNextMonthClick = { mainViewModel.updateCalendarMonth(isNextMonth = true) },
+        onPreviousMonthClick = { mainViewModel.updateCalendarMonth(false) },
+        onNextMonthClick = { mainViewModel.updateCalendarMonth(true) },
         onStudyRoomExtendClick = {
+            mainViewModel.updateStudyRoomExtendDialogVisibility(true)
             startTimer(
                 LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
                 mainViewModel,
@@ -90,7 +131,9 @@ fun MainRoute(
                 onSendNotification,
             )
         },
-        onStudyRoomEndClick = { mainViewModel.updateTimerRunning(false) },
+        onStudyRoomEndClick = {
+            mainViewModel.updateStudyRoomEndDialogVisibility(true)
+        },
     )
 }
 
@@ -130,7 +173,6 @@ fun MainScreen(
     onStudyRoomEndClick: () -> Unit,
     modifier: Modifier = Modifier,
     uiState: MainUiState,
-    timerState: TimerUiModel,
 ) {
     Column(
         modifier =
@@ -155,8 +197,6 @@ fun MainScreen(
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
             uiState = uiState,
-            timerState = timerState,
-            modifier = Modifier.padding(bottom = 36.dp),
         )
     }
 }
@@ -198,7 +238,6 @@ private fun MainBody(
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     uiState: MainUiState,
-    timerState: TimerUiModel,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -211,7 +250,9 @@ private fun MainBody(
         when (uiState.isTimerRunning) {
             true -> {
                 RunningTimerComponent(
-                    timerState = timerState,
+                    startTime = uiState.startTime,
+                    endTime = uiState.endTime,
+                    leftTime = uiState.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                     modifier = Modifier.height(308.dp),
@@ -227,12 +268,13 @@ private fun MainBody(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(34.dp))
+        Spacer(modifier = Modifier.weight(1f))
         Hy2Calendar(
             title = uiState.calendar.now,
             days = uiState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
+            modifier = Modifier.padding(bottom = 24.dp),
         )
     }
 }
@@ -241,12 +283,6 @@ private fun MainBody(
 @Composable
 private fun MainScreenPreview() {
     val state = MainUiState()
-    val timerState =
-        TimerUiModel(
-            startTime = "11:30",
-            endTime = "12:00",
-            leftTime = "00:15:30",
-        )
 
     HY2Theme {
         MainScreen(
@@ -258,7 +294,6 @@ private fun MainScreenPreview() {
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             uiState = state,
-            timerState = timerState,
         )
     }
 }

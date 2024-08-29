@@ -34,6 +34,7 @@ dependencies {
     implementation(projects.settingDomain)
 
     implementation(projects.timerPresentation)
+    implementation(projects.timerData)
     implementation(projects.timerDomain)
 
     implementation(projects.core.designsystem)

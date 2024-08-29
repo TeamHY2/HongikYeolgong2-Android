@@ -8,6 +8,12 @@
     <string name="main_end_study_room">열람실 이용 종료</string>
     <string name="main_study_room_use_start_time">열람실 이용 시간</string>
     <string name="main_seating_chart">좌석</string>
+    <string name="main_end_dialog_title">열람실을 다 이용하셨나요?</string>
+    <string name="main_end_dialog_negative_button">더 이용하기</string>
+    <string name="main_end_dialog_positive_button">네</string>
+    <string name="main_extend_dialog_title">열람실 이용 시간을 연장할까요?</string>
+    <string name="main_extend_dialog_negative_button">아니오</string>
+    <string name="main_extend_dialog_positive_button">연장하기</string>
 
     <!-- webViews -->
     <string name="inquiry_title">문의</string>
