@@ -1,5 +1,7 @@
 package com.teamhy2.main.data.repository
 
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.main.domain.StudyDayRepository
 import com.teamhy2.main.model.StudyDay
@@ -27,7 +29,7 @@ class DefaultStudyDayRepository
                 startTimeParsed = startTimeParsed.minusDays(1)
             }
 
-            val duration = ChronoUnit.SECONDS.between(startTimeParsed, now)
+            val duration: Long = ChronoUnit.SECONDS.between(startTimeParsed, now)
 
             val studyDay =
                 StudyDay(
@@ -35,8 +37,10 @@ class DefaultStudyDayRepository
                     secondDuration = duration,
                 )
 
-            val userDocRef = firestore.collection(USERS_COLLECTION).document(uid)
-            val studyDayCollection = userDocRef.collection(STUDYDAY_COLLECTION)
+            val userDocumentReference: DocumentReference =
+                firestore.collection(USERS_COLLECTION).document(uid)
+            val studyDayCollection: CollectionReference =
+                userDocumentReference.collection(STUDYDAY_COLLECTION)
             studyDayCollection.add(studyDay.toMap()).await()
         }
 
