@@ -13,5 +13,5 @@ import javax.inject.Singleton
 abstract class OnboardingModule {
     @Binds
     @Singleton
-    abstract fun bindWebViewRepository(impl: DefaultWebViewRepository): WebViewRepository
+    abstract fun bindWebViewRepository(defaultWebViewRepository: DefaultWebViewRepository): WebViewRepository
 }
