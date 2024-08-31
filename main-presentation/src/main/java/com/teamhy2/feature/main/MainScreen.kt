@@ -31,8 +31,10 @@ import com.teamhy2.feature.main.component.InitTimerComponent
 import com.teamhy2.feature.main.component.RunningTimerComponent
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
+import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
+import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -40,6 +42,7 @@ import java.time.temporal.ChronoUnit
 fun MainRoute(
     onSettingClick: () -> Unit,
     onSeatingChartClick: () -> Unit,
+    onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
@@ -59,7 +62,7 @@ fun MainRoute(
                     updateTimePickerVisibility(false)
                     updateTimerRunning(true)
                 }
-                startTimer(selectedTime, mainViewModel, timerViewModel)
+                startTimer(selectedTime, mainViewModel, timerViewModel, onSendNotification)
             },
             onCancelled = {
                 mainViewModel.updateTimePickerVisibility(false)
@@ -84,6 +87,7 @@ fun MainRoute(
                     LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
                     mainViewModel,
                     timerViewModel,
+                    onSendNotification,
                 )
             },
             onDismiss = {
@@ -122,6 +126,12 @@ fun MainRoute(
         onNextMonthClick = { mainViewModel.updateCalendarMonth(true) },
         onStudyRoomExtendClick = {
             mainViewModel.updateStudyRoomExtendDialogVisibility(true)
+            startTimer(
+                LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                mainViewModel,
+                timerViewModel,
+                onSendNotification,
+            )
         },
         onStudyRoomEndClick = {
             mainViewModel.updateStudyRoomEndDialogVisibility(true)
@@ -133,21 +143,22 @@ private fun startTimer(
     startTime: LocalTime,
     mainViewModel: MainViewModel,
     timerViewModel: TimerViewModel,
+    onSendNotification: (PushText) -> Unit,
 ) {
     timerViewModel.setTimer(
         startTime,
-        events =
-            mapOf(
-                Timer.THIRTY_MINUTES_SECONDS to {
-                    // TODO: 30분 로컬 푸시 알람 요청
-                },
-                Timer.FIVE_MINUTES_SECONDS to {
-                    // TODO: 5분 로컬 푸시 알람 요청
-                },
-                Timer.TIME_OVER_SECONDS to {
-                    mainViewModel.updateTimerRunning(false)
-                },
-            ),
+        Duration.ofMinutes(31),
+        mapOf(
+            Timer.THIRTY_MINUTES_SECONDS to {
+                onSendNotification(PushText.THIRTY_MINUTES)
+            },
+            Timer.TEN_MINUTES_SECONDS to {
+                onSendNotification(PushText.TEN_MINUTES)
+            },
+            Timer.TIME_OVER_SECONDS to {
+                mainViewModel.updateTimerRunning(false)
+            },
+        ),
     )
 }
 
