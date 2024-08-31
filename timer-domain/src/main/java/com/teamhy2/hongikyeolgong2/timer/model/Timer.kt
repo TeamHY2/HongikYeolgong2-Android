@@ -63,10 +63,10 @@ class Timer(
     companion object {
         private const val LEFT_TIME_FORMAT: String = "%02d:%02d:%02d"
         const val THIRTY_MINUTES_SECONDS: Long = 30 * 60L
-        const val FIVE_MINUTES_SECONDS: Long = 5 * 60L
+        const val TEN_MINUTES_SECONDS: Long = 10 * 60L
         const val TIME_OVER_SECONDS: Long = 0L
         private const val DELAY_MILLIS: Long = 1000L
 
-        private val EVENT_TIMES: List<Long> = listOf(THIRTY_MINUTES_SECONDS, FIVE_MINUTES_SECONDS, TIME_OVER_SECONDS)
+        private val EVENT_TIMES: List<Long> = listOf(THIRTY_MINUTES_SECONDS, TEN_MINUTES_SECONDS, TIME_OVER_SECONDS)
     }
 }

@@ -150,11 +150,9 @@ private fun startTimer(
         Duration.ofMinutes(31),
         mapOf(
             Timer.THIRTY_MINUTES_SECONDS to {
-                // TODO: 30분 로컬 푸시 알람 요청
                 onSendNotification(PushText.THIRTY_MINUTES)
             },
-            Timer.FIVE_MINUTES_SECONDS to {
-                // TODO: 5분 로컬 푸시 알람 요청
+            Timer.TEN_MINUTES_SECONDS to {
                 onSendNotification(PushText.TEN_MINUTES)
             },
             Timer.TIME_OVER_SECONDS to {
