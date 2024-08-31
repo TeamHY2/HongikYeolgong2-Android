@@ -26,7 +26,7 @@ class TimerTest : BehaviorSpec({
                     duration,
                     mapOf(
                         Timer.THIRTY_MINUTES_SECONDS to {},
-                        Timer.FIVE_MINUTES_SECONDS to {},
+                        Timer.TEN_MINUTES_SECONDS to {},
                         Timer.TIME_OVER_SECONDS to {},
                     ),
                 )
@@ -52,7 +52,7 @@ class TimerTest : BehaviorSpec({
                     duration,
                     mapOf(
                         Timer.THIRTY_MINUTES_SECONDS to {},
-                        Timer.FIVE_MINUTES_SECONDS to {},
+                        Timer.TEN_MINUTES_SECONDS to {},
                         Timer.TIME_OVER_SECONDS to {},
                     ),
                 )
@@ -77,7 +77,7 @@ class TimerTest : BehaviorSpec({
                     duration,
                     mapOf(
                         Timer.THIRTY_MINUTES_SECONDS to {},
-                        Timer.FIVE_MINUTES_SECONDS to {},
+                        Timer.TEN_MINUTES_SECONDS to {},
                         Timer.TIME_OVER_SECONDS to {},
                     ),
                 )
@@ -105,7 +105,7 @@ class TimerTest : BehaviorSpec({
                     duration,
                     mapOf(
                         Timer.THIRTY_MINUTES_SECONDS to {},
-                        Timer.FIVE_MINUTES_SECONDS to {},
+                        Timer.TEN_MINUTES_SECONDS to {},
                         Timer.TIME_OVER_SECONDS to {},
                     ),
                 )

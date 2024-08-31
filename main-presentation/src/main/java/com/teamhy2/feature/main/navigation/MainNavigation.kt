@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.teamhy2.feature.main.MainRoute
 import com.teamhy2.feature.main.navigation.Main.ROUTE
+import com.teamhy2.hongikyeolgong2.notification.PushText
 
 fun NavController.navigateToMain() {
     navigate(ROUTE)
@@ -19,11 +20,13 @@ fun NavController.popUpToMain() {
 fun NavGraphBuilder.mainScreen(
     onSettingClick: () -> Unit,
     onSeatingChartClick: () -> Unit,
+    onSendNotification: (PushText) -> Unit,
 ) {
     composable(route = ROUTE) {
         MainRoute(
             onSettingClick = onSettingClick,
             onSeatingChartClick = onSeatingChartClick,
+            onSendNotification = onSendNotification,
         )
     }
 }
