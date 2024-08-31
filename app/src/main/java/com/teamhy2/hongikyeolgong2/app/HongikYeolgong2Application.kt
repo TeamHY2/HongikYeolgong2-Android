@@ -11,12 +11,17 @@ class HongikYeolgong2Application : Application() {
         super.onCreate()
         val notificationChannel =
             NotificationChannel(
-                "notification_channel_id",
-                "Notification name",
+                HY2_NOTIFICATION_CHANNEL_ID,
+                HY2_NOTIFICATION_NAME,
                 NotificationManager.IMPORTANCE_HIGH,
             )
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         notificationManager.createNotificationChannel(notificationChannel)
+    }
+
+    companion object {
+        private const val HY2_NOTIFICATION_CHANNEL_ID = "notification_channel_id"
+        private const val HY2_NOTIFICATION_NAME = "Notification name"
     }
 }
