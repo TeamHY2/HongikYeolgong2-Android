@@ -107,6 +107,7 @@ fun MainRoute(
             onRightButtonClick = {
                 mainViewModel.updateStudyRoomEndDialogVisibility(false)
                 mainViewModel.updateTimerRunning(false)
+                mainViewModel.addStudyDay()
             },
             onDismiss = {
                 mainViewModel.updateStudyRoomEndDialogVisibility(false)
