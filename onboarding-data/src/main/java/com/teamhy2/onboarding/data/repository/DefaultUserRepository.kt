@@ -54,12 +54,12 @@ class DefaultUserRepository
         }
 
         override suspend fun withdraw() {
-            val user = FirebaseAuth.getInstance().currentUser
-            val uid = user?.uid ?: ""
+            val user = FirebaseAuth.getInstance().currentUser ?: return
+            val uid = user.uid
 
             firestore.collection(FIREBASE_USER_COLLECTION).document(uid).delete().await()
 
-            user?.delete()?.await()
+            user.delete().await()
         }
 
         companion object {
