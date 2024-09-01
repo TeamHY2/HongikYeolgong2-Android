@@ -54,7 +54,7 @@ fun SignUpRoute(
     val department by signUpViewModel.department.collectAsStateWithLifecycle()
     val isUserAlreadySignedUp by signUpViewModel.isUserAlreadySignedUp.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isUserAlreadySignedUp) {
+    LaunchedEffect(Unit) {
         if (isUserAlreadySignedUp) {
             alreadySignedUp()
         }
