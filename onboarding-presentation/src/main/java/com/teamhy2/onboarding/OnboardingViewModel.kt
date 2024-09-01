@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ class OnboardingViewModel
     constructor(
         private val userRepository: UserRepository,
         private val webViewRepository: WebViewRepository,
+        val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _userExists: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val userExists: StateFlow<Boolean> = _userExists.asStateFlow()
