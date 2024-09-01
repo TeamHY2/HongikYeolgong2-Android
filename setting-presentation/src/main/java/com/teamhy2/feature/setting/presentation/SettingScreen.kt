@@ -35,7 +35,6 @@ import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.feature.setting.presentation.SettingsEvent.NotificationSwitchChanged
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
@@ -63,7 +62,9 @@ fun SettingRoute(
             viewModel.onWithdrawClick(context)
             onLogoutOrWithdrawComplete()
         },
-        onEvent = {},
+        onNotificationSwitchClick = { isChecked ->
+            viewModel.updateNotificationSwitchState(isChecked)
+        },
         onBackButtonClick = onBackButtonClick,
         onNoticeClick = onNoticeClick,
         onInquiryClick = onInquiryClick,
@@ -76,7 +77,7 @@ fun SettingScreen(
     settingUiState: SettingUiState,
     onLogoutClick: () -> Unit,
     onWithdrawClick: () -> Unit,
-    onEvent: (SettingsEvent) -> Unit,
+    onNotificationSwitchClick: (Boolean) -> Unit,
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
@@ -152,8 +153,8 @@ fun SettingScreen(
             SettingButtonWithSwitch(
                 text = stringResource(R.string.setting_notification_reminder),
                 isChecked = settingUiState.isNotificationSwitchChecked,
-                onCheckedChanged = {
-                    onEvent(NotificationSwitchChanged(it))
+                onCheckedChanged = { isChecked ->
+                    onNotificationSwitchClick(isChecked)
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -214,7 +215,7 @@ private fun SettingScreenPreview() {
             settingUiState = state,
             onLogoutClick = {},
             onWithdrawClick = {},
-            onEvent = {},
+            onNotificationSwitchClick = {},
             onBackButtonClick = {},
             onNoticeClick = {},
             onInquiryClick = {},

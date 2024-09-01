@@ -15,10 +15,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-sealed interface SettingsEvent {
-    data class NotificationSwitchChanged(val isChecked: Boolean) : SettingsEvent
-}
-
 @HiltViewModel
 class SettingsViewModel
     @Inject
@@ -42,14 +38,6 @@ class SettingsViewModel
             }
         }
 
-        fun onEvent(event: SettingsEvent) {
-            when (event) {
-                is SettingsEvent.NotificationSwitchChanged -> {
-                    updateNotificationSwitchState(event.isChecked)
-                }
-            }
-        }
-
         fun onLogoutClick(context: Context) {
             AuthUI.getInstance().signOut(context)
         }
@@ -61,7 +49,7 @@ class SettingsViewModel
             AuthUI.getInstance().signOut(context)
         }
 
-        private fun updateNotificationSwitchState(isChecked: Boolean) {
+        fun updateNotificationSwitchState(isChecked: Boolean) {
             viewModelScope.launch {
                 repository.saveNotificationSwitchState(isChecked)
                 _settingUiState.value =
