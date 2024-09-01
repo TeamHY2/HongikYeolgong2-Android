@@ -47,7 +47,7 @@ fun SettingRoute(
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingViewModel = hiltViewModel(),
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
