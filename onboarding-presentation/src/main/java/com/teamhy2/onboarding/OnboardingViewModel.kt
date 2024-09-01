@@ -41,10 +41,7 @@ class OnboardingViewModel
         }
 
         fun checkUserExists(uid: String?) {
-            if (uid == null) {
-                _userExists.value = false
-                return
-            }
+            if (uid == null) return
 
             viewModelScope.launch {
                 _userExists.value = userRepository.checkUserExists(uid)
