@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 ) { innerPadding ->
                     val postNotificationPermission =
                         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                    val notificationHandler = mainViewModel.notificationHandler
+                    val notificationHandler = onboardingViewModel.notificationHandler
 
                     LaunchedEffect(key1 = true) {
                         if (!postNotificationPermission.status.isGranted) {
