@@ -94,7 +94,7 @@ fun HY2TimePicker(
         ) {
             val hours: List<String> =
                 remember {
-                    (1..12).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
+                    (1..localtime.hour).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
                 }
             val hourState: PickerState = rememberPickerState()
             val minutes: List<String> =
@@ -104,7 +104,7 @@ fun HY2TimePicker(
             val minuteState: PickerState = rememberPickerState()
             val meridiem: List<String> =
                 remember {
-                    listOf("AM", "PM")
+                    if (localtime.hour < 12) listOf("AM") else listOf("AM", "PM")
                 }
             val meridiemState: PickerState = rememberPickerState()
 
@@ -153,7 +153,7 @@ fun HY2TimePicker(
                 Picker(
                     state = meridiemState,
                     items = meridiem,
-                    visibleItemsCount = 3,
+                    visibleItemsCount = 1,
                     startIndex = if (localtime.hour <= 12) 0 else 1,
                     modifier = Modifier.weight(0.33f),
                     textModifier = Modifier.padding(8.dp),
