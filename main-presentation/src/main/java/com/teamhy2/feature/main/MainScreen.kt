@@ -158,6 +158,7 @@ private fun startTimer(
             },
             Timer.TIME_OVER_SECONDS to {
                 mainViewModel.updateTimerRunning(false)
+                mainViewModel.addStudyDay()
             },
         ),
     )

@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,14 +45,26 @@ fun SettingRoute(
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingViewModel = hiltViewModel(),
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     SettingScreen(
         settingUiState = settingUiState,
-        onEvent = viewModel::onEvent,
+        onLogoutClick = {
+            viewModel.onLogoutClick(context)
+            onLogoutOrWithdrawComplete()
+        },
+        onWithdrawClick = {
+            viewModel.onWithdrawClick(context)
+            onLogoutOrWithdrawComplete()
+        },
+        onNotificationSwitchClick = { isChecked ->
+            viewModel.updateNotificationSwitchState(isChecked)
+        },
         onBackButtonClick = onBackButtonClick,
         onNoticeClick = onNoticeClick,
         onInquiryClick = onInquiryClick,
@@ -62,7 +75,9 @@ fun SettingRoute(
 @Composable
 fun SettingScreen(
     settingUiState: SettingUiState,
-    onEvent: (SettingsEvent) -> Unit,
+    onLogoutClick: () -> Unit,
+    onWithdrawClick: () -> Unit,
+    onNotificationSwitchClick: (Boolean) -> Unit,
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
@@ -78,8 +93,7 @@ fun SettingScreen(
             rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
             onLeftButtonClick = {
                 showLogoutDialog = false
-                onEvent(SettingsEvent.Logout)
-                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
+                onLogoutClick()
             },
             onRightButtonClick = {
                 showLogoutDialog = false
@@ -95,8 +109,7 @@ fun SettingScreen(
             rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
             onLeftButtonClick = {
                 showWithdrawDialog = false
-                onEvent(SettingsEvent.Withdraw)
-                // TODO 스택을 모두 제거하고 로그인 화면으로 이동
+                onWithdrawClick()
             },
             onRightButtonClick = {
                 showWithdrawDialog = false
@@ -140,8 +153,8 @@ fun SettingScreen(
             SettingButtonWithSwitch(
                 text = stringResource(R.string.setting_notification_reminder),
                 isChecked = settingUiState.isNotificationSwitchChecked,
-                onCheckedChanged = {
-                    onEvent(SettingsEvent.NotificationSwitchChanged(it))
+                onCheckedChanged = { isChecked ->
+                    onNotificationSwitchClick(isChecked)
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -200,7 +213,9 @@ private fun SettingScreenPreview() {
     HY2Theme {
         SettingScreen(
             settingUiState = state,
-            onEvent = {},
+            onLogoutClick = {},
+            onWithdrawClick = {},
+            onNotificationSwitchClick = {},
             onBackButtonClick = {},
             onNoticeClick = {},
             onInquiryClick = {},

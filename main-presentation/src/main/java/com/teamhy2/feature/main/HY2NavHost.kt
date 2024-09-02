@@ -22,6 +22,7 @@ import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.navigateToSignUp
 import com.teamhy2.onboarding.navigation.onboardingScreen
+import com.teamhy2.onboarding.navigation.popUpToOnboarding
 import com.teamhy2.onboarding.navigation.signUpScreen
 
 @Composable
@@ -51,6 +52,7 @@ fun HY2NavHost(
 
             signUpScreen(
                 onSignUpButtonClicked = navController::popUpToMain,
+                alreadySignedUp = navController::popUpToMain,
             )
 
             mainScreen(
@@ -78,6 +80,7 @@ fun HY2NavHost(
                 onBackButtonClick = navController::popBackStack,
                 onNoticeClick = navController::navigateToNotice,
                 onInquiryClick = navController::navigateToInquiry,
+                onLogoutOrWithdrawComplete = navController::popUpToOnboarding,
             )
         }
     }

@@ -1,7 +1,7 @@
 package com.teamhy2.feature.main.model
 
 import com.hongikyeolgong2.calendar.model.Calendar
-import com.teamhy2.main.model.WiseSaying
+import com.teamhy2.main.domain.model.WiseSaying
 import java.time.LocalTime
 
 data class MainUiState(

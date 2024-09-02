@@ -1,4 +1,4 @@
-package com.teamhy2.main.domain
+package com.teamhy2.main.domain.repository
 
 interface StudyDayRepository {
     suspend fun addStudyDay(
