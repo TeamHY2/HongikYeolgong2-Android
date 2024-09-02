@@ -3,9 +3,9 @@ package com.teamhy2.main.data.repository
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.teamhy2.main.domain.StudyDayRepository
-import com.teamhy2.main.model.StudyDay
-import com.teamhy2.main.model.toMap
+import com.teamhy2.main.domain.model.StudyDay
+import com.teamhy2.main.domain.model.toMap
+import com.teamhy2.main.domain.repository.StudyDayRepository
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.LocalDateTime

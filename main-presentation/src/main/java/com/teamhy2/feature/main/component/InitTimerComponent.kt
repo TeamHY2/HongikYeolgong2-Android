@@ -16,7 +16,7 @@ import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
-import com.teamhy2.main.model.WiseSaying
+import com.teamhy2.main.domain.model.WiseSaying
 
 private const val BUTTON_HEIGHT = 52
 private const val TOP_MARGIN = 40

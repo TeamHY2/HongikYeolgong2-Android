@@ -2,6 +2,7 @@ package com.teamhy2.onboarding.data.repository
 
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,6 +51,15 @@ class DefaultUserRepository
             firestore.collection(FIREBASE_USER_COLLECTION)
                 .document(Firebase.auth.currentUser?.uid!!)
                 .set(user)
+        }
+
+        override suspend fun withdraw() {
+            val user = FirebaseAuth.getInstance().currentUser ?: return
+            val uid = user.uid
+
+            firestore.collection(FIREBASE_USER_COLLECTION).document(uid).delete().await()
+
+            user.delete().await()
         }
 
         companion object {
