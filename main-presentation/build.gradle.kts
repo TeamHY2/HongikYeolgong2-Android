@@ -1,6 +1,5 @@
 plugins {
     id("hongikyeolgong2.android.feature")
-    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
