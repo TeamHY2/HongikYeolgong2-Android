@@ -16,6 +16,10 @@ class Calendar(
     val now: String
         get() = dateTimeFormatter.format(date)
 
+    fun getDate(): LocalDate {
+        return date
+    }
+
     fun getMonth(): List<StudyDay> {
         val studyDaysWithMonth = getStudyDaysByMonth()
         val existingDays = studyDaysWithMonth.associateBy { it.date.dayOfMonth }
@@ -42,6 +46,17 @@ class Calendar(
 
     fun moveToNextMonth() {
         date = date.plusMonths(1)
+    }
+
+    fun copy(
+        initDate: LocalDate = this.date,
+        studyDays: List<StudyDay> = this.studyDays,
+    ): Calendar {
+        return Calendar(
+            initDate = initDate,
+            dateTimeFormatter = this.dateTimeFormatter,
+            studyDays = studyDays,
+        )
     }
 
     companion object {
