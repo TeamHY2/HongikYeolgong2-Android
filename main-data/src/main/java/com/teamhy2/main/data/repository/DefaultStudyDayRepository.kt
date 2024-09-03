@@ -10,6 +10,7 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
@@ -23,7 +24,7 @@ class DefaultStudyDayRepository
             startTime: String,
         ) {
             val now = LocalDateTime.now()
-            var startTimeParsed = LocalDateTime.of(now.toLocalDate(), LocalTime.parse(startTime))
+            var startTimeParsed = LocalDateTime.of(now.toLocalDate(), LocalTime.parse(startTime, dateTimeFormatter))
 
             if (startTimeParsed.isAfter(now)) {
                 startTimeParsed = startTimeParsed.minusDays(1)
@@ -47,5 +48,6 @@ class DefaultStudyDayRepository
         companion object {
             private const val USERS_COLLECTION = "User"
             private const val STUDYDAY_COLLECTION = "StudyDay"
+            private val dateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
         }
     }

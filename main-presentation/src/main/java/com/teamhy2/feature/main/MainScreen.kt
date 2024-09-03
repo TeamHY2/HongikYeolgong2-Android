@@ -254,6 +254,8 @@ private fun MainBody(
                 RunningTimerComponent(
                     startTime = uiState.startTime,
                     endTime = uiState.endTime,
+                    startTimeMeridiem = uiState.startTimeMeridiem,
+                    endTimeMeridiem = uiState.endTimeMeridiem,
                     leftTime = uiState.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
