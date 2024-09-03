@@ -80,7 +80,7 @@ class DefaultStudyDayRepository
             }.await()
         }
 
-        override suspend fun getStudyDaysByMonth(uid: String): Map<String, List<StudyDayResponse>> {
+        override suspend fun getStudyDays(uid: String): Map<String, List<StudyDayResponse>> {
             val userDocumentReference = firestore.collection(USERS_COLLECTION).document(uid)
             val studyDayCollectionReference = userDocumentReference.collection(STUDYDAY_COLLECTION)
 

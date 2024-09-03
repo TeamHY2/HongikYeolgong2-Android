@@ -8,5 +8,5 @@ interface StudyDayRepository {
         startTime: String,
     )
 
-    suspend fun getStudyDaysByMonth(uid: String): Map<String, List<StudyDayResponse>>
+    suspend fun getStudyDays(uid: String): Map<String, List<StudyDayResponse>>
 }
