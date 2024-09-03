@@ -29,7 +29,7 @@ class MainViewModel
         private val _mainUiState = MutableStateFlow(MainUiState())
         val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
 
-        private val _studyDaysByMonth = mutableMapOf<String, List<StudyDay>>()
+        private val studyDays = mutableMapOf<String, List<StudyDay>>()
 
         init {
             getWiseSaying()
@@ -48,9 +48,9 @@ class MainViewModel
         private fun getCalendarData() {
             val uid = Firebase.auth.currentUser?.uid ?: return
             viewModelScope.launch {
-                val rawStudyDaysByMonth = studyDayRepository.getStudyDaysByMonth(uid)
-                _studyDaysByMonth.clear()
-                _studyDaysByMonth.putAll(
+                val rawStudyDaysByMonth = studyDayRepository.getStudyDays(uid)
+                studyDays.clear()
+                studyDays.putAll(
                     rawStudyDaysByMonth.mapValues { entry ->
                         entry.value.map { studyDayResponse ->
                             StudyDayMapper.mapToStudyDay(studyDayResponse)
@@ -66,7 +66,7 @@ class MainViewModel
             month: Int,
         ) {
             val yearMonthKey = "$year-${String.format("%02d", month)}"
-            val studyDays = _studyDaysByMonth[yearMonthKey] ?: emptyList()
+            val studyDays = studyDays[yearMonthKey] ?: emptyList()
             val updatedCalendar = _mainUiState.value.calendar.copy(studyDays = studyDays)
             _mainUiState.value = _mainUiState.value.copy(calendar = updatedCalendar)
         }
