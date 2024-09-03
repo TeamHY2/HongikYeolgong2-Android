@@ -11,14 +11,11 @@ class Calendar(
         DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT_PATTERN).withLocale(Locale.ENGLISH),
     private val studyDays: List<StudyDay> = emptyList(),
 ) {
-    private var date: LocalDate = initDate
+    var date: LocalDate = initDate
+        private set
 
     val now: String
         get() = dateTimeFormatter.format(date)
-
-    fun getDate(): LocalDate {
-        return date
-    }
 
     fun getMonth(): List<StudyDay> {
         val studyDaysWithMonth = getStudyDaysByMonth()

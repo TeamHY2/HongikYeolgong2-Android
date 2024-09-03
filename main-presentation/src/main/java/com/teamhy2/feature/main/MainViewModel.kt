@@ -80,8 +80,8 @@ class MainViewModel
                         moveToPreviousMonth()
                     }
                 }
-            val year = updatedCalendar.getDate().year
-            val month = updatedCalendar.getDate().monthValue
+            val year = updatedCalendar.date.year
+            val month = updatedCalendar.date.monthValue
             updateCurrentMonthStudyDays(year, month)
         }
 
