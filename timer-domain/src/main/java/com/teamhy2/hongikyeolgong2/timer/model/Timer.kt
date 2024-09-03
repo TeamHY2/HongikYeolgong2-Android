@@ -32,10 +32,32 @@ class Timer(
             )
 
     val formattedStartTime: String
-        get() = startTime.toString()
+        get() =
+            if (startTime.hour >= 12) {
+                startTime.toString().replace(
+                    startTime.hour.toString(),
+                    (startTime.hour - 12).toString(),
+                )
+            } else {
+                startTime.toString()
+            }
 
     val formattedEndTime: String
-        get() = endTime.toString()
+        get() =
+            if (endTime.hour >= 12) {
+                endTime.toString().replace(
+                    endTime.hour.toString(),
+                    (endTime.hour - 12).toString(),
+                )
+            } else {
+                endTime.toString()
+            }
+
+    val formattedStartTimeMeridiem: String
+        get() = if (startTime.hour >= 12) "PM" else "AM"
+
+    val formattedEndTimeMeridiem: String
+        get() = if (endTime.hour >= 12) "PM" else "AM"
 
     private val leftSeconds: Long
         get() = leftTime.seconds

@@ -13,6 +13,8 @@ data class MainUiState(
     val selectedTime: LocalTime = LocalTime.now(),
     val calendar: Calendar = Calendar(studyDays = emptyList()),
     val startTime: String = "",
+    val startTimeMeridiem: String = "",
     val endTime: String = "",
+    val endTimeMeridiem: String = "",
     val leftTime: String = "",
 )
