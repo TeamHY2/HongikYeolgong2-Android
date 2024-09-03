@@ -46,6 +46,7 @@ class DefaultUserRepository
                     DEPARTMENT_KEY to department,
                     EMAIL_KEY to Firebase.auth.currentUser?.email,
                     ID_KEY to Firebase.auth.currentUser?.uid,
+                    TOTAL_STUDY_TIME_KEY to 0,
                 )
 
             firestore.collection(FIREBASE_USER_COLLECTION)
@@ -68,5 +69,6 @@ class DefaultUserRepository
             private const val DEPARTMENT_KEY = "department"
             private const val EMAIL_KEY = "email"
             private const val ID_KEY = "id"
+            private const val TOTAL_STUDY_TIME_KEY = "totalStudyTime"
         }
     }
