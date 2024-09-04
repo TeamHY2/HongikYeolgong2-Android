@@ -1,10 +1,13 @@
 package com.teamhy2.feature.main.component
 
+import StarsComponent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +25,7 @@ fun RunningTimerComponent(
     startTime: String,
     endTime: String,
     leftTime: String,
+    starCount: Int,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     extendThreshold: String = "00:30:00",
@@ -31,11 +35,17 @@ fun RunningTimerComponent(
         modifier = modifier,
     ) {
         Spacer(modifier = Modifier.height(20.dp))
-        HY2Timer(
-            leftTime = leftTime,
-            startTime = startTime,
-            endTime = endTime,
-        )
+        Box {
+            HY2Timer(
+                leftTime = leftTime,
+                startTime = startTime,
+                endTime = endTime,
+            )
+            StarsComponent(
+                starCount = starCount,
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         if (leftTime <= extendThreshold) {
@@ -63,6 +73,7 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
             startTime = "11:30",
             endTime = "12:00",
             leftTime = "00:14:03",
+            starCount = 0,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
@@ -78,6 +89,7 @@ fun TimerScreenPreview_MoreThanExtendThreshold() {
             startTime = "11:30",
             endTime = "12:00",
             leftTime = "00:45:00",
+            starCount = 0,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
