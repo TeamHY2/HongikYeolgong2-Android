@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.SignInButton
-import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.onboarding.presentation.R
@@ -64,7 +63,6 @@ fun OnboardingScreen(
     Column(
         modifier =
             modifier
-                .background(Black)
                 .fillMaxSize(),
     ) {
         HorizontalPager(

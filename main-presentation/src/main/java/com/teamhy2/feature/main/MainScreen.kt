@@ -1,7 +1,6 @@
 package com.teamhy2.feature.main
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +23,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
-import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.component.InitTimerComponent
@@ -181,7 +179,6 @@ fun MainScreen(
         modifier =
             modifier
                 .fillMaxSize()
-                .background(Black)
                 .padding(horizontal = 24.dp),
     ) {
         MainHeader(
@@ -246,8 +243,7 @@ private fun MainBody(
     Column(
         modifier =
             modifier
-                .fillMaxSize()
-                .background(Black),
+                .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         when (uiState.isTimerRunning) {
