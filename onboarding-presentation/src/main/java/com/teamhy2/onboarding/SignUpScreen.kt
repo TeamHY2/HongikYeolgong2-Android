@@ -1,6 +1,5 @@
 package com.teamhy2.onboarding
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
 import com.teamhy2.designsystem.common.HY2TextField
-import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
 import com.teamhy2.designsystem.ui.theme.Gray100
@@ -95,7 +93,6 @@ fun SignUpScreen(
     Column(
         modifier =
             modifier
-                .background(Black)
                 .padding(horizontal = 32.dp),
     ) {
         Box(
