@@ -164,6 +164,8 @@ class MainViewModel
                     startTime = timerState.startTime,
                     endTime = timerState.endTime,
                     leftTime = timerState.leftTime,
+                    startTimeMeridiem = timerState.startTimeMeridiem,
+                    endTimeMeridiem = timerState.endTimeMeridiem,
                 )
         }
 
