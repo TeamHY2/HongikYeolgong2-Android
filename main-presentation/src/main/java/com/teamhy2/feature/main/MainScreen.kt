@@ -61,6 +61,7 @@ fun MainRoute(
                     updateSelectedTime(selectedTime)
                     updateTimePickerVisibility(false)
                     updateTimerRunning(true)
+                    updateTodayStudyCount()
                 }
                 startTimer(selectedTime, mainViewModel, timerViewModel, onSendNotification)
             },
@@ -257,6 +258,7 @@ private fun MainBody(
                     startTimeMeridiem = uiState.startTimeMeridiem,
                     endTimeMeridiem = uiState.endTimeMeridiem,
                     leftTime = uiState.leftTime,
+                    starCount = uiState.starCount,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                     modifier = Modifier.height(308.dp),
