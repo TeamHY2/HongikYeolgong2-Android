@@ -1,6 +1,7 @@
 package com.teamhy2.designsystem.ui.theme
 
 import android.app.Activity
+import android.graphics.Color
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -11,7 +12,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -71,8 +71,7 @@ fun HY2Theme(
         SideEffect {
             val window = (view.context as Activity).window
             val insetsController = WindowCompat.getInsetsController(window, view)
-            val statusBarColor = colorScheme.background.toArgb()
-            window.statusBarColor = statusBarColor
+            window.statusBarColor = Color.TRANSPARENT
 
             // 항상 다크테마이기 때문에 상태바 아이콘들을 밝은 톤으로 표시
             insetsController.isAppearanceLightStatusBars = false

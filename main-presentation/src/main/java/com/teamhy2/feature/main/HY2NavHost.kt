@@ -1,13 +1,11 @@
 package com.teamhy2.feature.main
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.feature.main.navigation.mainScreen
 import com.teamhy2.feature.main.navigation.popUpToMain
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
@@ -37,8 +35,7 @@ fun HY2NavHost(
     Box(
         modifier =
             modifier
-                .fillMaxSize()
-                .background(Black),
+                .fillMaxSize(),
     ) {
         NavHost(
             modifier = modifier,
