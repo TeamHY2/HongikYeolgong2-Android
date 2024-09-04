@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -29,6 +32,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.navigation.Main
+import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.onboarding.OnboardingViewModel
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.SignUp
@@ -78,7 +82,9 @@ class MainActivity : AppCompatActivity() {
         setContent {
             HY2Theme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                 ) { innerPadding ->
                     val postNotificationPermission =
                         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
@@ -90,7 +96,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
-                    Column(Modifier.padding(innerPadding)) {
+                    Column(
+                        Modifier.paint(
+                            painterResource(id = R.drawable.backgroud),
+                            contentScale = ContentScale.FillBounds,
+                        ).padding(innerPadding),
+                    ) {
                         HY2NavHost(
                             navController = rememberNavController(),
                             urls = onboardingViewModel.urls,

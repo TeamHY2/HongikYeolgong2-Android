@@ -1,7 +1,6 @@
 package com.teamhy2.feature.setting.presentation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2Dialog
-import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
@@ -121,8 +119,7 @@ fun SettingScreen(
     Column(
         modifier =
             modifier
-                .fillMaxSize()
-                .background(Black),
+                .fillMaxSize(),
     ) {
         IconButton(
             onClick = { onBackButtonClick() },
