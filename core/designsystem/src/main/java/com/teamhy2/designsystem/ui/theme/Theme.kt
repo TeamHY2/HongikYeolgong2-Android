@@ -72,7 +72,6 @@ fun HY2Theme(
         SideEffect {
             val window = (view.context as Activity).window
             val insetsController = WindowCompat.getInsetsController(window, view)
-            val statusBarColor = colorScheme.background.toArgb()
             window.statusBarColor = Color.TRANSPARENT
 
             // 항상 다크테마이기 때문에 상태바 아이콘들을 밝은 톤으로 표시
