@@ -17,4 +17,5 @@ data class MainUiState(
     val endTime: String = "",
     val endTimeMeridiem: String = "",
     val leftTime: String = "",
+    val starCount: Int = 0,
 )

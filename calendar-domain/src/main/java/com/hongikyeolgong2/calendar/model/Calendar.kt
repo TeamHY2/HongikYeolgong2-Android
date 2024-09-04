@@ -11,7 +11,8 @@ class Calendar(
         DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT_PATTERN).withLocale(Locale.ENGLISH),
     private val studyDays: List<StudyDay> = emptyList(),
 ) {
-    private var date: LocalDate = initDate
+    var date: LocalDate = initDate
+        private set
 
     val now: String
         get() = dateTimeFormatter.format(date)
@@ -42,6 +43,17 @@ class Calendar(
 
     fun moveToNextMonth() {
         date = date.plusMonths(1)
+    }
+
+    fun copy(
+        initDate: LocalDate = this.date,
+        studyDays: List<StudyDay> = this.studyDays,
+    ): Calendar {
+        return Calendar(
+            initDate = initDate,
+            dateTimeFormatter = this.dateTimeFormatter,
+            studyDays = studyDays,
+        )
     }
 
     companion object {
