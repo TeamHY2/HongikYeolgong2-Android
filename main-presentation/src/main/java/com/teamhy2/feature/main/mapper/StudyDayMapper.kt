@@ -12,10 +12,11 @@ object StudyDayMapper {
 
     private fun mapToStudyRoomUsage(studyStartTimesCount: Int): StudyRoomUsage {
         return when (studyStartTimesCount) {
+            0 -> StudyRoomUsage.NEVER_USED
             1 -> StudyRoomUsage.USED_ONCE
             2 -> StudyRoomUsage.USED_ONCE_EXTENDED_ONCE
             3 -> StudyRoomUsage.USED_ONCE_EXTENDED_TWICE
-            else -> StudyRoomUsage.NEVER_USED
+            else -> StudyRoomUsage.USED_ONCE_EXTENDED_TWICE
         }
     }
 
