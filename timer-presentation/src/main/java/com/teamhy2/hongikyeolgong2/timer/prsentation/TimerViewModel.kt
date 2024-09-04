@@ -48,7 +48,9 @@ class TimerViewModel
             _timerState.value =
                 TimerUiModel(
                     startTime = timer.formattedStartTime,
+                    startTimeMeridiem = timer.formattedStartTimeMeridiem,
                     endTime = timer.formattedEndTime,
+                    endTimeMeridiem = timer.formattedEndTimeMeridiem,
                     leftTime = timer.formattedLeftTime,
                     isRunning = true,
                 )

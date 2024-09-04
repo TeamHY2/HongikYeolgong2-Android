@@ -24,6 +24,8 @@ import com.teamhy2.hongikyeolgong2.timer.prsentation.HY2Timer
 fun RunningTimerComponent(
     startTime: String,
     endTime: String,
+    startTimeMeridiem: String,
+    endTimeMeridiem: String,
     leftTime: String,
     starCount: Int,
     onStudyRoomExtendClick: () -> Unit,
@@ -40,6 +42,8 @@ fun RunningTimerComponent(
                 leftTime = leftTime,
                 startTime = startTime,
                 endTime = endTime,
+                startTimeMeridiem = startTimeMeridiem,
+                endTimeMeridiem = endTimeMeridiem,
             )
             StarsComponent(
                 starCount = starCount,
@@ -72,6 +76,8 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
         RunningTimerComponent(
             startTime = "11:30",
             endTime = "12:00",
+            startTimeMeridiem = "AM",
+            endTimeMeridiem = "PM",
             leftTime = "00:14:03",
             starCount = 0,
             onStudyRoomExtendClick = { },
@@ -88,6 +94,8 @@ fun TimerScreenPreview_MoreThanExtendThreshold() {
         RunningTimerComponent(
             startTime = "11:30",
             endTime = "12:00",
+            startTimeMeridiem = "AM",
+            endTimeMeridiem = "PM",
             leftTime = "00:45:00",
             starCount = 0,
             onStudyRoomExtendClick = { },

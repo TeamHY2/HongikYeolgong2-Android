@@ -23,7 +23,7 @@ class DefaultStudyDayRepository
             startTime: String,
         ) {
             val now = LocalDateTime.now()
-            var startTimeParsed = LocalDateTime.of(now.toLocalDate(), LocalTime.parse(startTime))
+            var startTimeParsed = LocalDateTime.of(now.toLocalDate(), LocalTime.parse(startTime, dateTimeFormatter))
 
             if (startTimeParsed.isAfter(now)) {
                 startTimeParsed = startTimeParsed.minusDays(1)
@@ -119,5 +119,6 @@ class DefaultStudyDayRepository
             private const val STUDY_SECOND_DURATION_FIELD = "studySecondDuration"
             private const val TOTAL_MONTH_STUDY_TIME_FIELD = "totalMonthStudyTime"
             private const val TOTAL_STUDY_TIME_FIELD = "totalStudyTime"
+            private val dateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
         }
     }

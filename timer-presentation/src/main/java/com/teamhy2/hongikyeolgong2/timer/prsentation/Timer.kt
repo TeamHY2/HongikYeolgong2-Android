@@ -31,12 +31,19 @@ fun HY2Timer(
     leftTime: String,
     startTime: String,
     endTime: String,
+    startTimeMeridiem: String,
+    endTimeMeridiem: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        StartEndSection(startTime = startTime, endTime = endTime)
+        StartEndSection(
+            startTime = startTime,
+            endTime = endTime,
+            startTimeMeridiem = startTimeMeridiem,
+            endTimeMeridiem = endTimeMeridiem,
+        )
         Spacer(modifier = Modifier.height(32.dp))
         TimeLeftSection(leftTime = leftTime)
     }
@@ -46,6 +53,8 @@ fun HY2Timer(
 fun StartEndSection(
     startTime: String,
     endTime: String,
+    startTimeMeridiem: String,
+    endTimeMeridiem: String,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -85,7 +94,7 @@ fun StartEndSection(
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = stringResource(id = R.string.timer_am),
+                text = stringResource(id = if (startTimeMeridiem == "AM") R.string.timer_am else R.string.timer_pm),
                 style = HY2Theme.typography.body03,
                 color = Gray100,
                 modifier =
@@ -101,7 +110,7 @@ fun StartEndSection(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = stringResource(id = R.string.timer_pm),
+                text = stringResource(id = if (endTimeMeridiem == "AM") R.string.timer_am else R.string.timer_pm),
                 style = HY2Theme.typography.body03,
                 color = Gray100,
                 modifier =
@@ -160,6 +169,8 @@ private fun HY2TimerPreview() {
             leftTime = leftTime,
             startTime = startTime,
             endTime = endTime,
+            startTimeMeridiem = "AM",
+            endTimeMeridiem = "PM",
             modifier = Modifier.background(Black),
         )
     }
@@ -175,6 +186,8 @@ private fun StartEndSectionPreview() {
         StartEndSection(
             startTime = startTime,
             endTime = endTime,
+            startTimeMeridiem = "AM",
+            endTimeMeridiem = "PM",
             modifier =
                 Modifier
                     .background(Black)
