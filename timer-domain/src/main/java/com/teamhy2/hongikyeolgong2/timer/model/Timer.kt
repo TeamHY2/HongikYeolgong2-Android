@@ -14,7 +14,7 @@ class Timer(
 ) {
     var endTime: LocalTime = startTime.plusSeconds(duration.seconds)
         private set
-    var leftTime: Duration = duration
+    var leftTime: Duration = calculateLeftTime()
         private set
 
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
@@ -66,6 +66,16 @@ class Timer(
     private fun tick() {
         if (leftTime > Duration.ZERO) {
             leftTime = leftTime.minusSeconds(1)
+        }
+    }
+
+    private fun calculateLeftTime(): Duration {
+        val now = LocalTime.now()
+        val elapsed = Duration.between(startTime, now)
+        return if (elapsed.isNegative || elapsed > duration) {
+            duration
+        } else {
+            duration.minus(elapsed)
         }
     }
 
