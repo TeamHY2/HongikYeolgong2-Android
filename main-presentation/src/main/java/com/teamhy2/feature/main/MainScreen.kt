@@ -279,9 +279,11 @@ private fun MainBody(
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
                     uiState = uiState,
+                    modifier = Modifier.weight(20f),
                 )
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
         Hy2Calendar(
             title = uiState.calendar.now,
             days = uiState.calendar.getMonth(),
