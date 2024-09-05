@@ -119,6 +119,6 @@ class DefaultStudyDayRepository
             private const val STUDY_SECOND_DURATION_FIELD = "studySecondDuration"
             private const val TOTAL_MONTH_STUDY_TIME_FIELD = "totalMonthStudyTime"
             private const val TOTAL_STUDY_TIME_FIELD = "totalStudyTime"
-            private val dateTimeFormatter = DateTimeFormatter.ofPattern("H:mm")
+            private val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         }
     }

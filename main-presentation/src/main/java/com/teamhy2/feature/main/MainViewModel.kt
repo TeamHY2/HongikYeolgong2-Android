@@ -171,10 +171,21 @@ class MainViewModel
 
         fun addStudyDay() {
             val uid = Firebase.auth.currentUser?.uid ?: return
-            val startTime = _mainUiState.value.startTime
+            var startTime = _mainUiState.value.startTime
+            val startTimeMeridiem = _mainUiState.value.startTimeMeridiem
+
+            val timeParts = startTime.split(":").map { it.toInt() }
+            var hour = timeParts[0]
+            val minute = timeParts[1]
+
+            if (startTimeMeridiem == "PM") {
+                hour += 12
+            }
+            val adjustedStartTime = LocalTime.of(hour, minute)
+
             if (uid.isNotEmpty() && startTime.isNotEmpty()) {
                 viewModelScope.launch {
-                    studyDayRepository.addStudyDay(uid, startTime)
+                    studyDayRepository.addStudyDay(uid, adjustedStartTime.toString())
                 }
             }
         }
