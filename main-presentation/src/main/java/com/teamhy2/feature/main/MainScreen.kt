@@ -275,14 +275,11 @@ private fun MainBody(
             }
 
             false -> {
-                Spacer(modifier = Modifier.weight(1f))
                 InitTimerComponent(
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
                     uiState = uiState,
-                    modifier = Modifier.height(308.dp),
                 )
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
         Hy2Calendar(

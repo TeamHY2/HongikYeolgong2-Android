@@ -32,7 +32,7 @@ fun InitTimerComponent(
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        Spacer(modifier = Modifier.height(TOP_MARGIN.dp))
+        Spacer(modifier = Modifier.weight(1f))
         WiseSayingComponent(
             quote = uiState.wiseSaying.quote,
             author = uiState.wiseSaying.author,
