@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.main.domain.model.WiseSaying
@@ -47,6 +48,7 @@ fun InitTimerComponent(
             BackgroundImageButton(
                 imageResId = R.drawable.img_seating_chart_button_background,
                 text = stringResource(R.string.main_seating_chart),
+                textColor = White.copy(alpha = 0.8f),
                 onClick = onSeatingChartClick,
                 modifier = Modifier.weight(70f),
             )
