@@ -36,7 +36,7 @@ fun InitTimerComponent(
             author = uiState.wiseSaying.author,
             modifier = Modifier.fillMaxWidth(),
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1.5f))
         Row(
             modifier =
                 Modifier

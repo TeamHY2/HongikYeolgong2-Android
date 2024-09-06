@@ -279,7 +279,7 @@ private fun MainBody(
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
                     uiState = uiState,
-                    modifier = Modifier.weight(20f),
+                    modifier = Modifier.weight(12f),
                 )
             }
         }
