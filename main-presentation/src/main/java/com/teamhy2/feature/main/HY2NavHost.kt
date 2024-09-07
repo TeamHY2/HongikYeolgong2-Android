@@ -28,6 +28,7 @@ fun HY2NavHost(
     urls: Map<String, String>,
     googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
+    onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
 ) {
@@ -76,7 +77,10 @@ fun HY2NavHost(
                 noticeUrl = urls["notice"] ?: "",
                 onBackButtonClick = navController::popBackStack,
                 onInquiryClick = navController::navigateToInquiry,
-                onLogoutOrWithdrawComplete = navController::popUpToOnboarding,
+                onLogoutOrWithdrawComplete = {
+                    onLogoutOrWithdrawComplete()
+                    navController::popUpToOnboarding
+                },
             )
         }
     }
