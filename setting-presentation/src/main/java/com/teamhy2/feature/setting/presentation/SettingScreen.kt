@@ -1,5 +1,7 @@
 package com.teamhy2.feature.setting.presentation
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,8 +43,8 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
 fun SettingRoute(
+    noticeUrl: String,
     onBackButtonClick: () -> Unit,
-    onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -65,7 +67,10 @@ fun SettingRoute(
             viewModel.updateNotificationSwitchState(isChecked)
         },
         onBackButtonClick = onBackButtonClick,
-        onNoticeClick = onNoticeClick,
+        onNoticeClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
+            context.startActivity(intent)
+        },
         onInquiryClick = onInquiryClick,
         modifier = modifier,
     )
