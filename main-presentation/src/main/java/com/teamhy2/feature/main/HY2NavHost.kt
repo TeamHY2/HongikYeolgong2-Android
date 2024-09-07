@@ -10,7 +10,6 @@ import com.teamhy2.feature.main.navigation.mainScreen
 import com.teamhy2.feature.main.navigation.popUpToMain
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
-import com.teamhy2.feature.main.webviews.notice.navigation.noticeScreen
 import com.teamhy2.feature.main.webviews.seatingChart.navigation.navigateToSeatingChart
 import com.teamhy2.feature.main.webviews.seatingChart.navigation.seatingChartScreen
 import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
@@ -60,11 +59,6 @@ fun HY2NavHost(
 
             seatingChartScreen(
                 url = urls["seatingChart"] ?: "",
-                onCloseButtonClick = navController::popBackStack,
-            )
-
-            noticeScreen(
-                url = urls["notice"] ?: "",
                 onCloseButtonClick = navController::popBackStack,
             )
 
