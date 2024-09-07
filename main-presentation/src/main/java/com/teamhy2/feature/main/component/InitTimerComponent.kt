@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -14,12 +13,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.main.domain.model.WiseSaying
 
 private const val BUTTON_HEIGHT = 52
-private const val TOP_MARGIN = 40
 
 @Composable
 fun InitTimerComponent(
@@ -29,15 +28,15 @@ fun InitTimerComponent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
     ) {
-        Spacer(modifier = Modifier.height(TOP_MARGIN.dp))
+        Spacer(modifier = Modifier.weight(1f))
         WiseSayingComponent(
             quote = uiState.wiseSaying.quote,
             author = uiState.wiseSaying.author,
             modifier = Modifier.fillMaxWidth(),
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1.5f))
         Row(
             modifier =
                 Modifier
@@ -47,6 +46,7 @@ fun InitTimerComponent(
             BackgroundImageButton(
                 imageResId = R.drawable.img_seating_chart_button_background,
                 text = stringResource(R.string.main_seating_chart),
+                textColor = White.copy(alpha = 0.8f),
                 onClick = onSeatingChartClick,
                 modifier = Modifier.weight(70f),
             )

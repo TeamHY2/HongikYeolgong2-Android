@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class Timer(
     private val startTime: LocalTime,
@@ -13,8 +14,10 @@ class Timer(
 ) {
     var endTime: LocalTime = startTime.plusSeconds(duration.seconds)
         private set
-    var leftTime: Duration = duration
+    var leftTime: Duration = calculateLeftTime()
         private set
+
+    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
 
     init {
         require(events.keys.containsAll(EVENT_TIMES)) {
@@ -32,26 +35,10 @@ class Timer(
             )
 
     val formattedStartTime: String
-        get() =
-            if (startTime.hour >= 12) {
-                startTime.toString().replace(
-                    startTime.hour.toString(),
-                    (startTime.hour - 12).toString(),
-                )
-            } else {
-                startTime.toString()
-            }
+        get() = startTime.format(timeFormatter)
 
     val formattedEndTime: String
-        get() =
-            if (endTime.hour >= 12) {
-                endTime.toString().replace(
-                    endTime.hour.toString(),
-                    (endTime.hour - 12).toString(),
-                )
-            } else {
-                endTime.toString()
-            }
+        get() = endTime.format(timeFormatter)
 
     val formattedStartTimeMeridiem: String
         get() = if (startTime.hour >= 12) "PM" else "AM"
@@ -82,13 +69,25 @@ class Timer(
         }
     }
 
+    private fun calculateLeftTime(): Duration {
+        val now = LocalTime.now()
+        val elapsed = Duration.between(startTime, now)
+        return if (elapsed.isNegative || elapsed > duration) {
+            duration
+        } else {
+            duration.minus(elapsed)
+        }
+    }
+
     companion object {
+        private const val START_END_TIME_FORMAT: String = "hh:mm"
         private const val LEFT_TIME_FORMAT: String = "%02d:%02d:%02d"
         const val THIRTY_MINUTES_SECONDS: Long = 30 * 60L
         const val TEN_MINUTES_SECONDS: Long = 10 * 60L
         const val TIME_OVER_SECONDS: Long = 0L
         private const val DELAY_MILLIS: Long = 1000L
 
-        private val EVENT_TIMES: List<Long> = listOf(THIRTY_MINUTES_SECONDS, TEN_MINUTES_SECONDS, TIME_OVER_SECONDS)
+        private val EVENT_TIMES: List<Long> =
+            listOf(THIRTY_MINUTES_SECONDS, TEN_MINUTES_SECONDS, TIME_OVER_SECONDS)
     }
 }

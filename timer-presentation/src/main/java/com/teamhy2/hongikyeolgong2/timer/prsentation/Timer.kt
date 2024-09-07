@@ -63,7 +63,7 @@ fun StartEndSection(
         ) {
             Text(
                 text = stringResource(id = R.string.timer_start),
-                style = HY2Theme.typography.body02,
+                style = HY2Theme.typography.body04,
                 color = Gray300,
             )
             Spacer(modifier = Modifier.width(13.dp))
@@ -79,7 +79,7 @@ fun StartEndSection(
             Spacer(modifier = Modifier.width(18.dp))
             Text(
                 text = stringResource(id = R.string.timer_end),
-                style = HY2Theme.typography.body02,
+                style = HY2Theme.typography.body04,
                 color = Gray300,
             )
         }

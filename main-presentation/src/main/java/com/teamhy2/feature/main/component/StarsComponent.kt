@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 
-private const val STAR_IMAGE_SIZE = 40
+private const val STAR_IMAGE_SIZE = 32
 
 @Composable
 fun StarsComponent(

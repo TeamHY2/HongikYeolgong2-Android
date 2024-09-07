@@ -18,12 +18,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 
 @Composable
 fun BackgroundImageButton(
     imageResId: Int,
     text: String,
+    textColor: Color = White,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,7 +46,7 @@ fun BackgroundImageButton(
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = textColor,
             style = HY2Typography().body02,
         )
     }
