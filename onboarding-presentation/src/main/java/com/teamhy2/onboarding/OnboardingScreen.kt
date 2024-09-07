@@ -73,15 +73,20 @@ fun OnboardingScreen(
                     .weight(1f)
                     .fillMaxWidth(),
         ) { page ->
-            Image(
-                painter = painterResource(id = onboardingImages[page]),
-                contentDescription =
-                    stringResource(
-                        R.string.onboarding_app_description_image,
-                        page,
-                    ),
+            Box(
                 modifier = Modifier.fillMaxSize(),
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                Image(
+                    painter = painterResource(id = onboardingImages[page]),
+                    contentDescription =
+                        stringResource(
+                            R.string.onboarding_app_description_image,
+                            page,
+                        ),
+                    modifier = Modifier.size(width = 360.dp, height = 760.dp),
+                )
+            }
         }
         DotsIndicator(
             modifier =
