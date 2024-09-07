@@ -1,6 +1,7 @@
 package com.teamhy2.feature.main
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -110,6 +111,9 @@ class MainActivity : AppCompatActivity() {
                             onSendNotification = { pushText ->
                                 notificationHandler.showSimpleNotification(pushText)
                             },
+                            onLogoutOrWithdrawComplete = {
+                                restartMainActivity()
+                            },
                         )
                     }
                 }
@@ -142,5 +146,12 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.d("auth", "로그인 실패 ${response?.error?.message}")
         }
+    }
+
+    private fun restartMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
     }
 }
