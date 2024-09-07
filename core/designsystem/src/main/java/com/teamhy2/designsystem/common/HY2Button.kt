@@ -17,7 +17,7 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
-private const val BUTTON_ROUNDED_CORNER_SIZE = 4
+private const val BUTTON_ROUNDED_CORNER_SIZE = 8
 private const val BUTTON_HEIGHT = 44
 
 @Composable

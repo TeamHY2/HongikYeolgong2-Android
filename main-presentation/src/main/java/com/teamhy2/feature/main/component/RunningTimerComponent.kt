@@ -50,7 +50,7 @@ fun RunningTimerComponent(
                 modifier = Modifier.align(Alignment.BottomEnd),
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         if (leftTime <= extendThreshold) {
             HY2Button(

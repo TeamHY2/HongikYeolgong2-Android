@@ -1,6 +1,8 @@
 package com.teamhy2.feature.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -178,16 +180,13 @@ fun MainScreen(
     Column(
         modifier =
             modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
+                .fillMaxSize(),
     ) {
         MainHeader(
             onSettingClick = onSettingClick,
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .padding(vertical = 14.dp),
+                    .fillMaxWidth(),
         )
         MainBody(
             onSeatingChartClick = onSeatingChartClick,
@@ -197,6 +196,9 @@ fun MainScreen(
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
             uiState = uiState,
+            modifier =
+                Modifier
+                    .padding(horizontal = 24.dp),
         )
     }
 }
@@ -213,19 +215,29 @@ private fun MainHeader(
         Image(
             painter = painterResource(id = R.drawable.ic_main_logo),
             contentDescription = stringResource(R.string.main_logo_description),
+            modifier = Modifier.padding(start = 24.dp),
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(
-            onClick = onSettingClick,
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier =
+                Modifier
+                    .size(38.dp)
+                    .clickable {
+                        onSettingClick()
+                    },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_main_hamburger),
                 contentDescription = stringResource(R.string.main_setting_button_description),
                 tint = Gray100,
+                modifier = Modifier.size(24.dp),
             )
         }
+
+        Spacer(modifier = Modifier.size(17.dp))
     }
 }
 
@@ -259,6 +271,7 @@ private fun MainBody(
                     onStudyRoomEndClick = onStudyRoomEndClick,
                     modifier = Modifier.height(308.dp),
                 )
+                Spacer(modifier = Modifier.weight(1f))
             }
 
             false -> {
@@ -266,7 +279,7 @@ private fun MainBody(
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
                     uiState = uiState,
-                    modifier = Modifier.height(308.dp),
+                    modifier = Modifier.weight(12f),
                 )
             }
         }
