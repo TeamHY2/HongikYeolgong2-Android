@@ -1,7 +1,5 @@
 package com.hongikyeolgong2.calendar.presentation
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,11 +29,12 @@ import androidx.compose.ui.unit.dp
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
-import com.teamhy2.designsystem.R
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_left
+import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_right
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_next_month
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_previous_month
 import java.time.LocalDate
@@ -78,28 +78,20 @@ private fun CalendarHeader(
             color = Gray100,
         )
         Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
-            modifier =
-                Modifier.clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onPreviousMonthClick,
-                ),
-            tint = Gray300,
-            contentDescription = stringResource(description_previous_month),
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
-            modifier =
-                Modifier.clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onNextMonthClick,
-                ),
-            tint = Gray300,
-            contentDescription = stringResource(description_next_month),
-        )
+        IconButton(onClick = onPreviousMonthClick) {
+            Icon(
+                painter = painterResource(id = ic_calendar_left),
+                tint = Gray300,
+                contentDescription = stringResource(description_previous_month),
+            )
+        }
+        IconButton(onClick = onNextMonthClick) {
+            Icon(
+                painter = painterResource(id = ic_calendar_right),
+                tint = Gray300,
+                contentDescription = stringResource(description_next_month),
+            )
+        }
     }
 }
 
