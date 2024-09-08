@@ -21,7 +21,7 @@ class LocalSettingsDataSource
         val notificationSwitchState: Flow<Boolean> =
             context.dataStore.data
                 .map { preferences ->
-                    preferences[NOTIFICATION_SWITCH_STATE_KEY] ?: false
+                    preferences[NOTIFICATION_SWITCH_STATE_KEY] ?: true
                 }
 
         suspend fun saveNotificationSwitchState(isChecked: Boolean) {
