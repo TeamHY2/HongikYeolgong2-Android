@@ -18,8 +18,8 @@ class Calendar(
         get() = dateTimeFormatter.format(date)
 
     fun getMonth(): List<StudyDay> {
-        val studyDaysWithMonth = getStudyDaysByMonth()
-        val existingDays = studyDaysWithMonth.associateBy { it.date.dayOfMonth }
+        val studyDaysWithMonth: List<StudyDay> = getStudyDaysByMonth()
+        val existingDays: Map<Int, StudyDay> = studyDaysWithMonth.associateBy { it.date.dayOfMonth }
 
         return (1..getLastDayOfMonth()).map { day ->
             existingDays[day] ?: StudyDay(
