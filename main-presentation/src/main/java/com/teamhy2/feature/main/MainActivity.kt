@@ -36,7 +36,6 @@ import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.onboarding.OnboardingViewModel
 import com.teamhy2.onboarding.navigation.Onboarding
-import com.teamhy2.onboarding.navigation.SignUp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -73,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                             if (userExists) {
                                 Main.ROUTE
                             } else {
-                                SignUp.ROUTE
+                                Onboarding.ROUTE
                             }
                     }
                 }
