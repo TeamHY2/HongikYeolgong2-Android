@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -40,6 +41,7 @@ import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_pr
 import java.time.LocalDate
 
 private const val DAY_DEFAULT_MARGIN = 5
+private const val DAY_SIZE_RATIO = 1.212f
 
 @Composable
 fun Hy2Calendar(
@@ -121,23 +123,43 @@ private fun DayOfWeek(
     )
 }
 
+private const val SIX_LINE_DAYS_COUNT = 42
+
+private const val DAY_COUNT_OF_WEEK = 7
+
 @Composable
 private fun ColumnScope.CalendarBody(
     days: List<StudyDay>,
     modifier: Modifier = Modifier,
 ) {
+    val beforeEmptyDaysCount: Int = (days.first().date.dayOfWeek.ordinal + 1) % DAY_COUNT_OF_WEEK
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(7),
+        columns = GridCells.Fixed(DAY_COUNT_OF_WEEK),
         verticalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
         horizontalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
         modifier = modifier,
     ) {
-        items((days.first().date.dayOfWeek.ordinal + 1) % 7) {
-            Box(modifier = Modifier.weight(1f))
+        items(beforeEmptyDaysCount) {
+            Box(
+                modifier =
+                    Modifier
+                        .aspectRatio(DAY_SIZE_RATIO, false)
+                        .weight(1f),
+            )
         }
 
         items(days) {
             Day(studyDay = it, modifier = Modifier.weight(1f))
+        }
+
+        items(SIX_LINE_DAYS_COUNT - days.size - beforeEmptyDaysCount) {
+            Box(
+                modifier =
+                    Modifier
+                        .aspectRatio(DAY_SIZE_RATIO, false)
+                        .weight(1f),
+            )
         }
     }
 }
