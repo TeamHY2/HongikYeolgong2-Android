@@ -1,19 +1,19 @@
 package com.hongikyeolgong2.calendar.presentation
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,16 +30,18 @@ import androidx.compose.ui.unit.dp
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
-import com.teamhy2.designsystem.R
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_left
+import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_right
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_next_month
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_previous_month
 import java.time.LocalDate
 
 private const val DAY_DEFAULT_MARGIN = 5
+private const val DAY_SIZE_RATIO = 1.212f
 
 @Composable
 fun Hy2Calendar(
@@ -78,28 +80,20 @@ private fun CalendarHeader(
             color = Gray100,
         )
         Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_left),
-            modifier =
-                Modifier.clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onPreviousMonthClick,
-                ),
-            tint = Gray300,
-            contentDescription = stringResource(description_previous_month),
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
-            modifier =
-                Modifier.clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                    onClick = onNextMonthClick,
-                ),
-            tint = Gray300,
-            contentDescription = stringResource(description_next_month),
-        )
+        IconButton(onClick = onPreviousMonthClick) {
+            Icon(
+                painter = painterResource(id = ic_calendar_left),
+                tint = Gray300,
+                contentDescription = stringResource(description_previous_month),
+            )
+        }
+        IconButton(onClick = onNextMonthClick) {
+            Icon(
+                painter = painterResource(id = ic_calendar_right),
+                tint = Gray300,
+                contentDescription = stringResource(description_next_month),
+            )
+        }
     }
 }
 
@@ -129,23 +123,43 @@ private fun DayOfWeek(
     )
 }
 
+private const val SIX_LINE_DAYS_COUNT = 42
+
+private const val DAY_COUNT_OF_WEEK = 7
+
 @Composable
 private fun ColumnScope.CalendarBody(
     days: List<StudyDay>,
     modifier: Modifier = Modifier,
 ) {
+    val beforeEmptyDaysCount: Int = (days.first().date.dayOfWeek.ordinal + 1) % DAY_COUNT_OF_WEEK
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(7),
+        columns = GridCells.Fixed(DAY_COUNT_OF_WEEK),
         verticalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
         horizontalArrangement = Arrangement.spacedBy(DAY_DEFAULT_MARGIN.dp),
         modifier = modifier,
     ) {
-        items((days.first().date.dayOfWeek.ordinal + 1) % 7) {
-            Box(modifier = Modifier.weight(1f))
+        items(beforeEmptyDaysCount) {
+            Box(
+                modifier =
+                    Modifier
+                        .aspectRatio(DAY_SIZE_RATIO, false)
+                        .weight(1f),
+            )
         }
 
         items(days) {
             Day(studyDay = it, modifier = Modifier.weight(1f))
+        }
+
+        items(SIX_LINE_DAYS_COUNT - days.size - beforeEmptyDaysCount) {
+            Box(
+                modifier =
+                    Modifier
+                        .aspectRatio(DAY_SIZE_RATIO, false)
+                        .weight(1f),
+            )
         }
     }
 }
