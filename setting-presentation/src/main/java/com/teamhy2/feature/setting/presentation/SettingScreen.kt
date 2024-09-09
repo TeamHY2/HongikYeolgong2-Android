@@ -1,7 +1,10 @@
 package com.teamhy2.feature.setting.presentation
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +43,8 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
 fun SettingRoute(
+    noticeUrl: String,
     onBackButtonClick: () -> Unit,
-    onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -64,7 +67,10 @@ fun SettingRoute(
             viewModel.updateNotificationSwitchState(isChecked)
         },
         onBackButtonClick = onBackButtonClick,
-        onNoticeClick = onNoticeClick,
+        onNoticeClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
+            context.startActivity(intent)
+        },
         onInquiryClick = onInquiryClick,
         modifier = modifier,
     )
@@ -123,7 +129,7 @@ fun SettingScreen(
     ) {
         IconButton(
             onClick = { onBackButtonClick() },
-            modifier = Modifier.padding(start = 28.dp),
+            modifier = Modifier.padding(start = 20.dp),
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_back),
@@ -156,21 +162,31 @@ fun SettingScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_information),
                     contentDescription = null,
-                    modifier = Modifier.size(14.dp),
+                    modifier =
+                        Modifier
+                            .size(14.dp)
+                            .align(Alignment.CenterVertically),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.setting_notification_reminder_description),
                     color = Gray200,
                     fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically),
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
+
+            val interactionSource: MutableInteractionSource =
+                remember { MutableInteractionSource() }
+
             Row(
                 modifier =
                     Modifier
@@ -182,7 +198,11 @@ fun SettingScreen(
                     text = stringResource(R.string.setting_logout),
                     color = Gray300,
                     style = HY2Theme.typography.body05,
-                    modifier = Modifier.clickable { showLogoutDialog = true },
+                    modifier =
+                        Modifier.clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                        ) { showLogoutDialog = true },
                 )
                 Spacer(modifier = Modifier.width(24.dp))
                 Text(
@@ -195,7 +215,11 @@ fun SettingScreen(
                     text = stringResource(R.string.setting_withdrawal),
                     color = Gray300,
                     style = HY2Theme.typography.body05,
-                    modifier = Modifier.clickable { showWithdrawDialog = true },
+                    modifier =
+                        Modifier.clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                        ) { showWithdrawDialog = true },
                 )
             }
         }
