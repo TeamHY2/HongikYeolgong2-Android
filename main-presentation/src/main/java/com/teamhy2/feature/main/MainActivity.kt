@@ -39,6 +39,8 @@ import com.teamhy2.onboarding.navigation.Onboarding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val signInLauncher =
@@ -98,8 +100,9 @@ class MainActivity : AppCompatActivity() {
 
                     Column(
                         Modifier.paint(
-                            painterResource(id = R.drawable.backgroud),
+                            painter = painterResource(id = R.drawable.backgroud),
                             contentScale = ContentScale.FillBounds,
+                            alpha = DEFAULT_BACKGROUND_OPACITY,
                         ).padding(innerPadding),
                     ) {
                         HY2NavHost(
