@@ -35,9 +35,11 @@ import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
+import com.teamhy2.designsystem.ui.theme.Gray400
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.designsystem.ui.theme.Yellow300
 import com.teamhy2.onboarding.presentation.R
 
 @Composable
@@ -118,10 +120,9 @@ fun SignUpScreen(
             HY2TextField(
                 value = nickname,
                 onValueChange = onNicknameChange,
-                hintText = stringResource(R.string.sign_up_nickname_hint),
                 modifier = Modifier.weight(1f),
+                hintText = stringResource(R.string.sign_up_nickname_hint),
                 isInvalid = isNicknameValidate.not(),
-                supportingText = if (isNicknameValidate) "" else stringResource(R.string.sign_up_nickname_supporting_text),
             )
             Spacer(modifier = Modifier.width(12.dp))
             Button(
@@ -138,10 +139,35 @@ fun SignUpScreen(
                 Text(
                     text = stringResource(R.string.sign_up_duplication_check),
                     style = HY2Typography().body05,
-                    color = if (isNicknameValidate) White else White.copy(alpha = 0.4f),
+                    color =
+                        if (isNicknameNotDuplicated || isNicknameValidate.not()) {
+                            White.copy(
+                                alpha = 0.4f,
+                            )
+                        } else {
+                            White
+                        },
                 )
             }
         }
+        Text(
+            text =
+                when {
+                    nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                    isNicknameValidate && isNicknameNotDuplicated.not() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                    isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
+                    else -> stringResource(R.string.sign_up_nickname_error_text)
+                },
+            style = HY2Typography().caption,
+            color =
+                if (nickname.isBlank()) {
+                    Gray400
+                } else if (isNicknameValidate.not()) {
+                    Yellow300
+                } else {
+                    Blue100
+                },
+        )
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(R.string.sign_up_department_title),

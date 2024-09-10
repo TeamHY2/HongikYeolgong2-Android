@@ -52,7 +52,6 @@ fun HY2TextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hintText: String = "",
-    supportingText: String = "",
     isEnabled: Boolean = true,
     isInvalid: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -91,9 +90,9 @@ fun HY2TextField(
             val modifierWithBorder =
                 if (hasFocused) {
                     Modifier.border(
-                        DEFAULT_BORDER_WIDTH.dp,
-                        if (isInvalid) Yellow300 else borderColor,
-                        RoundedCornerShape(DEFAULT_RADIUS.dp),
+                        width = DEFAULT_BORDER_WIDTH.dp,
+                        color = if (isInvalid && value.isNotBlank()) Yellow300 else borderColor,
+                        shape = RoundedCornerShape(size = DEFAULT_RADIUS.dp),
                     )
                 } else {
                     Modifier
@@ -113,11 +112,11 @@ fun HY2TextField(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Spacer(modifier = Modifier.width(16.dp))
-                    if (hasFocused.not() && value.isBlank()) {
+                    if (hasFocused.not() && value.isEmpty()) {
                         Text(
                             text = hintText,
                             style = MaterialTheme.typography.titleMedium,
-                            color = Gray200,
+                            color = Gray400,
                         )
                         Spacer(modifier = Modifier.weight(1f))
                     } else {
@@ -136,12 +135,6 @@ fun HY2TextField(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = if (isInvalid) supportingText else "",
-            style = HY2Typography().caption,
-            color = Yellow300,
-        )
     }
 }
 
@@ -166,7 +159,6 @@ private fun HY2TextFieldErrorPreview() {
             value = "abc",
             onValueChange = {},
             isInvalid = true,
-            supportingText = "*올바른 형식의 이름이 아닙니다",
         )
     }
 }
