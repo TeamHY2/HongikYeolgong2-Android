@@ -10,11 +10,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
@@ -31,6 +36,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.main.presentation.R
@@ -98,12 +104,22 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
+                    var backgroundState by remember {
+                        mutableStateOf(BackgroundState.DEFAULT)
+                    }
+
                     Column(
-                        Modifier.paint(
-                            painter = painterResource(id = R.drawable.backgroud),
-                            contentScale = ContentScale.FillBounds,
-                            alpha = DEFAULT_BACKGROUND_OPACITY,
-                        ).padding(innerPadding),
+                        when (backgroundState) {
+                            BackgroundState.GRADIENT ->
+                                Modifier.paint(
+                                    painter = painterResource(id = R.drawable.backgroud),
+                                    contentScale = ContentScale.FillBounds,
+                                    alpha = DEFAULT_BACKGROUND_OPACITY,
+                                )
+
+                            BackgroundState.DEFAULT -> Modifier.background(BackgroundBlack)
+                        }
+                            .padding(innerPadding),
                     ) {
                         HY2NavHost(
                             navController = rememberNavController(),
@@ -115,6 +131,9 @@ class MainActivity : AppCompatActivity() {
                             },
                             onLogoutOrWithdrawComplete = {
                                 restartMainActivity()
+                            },
+                            onBackgroundChanged = { background ->
+                                backgroundState = background
                             },
                         )
                     }
@@ -156,4 +175,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+}
+
+enum class BackgroundState {
+    GRADIENT,
+    DEFAULT,
 }

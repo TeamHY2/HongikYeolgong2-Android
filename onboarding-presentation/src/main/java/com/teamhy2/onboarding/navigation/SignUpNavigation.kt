@@ -15,7 +15,9 @@ fun NavController.navigateToSignUp() {
 fun NavGraphBuilder.signUpScreen(
     onSignUpButtonClicked: () -> Unit,
     alreadySignedUp: () -> Unit,
+    onBackgroundChanged: () -> Unit,
 ) {
+    onBackgroundChanged()
     composable(route = ROUTE) {
         SignUpRoute(
             onSignUpButtonClicked = onSignUpButtonClicked,

@@ -15,7 +15,9 @@ fun NavGraphBuilder.settingScreen(
     onBackButtonClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
+    onBackgroundChanged: () -> Unit,
 ) {
+    onBackgroundChanged()
     composable(route = ROUTE) {
         SettingRoute(
             noticeUrl = noticeUrl,

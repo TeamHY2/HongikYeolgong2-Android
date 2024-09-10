@@ -28,6 +28,7 @@ fun HY2NavHost(
     googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
+    onBackgroundChanged: (BackgroundState) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
 ) {
@@ -44,17 +45,20 @@ fun HY2NavHost(
             onboardingScreen(
                 onGoogleLoginClick = googleSignIn,
                 onGoogleLoginDone = navController::navigateToSignUp,
+                onBackgroundChanged = { onBackgroundChanged(BackgroundState.DEFAULT) },
             )
 
             signUpScreen(
                 onSignUpButtonClicked = navController::popUpToMain,
                 alreadySignedUp = navController::popUpToMain,
+                onBackgroundChanged = { onBackgroundChanged(BackgroundState.DEFAULT) },
             )
 
             mainScreen(
                 onSettingClick = navController::navigateToSetting,
                 onSeatingChartClick = navController::navigateToSeatingChart,
                 onSendNotification = onSendNotification,
+                onBackgroundChanged = { onBackgroundChanged(BackgroundState.GRADIENT) },
             )
 
             seatingChartScreen(
@@ -75,6 +79,7 @@ fun HY2NavHost(
                     onLogoutOrWithdrawComplete()
                     navController::popUpToOnboarding
                 },
+                onBackgroundChanged = { onBackgroundChanged(BackgroundState.GRADIENT) },
             )
         }
     }

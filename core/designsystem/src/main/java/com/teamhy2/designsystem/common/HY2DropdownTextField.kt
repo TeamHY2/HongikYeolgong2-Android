@@ -57,9 +57,9 @@ fun HY2DropdownTextField(
         HY2TextField(
             value = value,
             onValueChange = { text -> if (text != value) onValueChanged(text) },
+            modifier = Modifier.menuAnchor(),
             hintText = hintText,
             focusRequester = focusRequester,
-            modifier = Modifier.menuAnchor(),
         )
 
         DropdownMenu(
