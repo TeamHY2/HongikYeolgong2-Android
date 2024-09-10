@@ -5,7 +5,9 @@
     <!-- signUp Screen -->
     <string name="sign_up_title">회원가입</string>
     <string name="sign_up_nickname_hint">닉네임을 입력해주세요</string>
-    <string name="sign_up_nickname_supporting_text">*특수문자와 띄어쓰기를 사용할 수 없어요.</string>
+    <string name="sign_up_nickname_error_text">*특수문자와 띄어쓰기를 사용할 수 없어요.</string>
+    <string name="sign_up_nickname_hint_text">*한글, 영어, 숫자를 포함하여 2~8자를 입력해 주세요.</string>
+    <string name="sign_up_nickname_can_use_text">*닉네임을 사용할 수 있어요.</string>
     <string name="sign_up_duplication_check">중복확인</string>
     <string name="sign_up_nickname_title">닉네임</string>
     <string name="sign_up_department_title">학과</string>
