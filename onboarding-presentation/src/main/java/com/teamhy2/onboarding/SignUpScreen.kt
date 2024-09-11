@@ -189,8 +189,6 @@ fun SignUpScreen(
             hintText = stringResource(R.string.sign_up_department_hint),
             value = department,
             onValueChanged = onDepartmentChange,
-            focusRequester = focusRequester,
-            focusManager = focusManager,
         )
 
         Spacer(modifier = Modifier.weight(1f))
