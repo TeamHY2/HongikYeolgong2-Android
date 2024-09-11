@@ -22,7 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +42,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
+import com.teamhy2.designsystem.util.modifier.addFocusCleaner
 import com.teamhy2.onboarding.presentation.R
 
 @Composable
@@ -92,9 +95,13 @@ fun SignUpScreen(
     onSignUpButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier =
             modifier
+                .addFocusCleaner(focusManager)
                 .padding(horizontal = 32.dp),
     ) {
         Box(
@@ -121,6 +128,7 @@ fun SignUpScreen(
                 value = nickname,
                 onValueChange = onNicknameChange,
                 modifier = Modifier.weight(1f),
+                focusRequester = focusRequester,
                 hintText = stringResource(R.string.sign_up_nickname_hint),
                 isInvalid = isNicknameValidate.not(),
             )
@@ -150,6 +158,7 @@ fun SignUpScreen(
                 )
             }
         }
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text =
                 when {
@@ -180,6 +189,8 @@ fun SignUpScreen(
             hintText = stringResource(R.string.sign_up_department_hint),
             value = department,
             onValueChanged = onDepartmentChange,
+            focusRequester = focusRequester,
+            focusManager = focusManager,
         )
 
         Spacer(modifier = Modifier.weight(1f))
