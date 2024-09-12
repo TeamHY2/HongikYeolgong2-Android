@@ -1,6 +1,5 @@
 package com.teamhy2.onboarding
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.common.SignInButton
+import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.onboarding.presentation.R
@@ -45,7 +45,6 @@ fun OnboardingRoute(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
     onGoogleLoginClick: () -> Unit,
@@ -63,7 +62,8 @@ fun OnboardingScreen(
     Column(
         modifier =
             modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(BackgroundBlack),
     ) {
         HorizontalPager(
             state = pagerState,

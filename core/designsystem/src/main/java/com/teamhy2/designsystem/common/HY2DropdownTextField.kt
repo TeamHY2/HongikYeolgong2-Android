@@ -2,6 +2,8 @@ package com.teamhy2.designsystem.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,29 +48,31 @@ fun HY2DropdownTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = remember { FocusRequester() },
+    focusManager: FocusManager = LocalFocusManager.current,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    val hasFocused by interactionSource.collectIsFocusedAsState()
 
     ExposedDropdownMenuBox(
         modifier = modifier.wrapContentWidth(),
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        expanded = hasFocused,
+        onExpandedChange = { if (hasFocused) focusManager.clearFocus() else focusRequester.requestFocus() },
     ) {
         HY2TextField(
             value = value,
             onValueChange = { text -> if (text != value) onValueChanged(text) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable, hasFocused),
             hintText = hintText,
+            interactionSource = interactionSource,
             focusRequester = focusRequester,
-            modifier = Modifier.menuAnchor(),
         )
 
         DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {},
+            expanded = hasFocused,
+            onDismissRequest = { if (hasFocused) focusManager.clearFocus() },
             properties = PopupProperties(focusable = false),
-            offset = DpOffset(x = 0.dp, y = (-16).dp),
+            offset = DpOffset(x = 0.dp, y = (16).dp),
             modifier =
                 Modifier
                     .crop(vertical = 8.dp)
@@ -81,7 +87,6 @@ fun HY2DropdownTextField(
                     isSelected = selectionOption == value,
                     modifier =
                         Modifier.clickable {
-                            expanded = false
                             onValueChanged(selectionOption)
                             focusManager.clearFocus()
                         },
