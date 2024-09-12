@@ -26,7 +26,7 @@ class SignUpViewModel
                 SignUpUiState(
                     departments = emptyList(),
                     isNicknameValidate = false,
-                    isNicknameNotDuplicated = false,
+                    nicknameState = NicknameState.NOT_CHECKED,
                     isDepartmentValidate = false,
                 ),
             )
@@ -50,7 +50,7 @@ class SignUpViewModel
 
         fun updateNickname(value: String) {
             _nickname.value = value
-            _signUpUiState.value = _signUpUiState.value.copy(isNicknameNotDuplicated = false)
+            _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_CHECKED)
             checkNicknameValidation()
         }
 
@@ -89,10 +89,10 @@ class SignUpViewModel
         fun checkNicknameDuplication() {
             viewModelScope.launch {
                 if (userRepository.checkNicknameDuplication(nickname.value)) {
-                    _signUpUiState.value = _signUpUiState.value.copy(isNicknameNotDuplicated = false)
+                    _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.DUPLICATED)
                     return@launch
                 }
-                _signUpUiState.value = _signUpUiState.value.copy(isNicknameNotDuplicated = true)
+                _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
             }
         }
 
