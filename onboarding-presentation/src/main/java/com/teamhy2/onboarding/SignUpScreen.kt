@@ -1,5 +1,6 @@
 package com.teamhy2.onboarding
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,13 +34,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
 import com.teamhy2.designsystem.common.HY2TextField
+import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
+import com.teamhy2.designsystem.ui.theme.Gray400
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.designsystem.ui.theme.Yellow300
+import com.teamhy2.designsystem.util.modifier.addFocusCleaner
 import com.teamhy2.onboarding.presentation.R
 
 @Composable
@@ -61,7 +68,7 @@ fun SignUpRoute(
     SignUpScreen(
         nickname = nickname,
         isNicknameValidate = uiState.isNicknameValidate,
-        isNicknameNotDuplicated = uiState.isNicknameNotDuplicated,
+        nicknameState = uiState.nicknameState,
         isDepartmentValidate = uiState.isDepartmentValidate,
         department = department,
         departments = uiState.departments,
@@ -80,7 +87,7 @@ fun SignUpRoute(
 fun SignUpScreen(
     nickname: String,
     isNicknameValidate: Boolean,
-    isNicknameNotDuplicated: Boolean,
+    nicknameState: NicknameState,
     isDepartmentValidate: Boolean,
     department: String,
     departments: List<String>,
@@ -90,9 +97,14 @@ fun SignUpScreen(
     onSignUpButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier =
             modifier
+                .background(BackgroundBlack)
+                .addFocusCleaner(focusManager)
                 .padding(horizontal = 32.dp),
     ) {
         Box(
@@ -118,10 +130,10 @@ fun SignUpScreen(
             HY2TextField(
                 value = nickname,
                 onValueChange = onNicknameChange,
-                hintText = stringResource(R.string.sign_up_nickname_hint),
                 modifier = Modifier.weight(1f),
-                isInvalid = isNicknameValidate.not(),
-                supportingText = if (isNicknameValidate) "" else stringResource(R.string.sign_up_nickname_supporting_text),
+                focusRequester = focusRequester,
+                hintText = stringResource(R.string.sign_up_nickname_hint),
+                isInvalid = isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED,
             )
             Spacer(modifier = Modifier.width(12.dp))
             Button(
@@ -132,16 +144,50 @@ fun SignUpScreen(
                     ),
                 shape = RoundedCornerShape(8.dp),
                 onClick = onNicknameDuplicateCheckClicked,
-                enabled = isNicknameValidate && isNicknameNotDuplicated.not(),
+                enabled = isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED,
                 modifier = Modifier.height(48.dp),
             ) {
                 Text(
                     text = stringResource(R.string.sign_up_duplication_check),
                     style = HY2Typography().body05,
-                    color = if (isNicknameValidate) White else White.copy(alpha = 0.4f),
+                    color =
+                        if (nicknameState == NicknameState.DUPLICATED ||
+                            nicknameState == NicknameState.NOT_DUPLICATED ||
+                            isNicknameValidate.not()
+                        ) {
+                            White.copy(
+                                alpha = 0.4f,
+                            )
+                        } else {
+                            White
+                        },
                 )
             }
         }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text =
+                when {
+                    nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                    nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
+                    isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
+                        stringResource(
+                            id = R.string.sign_up_nickname_hint_text,
+                        )
+
+                    isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
+                    else -> stringResource(R.string.sign_up_nickname_error_text)
+                },
+            style = HY2Typography().caption,
+            color =
+                if (nickname.isBlank()) {
+                    Gray400
+                } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
+                    Yellow300
+                } else {
+                    Blue100
+                },
+        )
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(R.string.sign_up_department_title),
@@ -161,7 +207,7 @@ fun SignUpScreen(
         HY2GradientMainButton(
             onClick = onSignUpButtonClicked,
             text = stringResource(R.string.sign_up_sign_up_button_text),
-            enabled = isNicknameNotDuplicated && isNicknameValidate && isDepartmentValidate,
+            enabled = nicknameState == NicknameState.NOT_DUPLICATED && isNicknameValidate && isDepartmentValidate,
         )
         Spacer(modifier = Modifier.height(32.dp))
     }
@@ -208,7 +254,7 @@ private fun SignUpScreenPreview() {
         SignUpScreen(
             nickname = nickname,
             isNicknameValidate = false,
-            isNicknameNotDuplicated = true,
+            nicknameState = NicknameState.NOT_CHECKED,
             isDepartmentValidate = false,
             onNicknameChange = { nickname = it },
             onNicknameDuplicateCheckClicked = {},

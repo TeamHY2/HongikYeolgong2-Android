@@ -28,6 +28,7 @@ fun HY2NavHost(
     googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
+    onBackgroundChanged: (BackgroundState) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
 ) {

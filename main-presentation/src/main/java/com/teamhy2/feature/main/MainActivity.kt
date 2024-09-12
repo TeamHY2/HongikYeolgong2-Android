@@ -10,11 +10,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
@@ -38,6 +43,8 @@ import com.teamhy2.onboarding.OnboardingViewModel
 import com.teamhy2.onboarding.navigation.Onboarding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
+private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -96,11 +103,19 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
 
+                    var backgroundState by remember {
+                        mutableStateOf(BackgroundState.DEFAULT)
+                    }
+
                     Column(
-                        Modifier.paint(
-                            painterResource(id = R.drawable.backgroud),
-                            contentScale = ContentScale.FillBounds,
-                        ).padding(innerPadding),
+                        modifier =
+                            Modifier
+                                .paint(
+                                    painter = painterResource(id = R.drawable.backgroud),
+                                    contentScale = ContentScale.FillBounds,
+                                    alpha = DEFAULT_BACKGROUND_OPACITY,
+                                )
+                                .padding(innerPadding),
                     ) {
                         HY2NavHost(
                             navController = rememberNavController(),
@@ -112,6 +127,9 @@ class MainActivity : AppCompatActivity() {
                             },
                             onLogoutOrWithdrawComplete = {
                                 restartMainActivity()
+                            },
+                            onBackgroundChanged = { background: BackgroundState ->
+                                backgroundState = background
                             },
                         )
                     }
@@ -153,4 +171,9 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+}
+
+enum class BackgroundState {
+    GRADIENT,
+    DEFAULT,
 }
