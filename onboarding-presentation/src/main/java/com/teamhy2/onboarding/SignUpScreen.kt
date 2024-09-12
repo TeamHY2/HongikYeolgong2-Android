@@ -68,7 +68,7 @@ fun SignUpRoute(
     SignUpScreen(
         nickname = nickname,
         isNicknameValidate = uiState.isNicknameValidate,
-        isNicknameNotDuplicated = uiState.isNicknameNotDuplicated,
+        nicknameState = uiState.nicknameState,
         isDepartmentValidate = uiState.isDepartmentValidate,
         department = department,
         departments = uiState.departments,
@@ -87,7 +87,7 @@ fun SignUpRoute(
 fun SignUpScreen(
     nickname: String,
     isNicknameValidate: Boolean,
-    isNicknameNotDuplicated: Boolean,
+    nicknameState: NicknameState,
     isDepartmentValidate: Boolean,
     department: String,
     departments: List<String>,
@@ -133,7 +133,7 @@ fun SignUpScreen(
                 modifier = Modifier.weight(1f),
                 focusRequester = focusRequester,
                 hintText = stringResource(R.string.sign_up_nickname_hint),
-                isInvalid = isNicknameValidate.not(),
+                isInvalid = isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED,
             )
             Spacer(modifier = Modifier.width(12.dp))
             Button(
@@ -144,14 +144,17 @@ fun SignUpScreen(
                     ),
                 shape = RoundedCornerShape(8.dp),
                 onClick = onNicknameDuplicateCheckClicked,
-                enabled = isNicknameValidate && isNicknameNotDuplicated.not(),
+                enabled = isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED,
                 modifier = Modifier.height(48.dp),
             ) {
                 Text(
                     text = stringResource(R.string.sign_up_duplication_check),
                     style = HY2Typography().body05,
                     color =
-                        if (isNicknameNotDuplicated || isNicknameValidate.not()) {
+                        if (nicknameState == NicknameState.DUPLICATED ||
+                            nicknameState == NicknameState.NOT_DUPLICATED ||
+                            isNicknameValidate.not()
+                        ) {
                             White.copy(
                                 alpha = 0.4f,
                             )
@@ -166,7 +169,12 @@ fun SignUpScreen(
             text =
                 when {
                     nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
-                    isNicknameValidate && isNicknameNotDuplicated.not() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                    nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
+                    isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
+                        stringResource(
+                            id = R.string.sign_up_nickname_hint_text,
+                        )
+
                     isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
                     else -> stringResource(R.string.sign_up_nickname_error_text)
                 },
@@ -174,7 +182,7 @@ fun SignUpScreen(
             color =
                 if (nickname.isBlank()) {
                     Gray400
-                } else if (isNicknameValidate.not()) {
+                } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
                     Yellow300
                 } else {
                     Blue100
@@ -199,7 +207,7 @@ fun SignUpScreen(
         HY2GradientMainButton(
             onClick = onSignUpButtonClicked,
             text = stringResource(R.string.sign_up_sign_up_button_text),
-            enabled = isNicknameNotDuplicated && isNicknameValidate && isDepartmentValidate,
+            enabled = nicknameState == NicknameState.NOT_DUPLICATED && isNicknameValidate && isDepartmentValidate,
         )
         Spacer(modifier = Modifier.height(32.dp))
     }
@@ -246,7 +254,7 @@ private fun SignUpScreenPreview() {
         SignUpScreen(
             nickname = nickname,
             isNicknameValidate = false,
-            isNicknameNotDuplicated = true,
+            nicknameState = NicknameState.NOT_CHECKED,
             isDepartmentValidate = false,
             onNicknameChange = { nickname = it },
             onNicknameDuplicateCheckClicked = {},
