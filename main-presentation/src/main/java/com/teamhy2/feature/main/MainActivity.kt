@@ -36,7 +36,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.main.presentation.R
@@ -109,17 +108,14 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     Column(
-                        when (backgroundState) {
-                            BackgroundState.GRADIENT ->
-                                Modifier.paint(
+                        modifier =
+                            Modifier
+                                .paint(
                                     painter = painterResource(id = R.drawable.backgroud),
                                     contentScale = ContentScale.FillBounds,
                                     alpha = DEFAULT_BACKGROUND_OPACITY,
                                 )
-
-                            BackgroundState.DEFAULT -> Modifier.background(BackgroundBlack)
-                        }
-                            .padding(innerPadding),
+                                .padding(innerPadding),
                     ) {
                         HY2NavHost(
                             navController = rememberNavController(),
@@ -132,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                             onLogoutOrWithdrawComplete = {
                                 restartMainActivity()
                             },
-                            onBackgroundChanged = { background ->
+                            onBackgroundChanged = { background: BackgroundState ->
                                 backgroundState = background
                             },
                         )
