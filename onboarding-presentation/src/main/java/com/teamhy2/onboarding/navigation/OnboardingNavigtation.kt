@@ -16,10 +16,8 @@ fun NavController.popUpToOnboarding() {
 fun NavGraphBuilder.onboardingScreen(
     onGoogleLoginClick: () -> Unit,
     onGoogleLoginDone: () -> Unit,
-    onBackgroundChanged: () -> Unit,
 ) {
     composable(route = ROUTE) {
-        onBackgroundChanged()
         OnboardingRoute(
             onGoogleLoginClick = onGoogleLoginClick,
             onGoogleLoginDone = onGoogleLoginDone,

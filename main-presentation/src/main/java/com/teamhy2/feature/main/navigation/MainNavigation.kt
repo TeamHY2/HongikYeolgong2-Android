@@ -21,9 +21,7 @@ fun NavGraphBuilder.mainScreen(
     onSettingClick: () -> Unit,
     onSeatingChartClick: () -> Unit,
     onSendNotification: (PushText) -> Unit,
-    onBackgroundChanged: () -> Unit,
 ) {
-    onBackgroundChanged()
     composable(route = ROUTE) {
         MainRoute(
             onSettingClick = onSettingClick,
