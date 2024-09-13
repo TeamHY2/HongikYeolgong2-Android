@@ -1,5 +1,7 @@
 package com.teamhy2.feature.main
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,14 +42,14 @@ import java.time.temporal.ChronoUnit
 
 @Composable
 fun MainRoute(
+    seatingChartUrl: String,
     onSettingClick: () -> Unit,
-    onSeatingChartClick: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val uiState: MainUiState = mainViewModel.mainUiState.collectAsState().value
-
+    val context = LocalContext.current
     val timerViewModel: TimerViewModel = hiltViewModel()
     val timerState by timerViewModel.timerState.collectAsState()
 
@@ -119,7 +122,10 @@ fun MainRoute(
         uiState = uiState,
         modifier = modifier,
         onSettingClick = onSettingClick,
-        onSeatingChartClick = onSeatingChartClick,
+        onSeatingChartClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
+            context.startActivity(intent)
+        },
         onStudyRoomStartClick = {
             mainViewModel.updateTimePickerVisibility(true)
         },
