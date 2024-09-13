@@ -1,5 +1,7 @@
 package com.teamhy2.feature.main
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,20 +37,19 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 @Composable
 fun MainRoute(
+    seatingChartUrl: String,
     onSettingClick: () -> Unit,
-    onSeatingChartClick: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
     val uiState: MainUiState = mainViewModel.mainUiState.collectAsState().value
-
+    val context = LocalContext.current
     val timerViewModel: TimerViewModel = hiltViewModel()
     val timerState by timerViewModel.timerState.collectAsState()
 
@@ -120,7 +122,10 @@ fun MainRoute(
         uiState = uiState,
         modifier = modifier,
         onSettingClick = onSettingClick,
-        onSeatingChartClick = onSeatingChartClick,
+        onSeatingChartClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
+            context.startActivity(intent)
+        },
         onStudyRoomStartClick = {
             mainViewModel.updateTimePickerVisibility(true)
         },
@@ -148,20 +153,20 @@ private fun startTimer(
     onSendNotification: (PushText) -> Unit,
 ) {
     timerViewModel.setTimer(
-        startTime,
-        Duration.ofMinutes(31),
-        mapOf(
-            Timer.THIRTY_MINUTES_SECONDS to {
-                onSendNotification(PushText.THIRTY_MINUTES)
-            },
-            Timer.TEN_MINUTES_SECONDS to {
-                onSendNotification(PushText.TEN_MINUTES)
-            },
-            Timer.TIME_OVER_SECONDS to {
-                mainViewModel.updateTimerRunning(false)
-                mainViewModel.addStudyDay()
-            },
-        ),
+        startTime = startTime,
+        events =
+            mapOf(
+                Timer.THIRTY_MINUTES_SECONDS to {
+                    onSendNotification(PushText.THIRTY_MINUTES)
+                },
+                Timer.TEN_MINUTES_SECONDS to {
+                    onSendNotification(PushText.TEN_MINUTES)
+                },
+                Timer.TIME_OVER_SECONDS to {
+                    mainViewModel.updateTimerRunning(false)
+                    mainViewModel.addStudyDay()
+                },
+            ),
     )
 }
 

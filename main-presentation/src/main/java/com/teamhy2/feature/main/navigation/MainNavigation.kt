@@ -18,14 +18,14 @@ fun NavController.popUpToMain() {
 }
 
 fun NavGraphBuilder.mainScreen(
+    seatingChartUrl: String,
     onSettingClick: () -> Unit,
-    onSeatingChartClick: () -> Unit,
     onSendNotification: (PushText) -> Unit,
 ) {
     composable(route = ROUTE) {
         MainRoute(
+            seatingChartUrl = seatingChartUrl,
             onSettingClick = onSettingClick,
-            onSeatingChartClick = onSeatingChartClick,
             onSendNotification = onSendNotification,
         )
     }

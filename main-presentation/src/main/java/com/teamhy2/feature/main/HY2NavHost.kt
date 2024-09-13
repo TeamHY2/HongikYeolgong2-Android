@@ -10,8 +10,6 @@ import com.teamhy2.feature.main.navigation.mainScreen
 import com.teamhy2.feature.main.navigation.popUpToMain
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
-import com.teamhy2.feature.main.webviews.seatingChart.navigation.navigateToSeatingChart
-import com.teamhy2.feature.main.webviews.seatingChart.navigation.seatingChartScreen
 import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.hongikyeolgong2.notification.PushText
@@ -28,7 +26,6 @@ fun HY2NavHost(
     googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
-    onBackgroundChanged: (BackgroundState) -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
 ) {
@@ -53,14 +50,9 @@ fun HY2NavHost(
             )
 
             mainScreen(
+                seatingChartUrl = urls["seatingChart"] ?: "",
                 onSettingClick = navController::navigateToSetting,
-                onSeatingChartClick = navController::navigateToSeatingChart,
                 onSendNotification = onSendNotification,
-            )
-
-            seatingChartScreen(
-                url = urls["seatingChart"] ?: "",
-                onCloseButtonClick = navController::popBackStack,
             )
 
             inquiryScreen(
