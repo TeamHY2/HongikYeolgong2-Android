@@ -34,7 +34,6 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import java.time.Duration
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
@@ -148,20 +147,20 @@ private fun startTimer(
     onSendNotification: (PushText) -> Unit,
 ) {
     timerViewModel.setTimer(
-        startTime,
-        Duration.ofMinutes(31),
-        mapOf(
-            Timer.THIRTY_MINUTES_SECONDS to {
-                onSendNotification(PushText.THIRTY_MINUTES)
-            },
-            Timer.TEN_MINUTES_SECONDS to {
-                onSendNotification(PushText.TEN_MINUTES)
-            },
-            Timer.TIME_OVER_SECONDS to {
-                mainViewModel.updateTimerRunning(false)
-                mainViewModel.addStudyDay()
-            },
-        ),
+        startTime = startTime,
+        events =
+            mapOf(
+                Timer.THIRTY_MINUTES_SECONDS to {
+                    onSendNotification(PushText.THIRTY_MINUTES)
+                },
+                Timer.TEN_MINUTES_SECONDS to {
+                    onSendNotification(PushText.TEN_MINUTES)
+                },
+                Timer.TIME_OVER_SECONDS to {
+                    mainViewModel.updateTimerRunning(false)
+                    mainViewModel.addStudyDay()
+                },
+            ),
     )
 }
 
