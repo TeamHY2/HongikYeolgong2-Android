@@ -10,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -127,9 +126,6 @@ class MainActivity : AppCompatActivity() {
                             },
                             onLogoutOrWithdrawComplete = {
                                 restartMainActivity()
-                            },
-                            onBackgroundChanged = { background: BackgroundState ->
-                                backgroundState = background
                             },
                         )
                     }
