@@ -1,4 +1,7 @@
 [versions]
+versionCode = "10000"
+versionName = "1.0.0"
+
 accompanistPermissions = "0.31.1-alpha"
 agp = "8.3.2"
 firebaseBom = "33.1.2"
