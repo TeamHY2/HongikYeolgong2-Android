@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class DefaultUserRepository
@@ -48,9 +49,10 @@ class DefaultUserRepository
                     ID_KEY to Firebase.auth.currentUser?.uid,
                     TOTAL_STUDY_TIME_KEY to 0,
                 )
+            val uid = Firebase.auth.currentUser?.uid ?: UUID.randomUUID().toString()
 
             firestore.collection(FIREBASE_USER_COLLECTION)
-                .document(Firebase.auth.currentUser?.uid!!)
+                .document(uid)
                 .set(user)
         }
 
