@@ -9,6 +9,9 @@ build/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Firebase google-services.json
+app/google-services.json
+
 # Log/OS Files
 *.log
 
