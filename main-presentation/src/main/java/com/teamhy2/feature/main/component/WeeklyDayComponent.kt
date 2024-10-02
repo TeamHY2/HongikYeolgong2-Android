@@ -28,7 +28,7 @@ fun WeeklyDayComponent(
     dayOfWeek: String,
     studyCount: Int,
     date: String,
-    textColor: Color = White,
+    textColor: Color,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -77,5 +77,6 @@ private fun PreviewWeeklyDayComponent() {
         dayOfWeek = "월",
         studyCount = 3,
         date = "9/23",
+        textColor = White,
     )
 }
