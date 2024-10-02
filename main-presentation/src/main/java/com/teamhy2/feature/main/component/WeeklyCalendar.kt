@@ -61,7 +61,7 @@ private fun isDateInFuture(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewWeeklyCalendar() {
+private fun PreviewWeeklyCalendar() {
     val thisWeeksDates = getThisWeeksDates()
     HY2Theme {
         WeeklyCalendar(
