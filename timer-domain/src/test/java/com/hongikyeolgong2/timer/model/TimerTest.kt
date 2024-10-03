@@ -7,18 +7,20 @@ import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 class TimerTest : BehaviorSpec({
-
+    val localDate = LocalDate.of(2023, 12, 17)
     Given("Timer가 endTime을 계산할 수 있다.") {
-        var startTime: LocalTime
+        var startTime: LocalDateTime
         var duration: Duration
         var timer: Timer
-        var actualEndTime: LocalTime
+        var actualEndTime: LocalDateTime
 
         When("startTime과 duration이 주어지면") {
-            startTime = LocalTime.of(11, 30)
+            startTime = LocalDateTime.of(localDate, LocalTime.of(11, 30))
             duration = Duration.ofHours(6)
             timer =
                 Timer(
@@ -33,18 +35,18 @@ class TimerTest : BehaviorSpec({
 
             Then("startTime에 duration이 더해진 endTime이 반환된다.") {
                 actualEndTime = timer.endTime
-                actualEndTime shouldBe LocalTime.of(17, 30)
+                actualEndTime shouldBe LocalDateTime.of(localDate, LocalTime.of(17, 30))
             }
         }
     }
 
     Given("Timer가 포맷팅된 남은 시간을 반환할 수 있다.") {
-        var startTime: LocalTime
+        var startTime: LocalDateTime
         var duration: Duration
         var timer: Timer
 
         When("11:30에 타이머가 시작되면 ") {
-            startTime = LocalTime.of(11, 30)
+            startTime = LocalDateTime.of(localDate, LocalTime.of(11, 30))
             duration = Duration.ofSeconds(3600) // 01:00:00
             timer =
                 Timer(
@@ -64,12 +66,12 @@ class TimerTest : BehaviorSpec({
     }
 
     Given("Timer가 남은시간을 emit 할 수 있다.") {
-        var startTime: LocalTime
+        var startTime: LocalDateTime
         var duration: Duration
         var timer: Timer
 
         When("11:30에 타이머가 시작되고 10초를 재면") {
-            startTime = LocalTime.of(11, 30)
+            startTime = LocalDateTime.of(localDate, LocalTime.of(11, 30))
             duration = Duration.ofSeconds(10)
             timer =
                 Timer(
@@ -92,12 +94,12 @@ class TimerTest : BehaviorSpec({
     }
 
     Given("Timer가 매초마다 남은시간을 감소할 수 있다.") {
-        var startTime: LocalTime
+        var startTime: LocalDateTime
         var duration: Duration
         var timer: Timer
 
         When("11:30에 타이머가 시작되고 10초를 재면") {
-            startTime = LocalTime.of(11, 30)
+            startTime = LocalDateTime.of(localDate, LocalTime.of(11, 30))
             duration = Duration.ofSeconds(10)
             timer =
                 Timer(
