@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
 
@@ -146,7 +147,7 @@ class MainViewModel
             _mainUiState.value = _mainUiState.value.copy(isTimerRunning = isTimerRunning)
         }
 
-        fun updateSelectedTime(selectedTime: LocalTime) {
+        fun updateSelectedTime(selectedTime: LocalDateTime) {
             _mainUiState.value = _mainUiState.value.copy(selectedTime = selectedTime)
         }
 
