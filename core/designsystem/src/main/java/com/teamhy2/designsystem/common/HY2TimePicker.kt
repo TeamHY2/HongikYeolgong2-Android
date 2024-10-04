@@ -1,6 +1,5 @@
 package com.teamhy2.designsystem.common
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +53,7 @@ import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.util.pixelsToDp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Locale
 
@@ -63,14 +62,15 @@ private const val DIALOG_CORNER_RADIUS = 8
 private const val DIALOG_BACKGROUND_DIM_AMOUNT = 0.75f
 private const val TIME_PICKER_NUMBER_FORMAT = "%02d"
 private const val PICKER_DEFAULT_VISIBLE_ITEMS_COUNT = 3
+private const val MAXIMUM_PREVIOUS_TIME = 3
 
 @Composable
 fun HY2TimePicker(
     title: String,
-    onSelected: (LocalTime) -> Unit,
+    onSelected: (LocalDateTime) -> Unit,
     onCancelled: () -> Unit,
     modifier: Modifier = Modifier,
-    localtime: LocalTime = LocalTime.now(ZoneId.of("Asia/Seoul")),
+    localDateTime: LocalDateTime = LocalDateTime.now(ZoneId.of("Asia/Seoul")),
     onDismiss: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -92,32 +92,22 @@ fun HY2TimePicker(
                     .wrapContentHeight()
                     .background(Gray800, RoundedCornerShape(DIALOG_CORNER_RADIUS.dp)),
         ) {
-            val meridiem: List<String> =
-                remember {
-                    if (localtime.hour < 12) listOf("AM") else listOf("AM", "PM")
-                }
-            val meridiemState: PickerState =
-                rememberPickerState(if (localtime.hour < 12) "AM" else "PM")
-
             val hours: List<String> =
-                when {
-                    // 12pm -> 12 pm O && 1 ~ 12 am O
-                    localtime.hour == 12 && meridiemState.selectedItem == "AM" -> 1..12
-                    localtime.hour == 12 && meridiemState.selectedItem == "PM" -> 12..12
-
-                    // 오전
-                    localtime.hour < 12 -> (1..localtime.hour) + 12
-
-                    // 오후
-                    localtime.hour > 12 && meridiemState.selectedItem == "AM" -> 1..12
-                    localtime.hour > 12 && meridiemState.selectedItem == "PM" -> listOf(12) + (1..(localtime.hour % 12))
-                    else -> 1..12
-                }.map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
-
+                remember {
+                    listOf("") +
+                        List(4) { index ->
+                            String.format(
+                                Locale.KOREA,
+                                TIME_PICKER_NUMBER_FORMAT,
+                                localDateTime.minusHours((MAXIMUM_PREVIOUS_TIME - index).toLong()).hour,
+                            )
+                        } + listOf("")
+                }
             val hourState: PickerState = rememberPickerState()
+
             val minutes: List<String> =
                 remember {
-                    (0..59).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) }
+                    listOf("") + (0..59).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) } + listOf("")
                 }
             val minuteState: PickerState = rememberPickerState()
 
@@ -132,22 +122,15 @@ fun HY2TimePicker(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 68.dp),
+                        .padding(horizontal = 100.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Picker(
                     state = hourState,
                     items = hours,
                     visibleItemsCount = if (hours.size == 1) 1 else 3,
-                    startIndex =
-                        hours.indexOf(
-                            String.format(
-                                Locale.KOREA,
-                                TIME_PICKER_NUMBER_FORMAT,
-                                if (localtime.hour % 12 == 0) 12 else localtime.hour % 12,
-                            ),
-                        ),
-                    modifier = Modifier.weight(0.33f),
+                    startIndex = hours.lastIndex - 1,
+                    modifier = Modifier.weight(1f),
                     textModifier = Modifier.padding(8.dp),
                 )
                 Text(
@@ -164,18 +147,10 @@ fun HY2TimePicker(
                             String.format(
                                 Locale.KOREA,
                                 TIME_PICKER_NUMBER_FORMAT,
-                                localtime.minute,
+                                localDateTime.minute,
                             ),
                         ),
-                    modifier = Modifier.weight(0.33f),
-                    textModifier = Modifier.padding(8.dp),
-                )
-                Picker(
-                    state = meridiemState,
-                    items = meridiem,
-                    visibleItemsCount = if (localtime.hour < 12) 1 else 3,
-                    startIndex = if (localtime.hour < 12) 0 else 1,
-                    modifier = Modifier.weight(0.33f),
+                    modifier = Modifier.weight(1f),
                     textModifier = Modifier.padding(8.dp),
                 )
             }
@@ -198,15 +173,10 @@ fun HY2TimePicker(
                     text = stringResource(R.string.time_picker_confirm),
                     onClick = {
                         onSelected(
-                            LocalTime.of(
-                                if (meridiemState.selectedItem == "AM" && hourState.selectedItem == "12") {
-                                    0
-                                } else {
-                                    hourState.selectedItem.toInt()
-                                },
-                                minuteState.selectedItem.toInt(),
-                            )
-                                .plusHours(if (meridiemState.selectedItem == "AM" || hourState.selectedItem == "12") 0L else 12L),
+                            LocalDateTime
+                                .now()
+                                .withHour(hourState.selectedItem.toInt())
+                                .withMinute(minuteState.selectedItem.toInt()),
                         )
                     },
                     buttonColor = Blue100,
@@ -219,7 +189,6 @@ fun HY2TimePicker(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Picker(
     items: List<String>,
@@ -230,12 +199,12 @@ fun Picker(
     textModifier: Modifier = Modifier,
 ) {
     val visibleItemsMiddle = visibleItemsCount / 2
-    val listScrollCount = Integer.MAX_VALUE
+    val listScrollCount = items.size
     val listScrollMiddle = listScrollCount / 2
     val listStartIndex =
         listScrollMiddle - listScrollMiddle % items.size - visibleItemsMiddle + startIndex
 
-    fun getItem(index: Int) = items[index % items.size]
+    fun getItem(index: Int) = items[index]
 
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
