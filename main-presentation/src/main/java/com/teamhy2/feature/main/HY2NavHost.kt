@@ -62,7 +62,6 @@ fun HY2NavHost(
 
             settingScreen(
                 noticeUrl = urls["notice"] ?: "",
-                onBackButtonClick = navController::popBackStack,
                 onInquiryClick = navController::navigateToInquiry,
                 onLogoutOrWithdrawComplete = {
                     onLogoutOrWithdrawComplete()

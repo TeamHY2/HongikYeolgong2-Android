@@ -44,7 +44,6 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 @Composable
 fun SettingRoute(
     noticeUrl: String,
-    onBackButtonClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,7 +65,6 @@ fun SettingRoute(
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
         },
-        onBackButtonClick = onBackButtonClick,
         onNoticeClick = {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
             context.startActivity(intent)
@@ -82,7 +80,6 @@ fun SettingScreen(
     onLogoutClick: () -> Unit,
     onWithdrawClick: () -> Unit,
     onNotificationSwitchClick: (Boolean) -> Unit,
-    onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -230,7 +227,6 @@ private fun SettingScreenPreview() {
             onLogoutClick = {},
             onWithdrawClick = {},
             onNotificationSwitchClick = {},
-            onBackButtonClick = {},
             onNoticeClick = {},
             onInquiryClick = {},
             modifier = Modifier,
