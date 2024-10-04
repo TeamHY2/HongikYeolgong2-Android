@@ -37,7 +37,7 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @Composable
@@ -87,7 +87,7 @@ fun MainRoute(
             onRightButtonClick = {
                 mainViewModel.updateStudyRoomExtendDialogVisibility(false)
                 startTimer(
-                    LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                     mainViewModel,
                     timerViewModel,
                     onSendNotification,
@@ -134,7 +134,7 @@ fun MainRoute(
         onStudyRoomExtendClick = {
             mainViewModel.updateStudyRoomExtendDialogVisibility(true)
             startTimer(
-                LocalTime.now().truncatedTo(ChronoUnit.MINUTES),
+                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                 mainViewModel,
                 timerViewModel,
                 onSendNotification,
@@ -147,7 +147,7 @@ fun MainRoute(
 }
 
 private fun startTimer(
-    startTime: LocalTime,
+    startTime: LocalDateTime,
     mainViewModel: MainViewModel,
     timerViewModel: TimerViewModel,
     onSendNotification: (PushText) -> Unit,

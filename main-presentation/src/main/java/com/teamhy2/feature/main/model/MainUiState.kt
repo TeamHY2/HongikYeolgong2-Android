@@ -2,7 +2,7 @@ package com.teamhy2.feature.main.model
 
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.teamhy2.main.domain.model.WiseSaying
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 data class MainUiState(
     val isTimerRunning: Boolean = false,
@@ -10,7 +10,7 @@ data class MainUiState(
     val isStudyRoomExtendDialog: Boolean = false,
     val isStudyRoomEndDialog: Boolean = false,
     val wiseSaying: WiseSaying = WiseSaying("", ""),
-    val selectedTime: LocalTime = LocalTime.now(),
+    val selectedTime: LocalDateTime = LocalDateTime.now(),
     val calendar: Calendar = Calendar(studyDays = emptyList()),
     val startTime: String = "",
     val startTimeMeridiem: String = "",

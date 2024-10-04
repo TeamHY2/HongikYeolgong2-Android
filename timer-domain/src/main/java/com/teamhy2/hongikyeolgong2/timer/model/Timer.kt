@@ -4,15 +4,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Timer(
-    private val startTime: LocalTime,
+    private val startTime: LocalDateTime,
     private val duration: Duration,
     private val events: Map<Long, () -> Unit>,
 ) {
-    var endTime: LocalTime = startTime.plusSeconds(duration.seconds)
+    var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
     var leftTime: Duration = calculateLeftTime()
         private set
@@ -70,7 +70,7 @@ class Timer(
     }
 
     private fun calculateLeftTime(): Duration {
-        val now = LocalTime.now()
+        val now = LocalDateTime.now()
         val elapsed = Duration.between(startTime, now)
         return if (elapsed.isNegative || elapsed > duration) {
             duration

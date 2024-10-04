@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
-import java.time.LocalTime
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +38,7 @@ class TimerViewModel
         }
 
         fun setTimer(
-            startTime: LocalTime,
+            startTime: LocalDateTime,
             duration: Duration? = durationHour,
             events: Map<Long, () -> Unit>,
         ) {
