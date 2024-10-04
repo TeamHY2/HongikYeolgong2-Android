@@ -12,14 +12,12 @@ fun NavController.navigateToSetting() {
 
 fun NavGraphBuilder.settingScreen(
     noticeUrl: String,
-    onBackButtonClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
 ) {
     composable(route = ROUTE) {
         SettingRoute(
             noticeUrl = noticeUrl,
-            onBackButtonClick = onBackButtonClick,
             onInquiryClick = onInquiryClick,
             onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
         )
