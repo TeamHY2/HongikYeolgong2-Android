@@ -62,6 +62,7 @@ private const val DIALOG_CORNER_RADIUS = 8
 private const val DIALOG_BACKGROUND_DIM_AMOUNT = 0.75f
 private const val TIME_PICKER_NUMBER_FORMAT = "%02d"
 private const val PICKER_DEFAULT_VISIBLE_ITEMS_COUNT = 3
+private const val MAXIMUM_PREVIOUS_TIME = 3
 
 @Composable
 fun HY2TimePicker(
@@ -98,7 +99,7 @@ fun HY2TimePicker(
                             String.format(
                                 Locale.KOREA,
                                 TIME_PICKER_NUMBER_FORMAT,
-                                localDateTime.minusHours(3L - index).hour,
+                                localDateTime.minusHours((MAXIMUM_PREVIOUS_TIME - index).toLong()).hour,
                             )
                         } + listOf("")
                 }
