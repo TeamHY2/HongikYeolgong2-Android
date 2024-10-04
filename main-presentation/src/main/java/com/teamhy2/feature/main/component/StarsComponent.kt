@@ -30,7 +30,7 @@ fun StarsComponent(
 }
 
 @Composable
-fun getStarPainter(
+private fun getStarPainter(
     starCount: Int,
     position: Int,
 ): Painter {
