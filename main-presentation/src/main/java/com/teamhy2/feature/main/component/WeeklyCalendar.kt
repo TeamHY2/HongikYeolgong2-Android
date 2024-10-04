@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamhy2.designsystem.ui.theme.Gray400
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.feature.main.model.WeeklyDay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
@@ -22,8 +23,7 @@ private const val DATE_FORMAT_PATTERN = "M/d"
 
 @Composable
 fun WeeklyCalendar(
-    studyCounts: List<Int>,
-    dates: List<String>,
+    weeklyDays: List<WeeklyDay>,
     modifier: Modifier = Modifier,
 ) {
     val currentDate = LocalDate.now()
@@ -33,13 +33,12 @@ fun WeeklyCalendar(
         horizontalArrangement = Arrangement.Center,
     ) {
         DAYS_OF_WEEK.forEachIndexed { index, dayOfWeek ->
-            val date = dates.getOrElse(index) { "" }
-            val isFutureDate = isDateInFuture(date, currentDate)
+            val isFutureDate = isDateInFuture(weeklyDays[index].date, currentDate)
 
             WeeklyDayComponent(
                 dayOfWeek = dayOfWeek,
-                studyCount = studyCounts.getOrElse(index) { 0 },
-                date = date,
+                studyCount = weeklyDays[index].studyCount,
+                date = weeklyDays[index].date,
                 textColor = if (isFutureDate) Gray400 else White,
             )
         }
@@ -62,22 +61,25 @@ private fun isDateInFuture(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewWeeklyCalendar() {
-    val thisWeeksDates = getThisWeeksDates()
+    val thisWeeksDates: List<String> = getThisWeeksDates()
+    val weeklyDays =
+        thisWeeksDates.mapIndexed { index, date ->
+            WeeklyDay(
+                studyCount = listOf(3, 1, 2, 0, 0, 0, 0).getOrElse(index) { 0 },
+                date = date,
+            )
+        }
+
     HY2Theme {
         WeeklyCalendar(
-            studyCounts = listOf(3, 1, 2, 0, 0, 0, 0),
-            dates = thisWeeksDates,
-            modifier =
-                Modifier
-                    .background(Color.Black),
+            weeklyDays = weeklyDays,
+            modifier = Modifier.background(Color.Black),
         )
     }
 }
 
-private fun getThisWeeksDates(): List<String> {
-    val today = LocalDate.now()
-    val startOfWeek =
-        today.with(ChronoUnit.DAYS.addTo(today, -(today.dayOfWeek.value - 1).toLong()))
+private fun getThisWeeksDates(date: LocalDate = LocalDate.now()): List<String> {
+    val startOfWeek = date.with(ChronoUnit.DAYS.addTo(date, -(date.dayOfWeek.value - 1).toLong()))
     return List(7) { index ->
         val day = startOfWeek.plusDays(index.toLong())
         day.format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN))
