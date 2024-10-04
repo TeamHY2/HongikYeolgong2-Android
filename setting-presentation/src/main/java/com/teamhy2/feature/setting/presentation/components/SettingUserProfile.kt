@@ -33,6 +33,7 @@ fun SettingUserProfile(
             modifier
                 .fillMaxWidth(),
     ) {
+        Spacer(modifier = Modifier.width(1.dp))
         Image(
             painter = profileImage,
             contentDescription = null,
@@ -40,9 +41,7 @@ fun SettingUserProfile(
                 Modifier
                     .size(PROFILE_IMAGE_SIZE.dp),
         )
-
         Spacer(modifier = Modifier.width(20.dp))
-
         Row {
             Text(
                 text = userInfo.name,
