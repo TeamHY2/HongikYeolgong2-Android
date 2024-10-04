@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +37,7 @@ import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
+import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
@@ -127,22 +127,15 @@ fun SettingScreen(
             modifier
                 .fillMaxSize(),
     ) {
-        IconButton(
-            onClick = { onBackButtonClick() },
-            modifier = Modifier.padding(start = 20.dp),
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_back),
-                contentDescription = stringResource(R.string.setting_back_button_description),
-            )
-        }
         Column(
             modifier =
                 Modifier
-                    .padding(start = 32.dp, end = 32.dp, top = 14.dp, bottom = 16.dp)
+                    .padding(start = 32.dp, end = 32.dp, top = 34.dp, bottom = 36.dp)
                     .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            SettingUserProfile(settingUiState.userInfo)
+            Spacer(modifier = Modifier.height(20.dp))
             SettingButton(
                 text = stringResource(R.string.setting_notice),
                 onClick = onNoticeClick,
