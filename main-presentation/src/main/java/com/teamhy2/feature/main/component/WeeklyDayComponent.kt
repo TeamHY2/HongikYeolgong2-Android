@@ -63,10 +63,10 @@ fun WeeklyDayComponent(
 
 private fun getStarDrawableId(studyCount: Int): Int {
     return when (studyCount) {
+        0 -> ic_star_0
         1 -> ic_star_1
         2 -> ic_star_2
-        3 -> ic_star_3
-        else -> ic_star_0
+        else -> ic_star_3
     }
 }
 
