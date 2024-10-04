@@ -127,7 +127,7 @@ fun SettingScreen(
         Column(
             modifier =
                 Modifier
-                    .padding(start = 32.dp, end = 32.dp, top = 34.dp, bottom = 36.dp)
+                    .padding(start = 24.dp, end = 24.dp, top = 34.dp, bottom = 36.dp)
                     .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -150,7 +150,7 @@ fun SettingScreen(
                     onNotificationSwitchClick(isChecked)
                 },
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -164,7 +164,7 @@ fun SettingScreen(
                             .size(14.dp)
                             .align(Alignment.CenterVertically),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = stringResource(R.string.setting_notification_reminder_description),
                     color = Gray200,
