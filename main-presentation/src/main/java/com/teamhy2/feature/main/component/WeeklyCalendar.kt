@@ -15,6 +15,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAccessor
 
 private val DAYS_OF_WEEK = listOf("월", "화", "수", "목", "금", "토", "일")
 private const val DATE_FORMAT_PATTERN = "M/d"
@@ -49,11 +50,11 @@ private fun isDateInFuture(
     dateText: String,
     currentDate: LocalDate,
 ): Boolean {
-    val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
-    val parsedMonthDay = formatter.parse(dateText)
-    val month = parsedMonthDay[ChronoField.MONTH_OF_YEAR]
-    val day = parsedMonthDay[ChronoField.DAY_OF_MONTH]
-    val parsedDate = LocalDate.of(currentDate.year, month, day)
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)
+    val parsedMonthDay: TemporalAccessor = formatter.parse(dateText)
+    val month: Int = parsedMonthDay[ChronoField.MONTH_OF_YEAR]
+    val day: Int = parsedMonthDay[ChronoField.DAY_OF_MONTH]
+    val parsedDate: LocalDate = LocalDate.of(currentDate.year, month, day)
 
     return parsedDate.isAfter(currentDate)
 }
