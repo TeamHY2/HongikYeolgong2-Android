@@ -25,14 +25,13 @@ fun WeeklyCalendar(
     dates: List<String>,
     modifier: Modifier = Modifier,
 ) {
-    val daysOfWeek = DAYS_OF_WEEK
     val currentDate = LocalDate.now()
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
     ) {
-        daysOfWeek.forEachIndexed { index, dayOfWeek ->
+        DAYS_OF_WEEK.forEachIndexed { index, dayOfWeek ->
             val date = dates.getOrElse(index) { "" }
             val isFutureDate = isDateInFuture(date, currentDate)
 
