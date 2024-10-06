@@ -23,8 +23,10 @@ dependencyResolutionManagement {
 rootProject.name = "HongikYeolgong2"
 include(":app")
 include(":app:auth")
+include(":app:notification")
 
 include(":core:designsystem")
+include(":core:remote")
 
 include(":calendar-domain")
 include(":calendar-presentation")
@@ -44,4 +46,3 @@ include(":timer-presentation")
 include(":onboarding-presentation")
 include(":onboarding-data")
 include(":onboarding-domain")
-include(":app:notification")
