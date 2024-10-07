@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray600
@@ -37,6 +39,7 @@ import com.teamhy2.ranking.components.RankItemStyle.FIRST
 import com.teamhy2.ranking.components.RankItemStyle.OTHER
 import com.teamhy2.ranking.components.RankItemStyle.SECOND
 import com.teamhy2.ranking.components.RankItemStyle.THIRD
+import com.teamhy2.ranking.model.DepartmentRanking
 
 enum class RankItemStyle(
     @DrawableRes val backgroundImageId: Int?,
@@ -140,44 +143,43 @@ fun RankingItem(
 
 @Preview(showBackground = true)
 @Composable
-fun RankingItemFirstPreview() {
+fun RankingItemPreview(
+    @PreviewParameter(SampleRankingProvider::class) departmentRanking: DepartmentRanking,
+) {
     RankingItem(
-        rank = 1,
-        department = "국어국문학과",
-        hours = "200H",
-        rankChange = 1,
+        rank = departmentRanking.rank,
+        department = departmentRanking.departmentName,
+        hours = departmentRanking.totalStudyTime,
+        rankChange = departmentRanking.rankChange,
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RankingItemSecondPreview() {
-    RankingItem(
-        rank = 2,
-        department = "디자인학부",
-        hours = "170H",
-        rankChange = 1,
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RankingItemThirdPreview() {
-    RankingItem(
-        rank = 3,
-        department = "경영학부",
-        hours = "120H",
-        rankChange = -1,
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RankingItemOtherPreview() {
-    RankingItem(
-        rank = 4,
-        department = "건축학부",
-        hours = "100H",
-        rankChange = 0,
-    )
+class SampleRankingProvider : PreviewParameterProvider<DepartmentRanking> {
+    override val values =
+        sequenceOf(
+            DepartmentRanking(
+                rank = 1,
+                departmentName = "국어국문학과",
+                totalStudyTime = "200H",
+                rankChange = 1,
+            ),
+            DepartmentRanking(
+                rank = 2,
+                departmentName = "디자인학부",
+                totalStudyTime = "170H",
+                rankChange = -1,
+            ),
+            DepartmentRanking(
+                rank = 3,
+                departmentName = "경영학부",
+                totalStudyTime = "120H",
+                rankChange = 2,
+            ),
+            DepartmentRanking(
+                rank = 4,
+                departmentName = "전자전기공학부",
+                totalStudyTime = "100H",
+                rankChange = 0,
+            ),
+        )
 }
