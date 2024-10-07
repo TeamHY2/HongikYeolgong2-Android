@@ -10,10 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.feature.setting.domain.repository.model.UserInfo
@@ -24,22 +24,25 @@ private const val PROFILE_IMAGE_SIZE = 56
 @Composable
 fun SettingUserProfile(
     userInfo: UserInfo,
-    profileImage: Painter = painterResource(id = img_settting_profile),
+    profileImageUrl: String = "",
     modifier: Modifier = Modifier,
 ) {
+    val profileImagePainter =
+        if (profileImageUrl.isNotBlank()) {
+            rememberAsyncImagePainter(model = profileImageUrl)
+        } else {
+            painterResource(id = img_settting_profile)
+        }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            modifier
-                .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Spacer(modifier = Modifier.width(1.dp))
         Image(
-            painter = profileImage,
+            painter = profileImagePainter,
             contentDescription = null,
-            modifier =
-                Modifier
-                    .size(PROFILE_IMAGE_SIZE.dp),
+            modifier = Modifier.size(PROFILE_IMAGE_SIZE.dp),
         )
         Spacer(modifier = Modifier.width(20.dp))
         Row {
