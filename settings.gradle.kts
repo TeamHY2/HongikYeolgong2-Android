@@ -44,4 +44,8 @@ include(":timer-presentation")
 include(":onboarding-presentation")
 include(":onboarding-data")
 include(":onboarding-domain")
+
+include(":ranking-presentation")
+include(":ranking-domain")
+
 include(":app:notification")
