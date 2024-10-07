@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.HY2Typography
-import com.teamhy2.feature.setting.presentation.model.UserInfo
+import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.img_settting_profile
 
 private const val PROFILE_IMAGE_SIZE = 56
