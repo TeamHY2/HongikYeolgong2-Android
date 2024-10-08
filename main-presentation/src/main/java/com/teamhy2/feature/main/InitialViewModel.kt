@@ -46,7 +46,7 @@ class InitialViewModel
                         InitialUiState.Success(startDestination = startDestination)
                     return
                 }
-                if(_initialUiState.value is InitialUiState.Success) {
+                if (_initialUiState.value is InitialUiState.Success) {
                     _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(startDestination = startDestination)
                     return
                 }
@@ -78,10 +78,11 @@ class InitialViewModel
                     _initialUiState.value = InitialUiState.Success(urls = urls)
                     return@launch
                 }
-                if (_initialUiState.value is InitialUiState.Success){
-                    _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(urls = urls)
-                    return@launch
-                }
+                if (_initialUiState.value is InitialUiState.Success)
+                    {
+                        _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(urls = urls)
+                        return@launch
+                    }
             }
         }
 
@@ -104,9 +105,8 @@ class InitialViewModel
             }
         }
 
-    companion object{
-        private const val COLLECTION_APP_VERSION ="AppVersion"
-        private const val DOCUMENT_ANDROID ="Android"
-
-    }
+        companion object {
+            private const val COLLECTION_APP_VERSION = "AppVersion"
+            private const val DOCUMENT_ANDROID = "Android"
+        }
     }
