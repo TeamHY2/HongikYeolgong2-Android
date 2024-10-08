@@ -1,9 +1,11 @@
 package com.teamhy2.feature.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.UserRepository
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -75,4 +78,29 @@ class InitialViewModel
                 }
             }
         }
+
+        fun getMinVersion(currentVersion: Long) {
+            viewModelScope.launch {
+                val firebaseStore = FirebaseFirestore.getInstance()
+
+                runCatching {
+                    firebaseStore.collection(COLLECTION_APP_VERSION).document(DOCUMENT_ANDROID).get().await()
+                }
+                    .onSuccess {
+                        val minVersion = it.get("minVersion")
+                        if (minVersion.toString().toLong() > currentVersion) {
+                            _initialUiState.value = InitialUiState.NeedUpdate
+                        }
+                    }
+                    .onFailure {
+                        Log.d("FireStore", "getMinVersion: ${it.message}")
+                    }
+            }
+        }
+
+    companion object{
+        private const val COLLECTION_APP_VERSION ="AppVersion"
+        private const val DOCUMENT_ANDROID ="Android"
+
+    }
     }

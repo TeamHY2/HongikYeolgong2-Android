@@ -2,6 +2,7 @@ package com.teamhy2.feature.main
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -54,6 +55,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val versionCode: Long = packageManager.getPackageInfo(packageName, 0).longVersionCode
+        initialViewModel.getMinVersion(versionCode)
+
         enableEdgeToEdge()
         setContent {
             HY2Theme {
@@ -90,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                             is InitialUiState.Loading -> {
                                 HY2LoadingScreen()
                             }
+
                             is InitialUiState.Success -> {
                                 HY2NavHost(
                                     navController = rememberNavController(),
@@ -106,11 +111,27 @@ class MainActivity : AppCompatActivity() {
                                     },
                                 )
                             }
+
+                            is InitialUiState.NeedUpdate -> {
+                                NeedUpdateScreen(
+                                    onExitClick = { finish() },
+                                    onUpdateClick = ::moveToPlayStoreForUpdate,
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun moveToPlayStoreForUpdate() {
+        startActivity(
+            Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(PLAY_STORE_URL)
+                setPackage("com.android.vending")
+            },
+        )
     }
 
     private fun createSignInIntent() {
@@ -141,6 +162,11 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
+    }
+
+    companion object {
+        private const val PLAY_STORE_URL =
+            "http://play.google.com/store/apps/details?id=com.teamhy2.hongikyeolgong2"
     }
 }
 
