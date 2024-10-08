@@ -78,11 +78,10 @@ class InitialViewModel
                     _initialUiState.value = InitialUiState.Success(urls = urls)
                     return@launch
                 }
-                if (_initialUiState.value is InitialUiState.Success)
-                    {
-                        _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(urls = urls)
-                        return@launch
-                    }
+                if (_initialUiState.value is InitialUiState.Success) {
+                    _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(urls = urls)
+                    return@launch
+                }
             }
         }
 
