@@ -44,8 +44,11 @@ class InitialViewModel
                 if (_initialUiState.value is InitialUiState.Loading) {
                     _initialUiState.value =
                         InitialUiState.Success(startDestination = startDestination)
-                } else {
+                    return
+                }
+                if(_initialUiState.value is InitialUiState.Success) {
                     _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(startDestination = startDestination)
+                    return
                 }
             }
 
@@ -73,8 +76,11 @@ class InitialViewModel
                 val urls = webViewRepository.fetchFirebaseUrls()
                 if (_initialUiState.value is InitialUiState.Loading) {
                     _initialUiState.value = InitialUiState.Success(urls = urls)
-                } else {
+                    return@launch
+                }
+                if (_initialUiState.value is InitialUiState.Success){
                     _initialUiState.value = (_initialUiState.value as InitialUiState.Success).copy(urls = urls)
+                    return@launch
                 }
             }
         }
