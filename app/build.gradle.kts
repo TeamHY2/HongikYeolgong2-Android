@@ -39,6 +39,9 @@ dependencies {
     implementation(projects.timerDomain)
 
     implementation(projects.core.designsystem)
+    implementation(projects.core.remote)
+    implementation(projects.core.auth)
+
     implementation(projects.app.notification)
     implementation(projects.app.auth)
 
