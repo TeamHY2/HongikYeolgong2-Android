@@ -2,6 +2,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     id("hongikyeolgong2.android.library")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -22,7 +23,6 @@ dependencies {
     implementation(libs.retrofit.adapters.result)
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
-
 }
 
 fun getApiKey(propertyKey: String): String {
