@@ -37,5 +37,6 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.firebase.ui.auth)
+    implementation(libs.firebase.firestore.ktx)
     implementation(libs.accompanist.permissions)
 }

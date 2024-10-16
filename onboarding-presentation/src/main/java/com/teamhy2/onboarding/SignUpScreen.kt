@@ -15,7 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,20 +49,12 @@ import com.teamhy2.onboarding.presentation.R
 @Composable
 fun SignUpRoute(
     onSignUpButtonClicked: () -> Unit,
-    alreadySignedUp: () -> Unit,
     modifier: Modifier = Modifier,
     signUpViewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val uiState by signUpViewModel.signUpUiState.collectAsStateWithLifecycle()
     val nickname by signUpViewModel.nickname.collectAsStateWithLifecycle()
     val department by signUpViewModel.department.collectAsStateWithLifecycle()
-    val isUserAlreadySignedUp by signUpViewModel.isUserAlreadySignedUp.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        if (isUserAlreadySignedUp) {
-            alreadySignedUp()
-        }
-    }
 
     SignUpScreen(
         nickname = nickname,
