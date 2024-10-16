@@ -1,13 +1,11 @@
 package com.teamhy2.feature.main.component
 
-import StarsComponent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,16 +20,16 @@ import com.teamhy2.hongikyeolgong2.timer.prsentation.HY2Timer
 
 @Composable
 fun RunningTimerComponent(
+    durationAsSecond: Long,
     startTime: String,
     endTime: String,
     startTimeMeridiem: String,
     endTimeMeridiem: String,
     leftTime: String,
-    starCount: Int,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
-    extendThreshold: String = "00:30:00",
     modifier: Modifier = Modifier,
+    extendThreshold: String = "00:30:00",
 ) {
     Column(
         modifier = modifier,
@@ -39,15 +37,12 @@ fun RunningTimerComponent(
         Spacer(modifier = Modifier.height(20.dp))
         Box {
             HY2Timer(
+                durationAsSecond = durationAsSecond,
                 leftTime = leftTime,
                 startTime = startTime,
                 endTime = endTime,
                 startTimeMeridiem = startTimeMeridiem,
                 endTimeMeridiem = endTimeMeridiem,
-            )
-            StarsComponent(
-                starCount = starCount,
-                modifier = Modifier.align(Alignment.BottomEnd),
             )
         }
         Spacer(modifier = Modifier.height(28.dp))
@@ -74,12 +69,12 @@ fun RunningTimerComponent(
 fun TimerScreenPreview_LessThanExtendThreshold() {
     HY2Theme {
         RunningTimerComponent(
+            durationAsSecond = 14400L,
             startTime = "11:30",
             endTime = "12:00",
             startTimeMeridiem = "AM",
             endTimeMeridiem = "PM",
             leftTime = "00:14:03",
-            starCount = 0,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
@@ -92,12 +87,12 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
 fun TimerScreenPreview_MoreThanExtendThreshold() {
     HY2Theme {
         RunningTimerComponent(
+            durationAsSecond = 14400L,
             startTime = "11:30",
             endTime = "12:00",
             startTimeMeridiem = "AM",
             endTimeMeridiem = "PM",
             leftTime = "00:45:00",
-            starCount = 0,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),

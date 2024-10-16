@@ -172,7 +172,7 @@ class MainViewModel
 
         fun addStudyDay() {
             val uid = Firebase.auth.currentUser?.uid ?: return
-            var startTime = _mainUiState.value.startTime
+            val startTime = _mainUiState.value.startTime
             val startTimeMeridiem = _mainUiState.value.startTimeMeridiem
 
             val timeParts = startTime.split(":").map { it.toInt() }
