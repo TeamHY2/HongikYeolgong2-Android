@@ -8,7 +8,10 @@ android {
 
 dependencies {
     implementation(projects.onboardingDomain)
+    implementation(projects.core.auth)
+
     implementation(projects.app.auth)
+
     implementation(libs.firebase.ui.auth)
     implementation(libs.accompanist.permissions)
 

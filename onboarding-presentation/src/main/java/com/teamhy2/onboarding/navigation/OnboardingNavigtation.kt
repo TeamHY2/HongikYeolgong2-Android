@@ -14,13 +14,11 @@ fun NavController.popUpToOnboarding() {
 }
 
 fun NavGraphBuilder.onboardingScreen(
-    onGoogleLoginClick: () -> Unit,
-    onGoogleLoginDone: () -> Unit,
+    onGoogleSignInDone: () -> Unit,
 ) {
     composable(route = ROUTE) {
         OnboardingRoute(
-            onGoogleLoginClick = onGoogleLoginClick,
-            onGoogleLoginDone = onGoogleLoginDone,
+            onGoogleSignInDone = onGoogleSignInDone,
         )
     }
 }

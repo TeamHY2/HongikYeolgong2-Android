@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -26,9 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -41,13 +37,6 @@ private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val signInLauncher =
-        registerForActivityResult(
-            FirebaseAuthUIActivityResultContract(),
-        ) { res ->
-            this.onSignInResult(res)
-        }
-
     private val initialViewModel: InitialViewModel by viewModels()
 
     @OptIn(ExperimentalPermissionsApi::class)
@@ -99,7 +88,6 @@ class MainActivity : AppCompatActivity() {
                                 HY2NavHost(
                                     navController = rememberNavController(),
                                     urls = (initialUiState as InitialUiState.Success).urls,
-                                    googleSignIn = ::createSignInIntent,
                                     startDestination = (initialUiState as InitialUiState.Success).startDestination,
                                     onSendNotification = { pushText ->
                                         initialViewModel.notificationHandler.showSimpleNotification(
@@ -132,29 +120,6 @@ class MainActivity : AppCompatActivity() {
                 setPackage("com.android.vending")
             },
         )
-    }
-
-    private fun createSignInIntent() {
-        val providers =
-            arrayListOf(
-                AuthUI.IdpConfig.GoogleBuilder().build(),
-            )
-
-        val signInIntent =
-            AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .build()
-        signInLauncher.launch(signInIntent)
-    }
-
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
-        if (result.resultCode == RESULT_OK) {
-            initialViewModel.fetchStartDestination()
-        } else {
-            Log.d("auth", "로그인 실패 ${response?.error?.message}")
-        }
     }
 
     private fun restartMainActivity() {

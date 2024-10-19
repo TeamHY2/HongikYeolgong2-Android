@@ -27,6 +27,7 @@ include(":app:notification")
 
 include(":core:designsystem")
 include(":core:remote")
+include(":core:auth")
 
 include(":calendar-domain")
 include(":calendar-presentation")

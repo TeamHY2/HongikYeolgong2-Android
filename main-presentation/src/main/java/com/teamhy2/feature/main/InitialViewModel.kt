@@ -37,7 +37,7 @@ class InitialViewModel
             fetchFirebaseUrls()
         }
 
-        fun fetchStartDestination() {
+        private fun fetchStartDestination() {
             val uid: String? = Firebase.auth.currentUser?.uid
 
             fun setStartDestination(startDestination: String) {
