@@ -23,7 +23,6 @@ import com.teamhy2.onboarding.navigation.signUpScreen
 fun HY2NavHost(
     navController: NavHostController,
     urls: Map<String, String>,
-    googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -40,8 +39,7 @@ fun HY2NavHost(
             startDestination = startDestination,
         ) {
             onboardingScreen(
-                onGoogleLoginClick = googleSignIn,
-                onGoogleLoginDone = navController::navigateToSignUp,
+                onGoogleSignInDone = navController::navigateToSignUp,
             )
 
             signUpScreen(
