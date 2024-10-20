@@ -3,7 +3,6 @@ package com.teamhy2.feature.setting.presentation
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.firebase.ui.auth.AuthUI
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.onboarding.domain.repository.UserRepository
@@ -39,14 +38,16 @@ class SettingViewModel
         }
 
         fun onLogoutClick(context: Context) {
-            AuthUI.getInstance().signOut(context)
+//            AuthUI.getInstance().signOut(context)
+            // TODO: 서버 마이그레이션
         }
 
         fun onWithdrawClick(context: Context) {
             viewModelScope.launch {
                 userRepository.withdraw()
             }
-            AuthUI.getInstance().signOut(context)
+//            AuthUI.getInstance().signOut(context)
+            // TODO: 서버 마이그레이션
         }
 
         fun updateNotificationSwitchState(isChecked: Boolean) {

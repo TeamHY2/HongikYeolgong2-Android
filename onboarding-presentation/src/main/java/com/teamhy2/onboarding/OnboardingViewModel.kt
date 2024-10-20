@@ -3,7 +3,7 @@ package com.teamhy2.onboarding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.core.auth.SocialSignIn
-import com.teamhy2.onboarding.domain.repository.NewUserRepository
+import com.teamhy2.onboarding.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class OnboardingViewModel
     @Inject
     constructor(
-        private val newUserRepository: NewUserRepository,
+        private val userRepository: UserRepository,
         private val socialSignIn: SocialSignIn,
     ) : ViewModel() {
         private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
@@ -35,7 +35,7 @@ class OnboardingViewModel
         }
 
         private suspend fun requestSignInToServerWithIdToken(idToken: String) {
-            newUserRepository.signIn(idToken)
+            userRepository.signIn(idToken)
                 .onSuccess {
                     _signInState.update { SignInState.Success }
                 }

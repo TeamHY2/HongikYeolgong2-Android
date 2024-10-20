@@ -2,8 +2,6 @@ package com.teamhy2.feature.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.mapper.StudyDayMapper
@@ -18,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,27 +46,29 @@ class MainViewModel
         }
 
         private fun getCalendarData() {
-            val uid = Firebase.auth.currentUser?.uid ?: return
-            viewModelScope.launch {
-                val rawStudyDaysByMonth = studyDayRepository.getStudyDays(uid)
-                studyDays.clear()
-                studyDays.putAll(
-                    rawStudyDaysByMonth.mapValues { entry ->
-                        entry.value.map { studyDayResponse ->
-                            StudyDayMapper.mapToStudyDay(studyDayResponse)
-                        }
-                    },
-                )
-                updateCurrentMonthStudyDays(today.year, today.monthValue)
+//            val uid = Firebase.auth.currentUser?.uid ?: return
+//            viewModelScope.launch {
+//                val rawStudyDaysByMonth = studyDayRepository.getStudyDays(uid)
+//                studyDays.clear()
+//                studyDays.putAll(
+//                    rawStudyDaysByMonth.mapValues { entry ->
+//                        entry.value.map { studyDayResponse ->
+//                            StudyDayMapper.mapToStudyDay(studyDayResponse)
+//                        }
+//                    },
+//                )
+//                updateCurrentMonthStudyDays(today.year, today.monthValue)
+//
+//                val yearMonthKey = "${today.year}-${String.format("%02d", today.monthValue)}"
+//                val todayStudyDay = studyDays[yearMonthKey]?.find { it.date == today }
+//
+//                _mainUiState.value =
+//                    _mainUiState.value.copy(
+//                        starCount = calculateTodayStarCount(todayStudyDay),
+//                    )
+//            }
 
-                val yearMonthKey = "${today.year}-${String.format("%02d", today.monthValue)}"
-                val todayStudyDay = studyDays[yearMonthKey]?.find { it.date == today }
-
-                _mainUiState.value =
-                    _mainUiState.value.copy(
-                        starCount = calculateTodayStarCount(todayStudyDay),
-                    )
-            }
+            // TODO: 서버 마이그레이션
         }
 
         private fun updateCurrentMonthStudyDays(
@@ -171,23 +170,25 @@ class MainViewModel
         }
 
         fun addStudyDay() {
-            val uid = Firebase.auth.currentUser?.uid ?: return
-            var startTime = _mainUiState.value.startTime
-            val startTimeMeridiem = _mainUiState.value.startTimeMeridiem
+//            val uid = Firebase.auth.currentUser?.uid ?: return
+//            var startTime = _mainUiState.value.startTime
+//            val startTimeMeridiem = _mainUiState.value.startTimeMeridiem
+//
+//            val timeParts = startTime.split(":").map { it.toInt() }
+//            var hour = timeParts[0]
+//            val minute = timeParts[1]
+//
+//            if (startTimeMeridiem == "PM") {
+//                hour += 12
+//            }
+//            val adjustedStartTime = LocalTime.of(hour, minute)
+//
+//            if (uid.isNotEmpty() && startTime.isNotEmpty()) {
+//                viewModelScope.launch {
+//                    studyDayRepository.addStudyDay(uid, adjustedStartTime.toString())
+//                }
+//            }
 
-            val timeParts = startTime.split(":").map { it.toInt() }
-            var hour = timeParts[0]
-            val minute = timeParts[1]
-
-            if (startTimeMeridiem == "PM") {
-                hour += 12
-            }
-            val adjustedStartTime = LocalTime.of(hour, minute)
-
-            if (uid.isNotEmpty() && startTime.isNotEmpty()) {
-                viewModelScope.launch {
-                    studyDayRepository.addStudyDay(uid, adjustedStartTime.toString())
-                }
-            }
+            // TODO: 서버 마이그레이션
         }
     }

@@ -22,7 +22,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HongikYeolgong2"
 include(":app")
-include(":app:auth")
 include(":app:notification")
 
 include(":core:designsystem")
