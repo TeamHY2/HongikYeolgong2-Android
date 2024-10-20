@@ -14,9 +14,9 @@ import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
-import com.teamhy2.onboarding.navigation.navigateToSignUp
 import com.teamhy2.onboarding.navigation.onboardingScreen
 import com.teamhy2.onboarding.navigation.popUpToOnboarding
+import com.teamhy2.onboarding.navigation.popUpToSignUp
 import com.teamhy2.onboarding.navigation.signUpScreen
 
 @Composable
@@ -39,7 +39,7 @@ fun HY2NavHost(
             startDestination = startDestination,
         ) {
             onboardingScreen(
-                onGoogleSignInDone = navController::navigateToSignUp,
+                onGoogleSignInDone = navController::popUpToSignUp,
             )
 
             signUpScreen(
