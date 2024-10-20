@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.core.auth.GoogleSignInButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray600
@@ -35,16 +38,23 @@ import com.teamhy2.onboarding.presentation.R
 fun OnboardingRoute(
     onGoogleSignInDone: () -> Unit,
     modifier: Modifier = Modifier,
+    onboardingViewModel: OnboardingViewModel = hiltViewModel(),
 ) {
+    val signInState by onboardingViewModel.signInState.collectAsStateWithLifecycle()
+
+    if (signInState == SignInState.Success) {
+        onGoogleSignInDone()
+    }
+
     OnboardingScreen(
-        onGoogleSignInDone = onGoogleSignInDone,
+        onGoogleSignInClick = onboardingViewModel::signInWithGoogleIdToken,
         modifier = modifier,
     )
 }
 
 @Composable
 fun OnboardingScreen(
-    onGoogleSignInDone: () -> Unit,
+    onGoogleSignInClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val onboardingImages =
@@ -58,17 +68,17 @@ fun OnboardingScreen(
 
     Column(
         modifier =
-        modifier
-            .fillMaxSize()
-            .background(BackgroundBlack),
+            modifier
+                .fillMaxSize()
+                .background(BackgroundBlack),
     ) {
         HorizontalPager(
             state = pagerState,
             modifier =
-            Modifier
-                .padding(top = 55.dp)
-                .weight(1f)
-                .fillMaxWidth(),
+                Modifier
+                    .padding(top = 55.dp)
+                    .weight(1f)
+                    .fillMaxWidth(),
         ) { page ->
             Box(
                 modifier = Modifier.fillMaxSize(),
@@ -95,9 +105,9 @@ fun OnboardingScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
         GoogleSignInButton(
-            onGoogleSignInDone = onGoogleSignInDone,
+            onGoogleSignInClick = onGoogleSignInClick,
             modifier = Modifier.padding(horizontal = 24.dp),
-            )
+        )
         Spacer(modifier = Modifier.height(32.dp))
     }
 }
@@ -158,7 +168,7 @@ private fun OnboardingScreenPreview() {
     HY2Theme {
         OnboardingScreen(
             modifier = Modifier.fillMaxSize(),
-            onGoogleSignInDone = { },
+            onGoogleSignInClick = {},
         )
     }
 }
