@@ -8,10 +8,8 @@ android {
 
 dependencies {
     implementation(projects.onboardingDomain)
-    implementation(projects.app.auth)
     implementation(projects.core.remote)
     implementation(projects.core.auth)
 
     implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.ui.auth)
 }

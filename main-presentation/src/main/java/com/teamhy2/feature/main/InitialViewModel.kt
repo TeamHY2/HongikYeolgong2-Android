@@ -3,8 +3,6 @@ package com.teamhy2.feature.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
@@ -38,7 +36,7 @@ class InitialViewModel
         }
 
         private fun fetchStartDestination() {
-            val uid: String? = Firebase.auth.currentUser?.uid
+            val uid: String? = null
 
             fun setStartDestination(startDestination: String) {
                 if (_initialUiState.value is InitialUiState.Loading) {
@@ -58,7 +56,7 @@ class InitialViewModel
                 return
             } else {
                 viewModelScope.launch {
-                    val isUserExists: Boolean = userRepository.checkUserExists(uid)
+                    val isUserExists: Boolean = false
 
                     if (isUserExists) {
                         // 2. UID가 null이 아니고 isUserExists가 true  -> 구글로그인이 되어 있고 유저 데이터가 존재함

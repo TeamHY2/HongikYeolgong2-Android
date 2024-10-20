@@ -1,11 +1,9 @@
 package com.teamhy2.onboarding.data.di
 
-import com.teamhy2.onboarding.data.repository.DefaultUserRepository
 import com.teamhy2.onboarding.data.repository.DefaultWebViewRepository
 import com.teamhy2.onboarding.data.repository.InMemoryDepartmentRepository
 import com.teamhy2.onboarding.data.repository.fake.FakeUserRepository
 import com.teamhy2.onboarding.domain.repository.DepartmentRepository
-import com.teamhy2.onboarding.domain.repository.NewUserRepository
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import dagger.Binds
@@ -23,13 +21,9 @@ abstract class OnboardingRepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindsNewUserRepository(fakeUserRepository: FakeUserRepository): NewUserRepository
+    abstract fun bindsNewUserRepository(fakeUserRepository: FakeUserRepository): UserRepository
 
     @Binds
     @Singleton
     abstract fun bindsDepartmentRepository(inMemoryDepartmentRepository: InMemoryDepartmentRepository): DepartmentRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindsUserRepository(defaultUserRepository: DefaultUserRepository): UserRepository
 }

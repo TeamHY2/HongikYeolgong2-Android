@@ -3,14 +3,14 @@ package com.teamhy2.onboarding.data.repository
 import com.benenfeldt.remote.api.UserService
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
-import com.teamhy2.onboarding.domain.repository.NewUserRepository
+import com.teamhy2.onboarding.domain.repository.UserRepository
 import javax.inject.Inject
 
 class RemoteUserRepository
     @Inject
     constructor(
         private val userService: UserService,
-    ) : NewUserRepository {
+    ) : UserRepository {
         override suspend fun checkNicknameDuplication(nickname: String): Result<Boolean> {
             return userService.checkNicknameDuplication(nickname)
         }
@@ -35,5 +35,10 @@ class RemoteUserRepository
                     ),
                 )
             }
+        }
+
+        override suspend fun withdraw(): Result<Unit> {
+//        return userService.withdraw()
+            return Result.success(Unit)
         }
     }
