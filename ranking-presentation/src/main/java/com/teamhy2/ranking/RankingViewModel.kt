@@ -12,22 +12,23 @@ import javax.inject.Inject
 class RankingViewModel
     @Inject
     constructor() : ViewModel() {
-        private val _rankingUiState = MutableStateFlow(RankingUiState())
-        val rankingUiState: StateFlow<RankingUiState> = _rankingUiState.asStateFlow()
+        private lateinit var _rankingUiState: MutableStateFlow<RankingUiState>
+        val rankingUiState: StateFlow<RankingUiState>
+            get() = _rankingUiState.asStateFlow()
 
         init {
             loadRankingData()
         }
 
         private fun loadRankingData() {
-            // TODO 서버로부터 이번주 랭킹을 가져오는 로직 구현
+            // TODO: 랭킹을 서버로부터 불러 오는 로직을 구현
         }
 
         fun loadLastWeekRanking() {
-            // TODO 서버로부터 이전주 랭킹을 가져오는 로직 구현
+            // TODO: 이전 주 랭킹을 불러오는 로직 구현
         }
 
         fun loadNextWeekRanking() {
-            // TODO 서버로부터 다음주 랭킹을 가져오는 로직 구현
+            // TODO: 다음 주 랭킹을 불러오는 로직 구현
         }
     }
