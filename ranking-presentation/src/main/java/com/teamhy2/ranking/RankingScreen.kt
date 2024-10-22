@@ -118,8 +118,8 @@ fun RankingBody(
             val item = rankingItems[index]
             RankingItem(
                 rank = item.rank,
-                department = item.departmentName,
-                hours = item.totalStudyTime,
+                departmentName = item.departmentName,
+                hours = item.weeklyStudyTime,
                 rankChange = item.rankChange,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -132,26 +132,26 @@ fun RankingBody(
 fun RankingScreenPreview() {
     val sampleItems =
         listOf(
-            DepartmentRanking(1, "국어국문학과", "200H", 1),
-            DepartmentRanking(2, "디자인학부", "170H", 1),
-            DepartmentRanking(3, "경영학부", "120H", -1),
-            DepartmentRanking(4, "건축학부", "80H", 1),
-            DepartmentRanking(5, "불어불문학과", "78H", -4),
-            DepartmentRanking(6, "사회교육과", "60H", 0),
-            DepartmentRanking(7, "수학교육과", "56H", 2),
-            DepartmentRanking(8, "국어교육과", "50H", 1),
-            DepartmentRanking(9, "체육교육과", "45H", -2),
-            DepartmentRanking(10, "음악교육과", "40H", 3),
-            DepartmentRanking(11, "영어교육과", "38H", 0),
-            DepartmentRanking(12, "역사학과", "35H", 1),
-            DepartmentRanking(13, "철학과", "33H", -3),
-            DepartmentRanking(14, "미술학부", "30H", 2),
-            DepartmentRanking(15, "전자공학과", "28H", 0),
-            DepartmentRanking(16, "컴퓨터공학과", "25H", -1),
-            DepartmentRanking(17, "화학과", "22H", 3),
-            DepartmentRanking(18, "생물학과", "20H", -2),
-            DepartmentRanking(19, "지리학과", "18H", 1),
-            DepartmentRanking(20, "경제학과", "15H", 2),
+            DepartmentRanking(1, "국어국문학과", 200, 1),
+            DepartmentRanking(2, "디자인학부", 170, 1),
+            DepartmentRanking(3, "경영학부", 120, -1),
+            DepartmentRanking(4, "건축학부", 80, 1),
+            DepartmentRanking(5, "불어불문학과", 78, -4),
+            DepartmentRanking(6, "사회교육과", 60, 0),
+            DepartmentRanking(7, "수학교육과", 56, 2),
+            DepartmentRanking(8, "국어교육과", 50, 1),
+            DepartmentRanking(9, "체육교육과", 45, -2),
+            DepartmentRanking(10, "음악교육과", 40, 3),
+            DepartmentRanking(11, "영어교육과", 38, 0),
+            DepartmentRanking(12, "역사학과", 35, 1),
+            DepartmentRanking(13, "철학과", 33, -3),
+            DepartmentRanking(14, "미술학부", 30, 2),
+            DepartmentRanking(15, "전자공학과", 28, 0),
+            DepartmentRanking(16, "컴퓨터공학과", 25, -1),
+            DepartmentRanking(17, "화학과", 22, 3),
+            DepartmentRanking(18, "생물학과", 20, -2),
+            DepartmentRanking(19, "지리학과", 18, 1),
+            DepartmentRanking(20, "경제학과", 15, 2),
         )
 
     val sampleUiState =

@@ -54,8 +54,8 @@ enum class RankItemStyle(
 @Composable
 fun RankingItem(
     rank: Int,
-    department: String,
-    hours: String,
+    departmentName: String,
+    hours: Int,
     rankChange: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -111,13 +111,13 @@ fun RankingItem(
         )
         Spacer(modifier = Modifier.width(18.dp))
         Text(
-            text = department,
+            text = departmentName,
             style = HY2Typography().body05,
             color = rankItemStyle.textColor,
             modifier = Modifier.weight(1f),
         )
         Text(
-            text = hours,
+            text = "${hours}H",
             style = HY2Typography().body05,
             color = rankItemStyle.textColor,
         )
@@ -148,8 +148,8 @@ fun RankingItemPreview(
 ) {
     RankingItem(
         rank = departmentRanking.rank,
-        department = departmentRanking.departmentName,
-        hours = departmentRanking.totalStudyTime,
+        departmentName = departmentRanking.departmentName,
+        hours = departmentRanking.weeklyStudyTime,
         rankChange = departmentRanking.rankChange,
     )
 }
@@ -160,25 +160,25 @@ class SampleRankingProvider : PreviewParameterProvider<DepartmentRanking> {
             DepartmentRanking(
                 rank = 1,
                 departmentName = "국어국문학과",
-                totalStudyTime = "200H",
+                weeklyStudyTime = 200,
                 rankChange = 1,
             ),
             DepartmentRanking(
                 rank = 2,
                 departmentName = "디자인학부",
-                totalStudyTime = "170H",
+                weeklyStudyTime = 170,
                 rankChange = -1,
             ),
             DepartmentRanking(
                 rank = 3,
                 departmentName = "경영학부",
-                totalStudyTime = "120H",
+                weeklyStudyTime = 120,
                 rankChange = 2,
             ),
             DepartmentRanking(
                 rank = 4,
                 departmentName = "전자전기공학부",
-                totalStudyTime = "100H",
+                weeklyStudyTime = 100,
                 rankChange = 0,
             ),
         )
