@@ -1,5 +1,6 @@
 package com.benenfeldt.remote.di
 
+import com.benenfeldt.remote.api.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 object ApiModule {
     @Singleton
     @Provides
-    fun provideUserService(retrofit: Retrofit): ApiModule {
-        return retrofit.create(ApiModule::class.java)
+    fun provideUserService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
     }
 }

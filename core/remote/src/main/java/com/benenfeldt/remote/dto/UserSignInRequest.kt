@@ -5,5 +5,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserSignInRequest(
     val idToken: String,
-    val socialPlatform: String = "google",
 )
