@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
+import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,21 +20,32 @@ import javax.inject.Inject
 class SettingViewModel
     @Inject
     constructor(
-        private val repository: SettingsRepository,
+        private val settingsRepository: SettingsRepository,
         private val userRepository: UserRepository,
     ) : ViewModel() {
-        private val _settingUiState = MutableStateFlow(SettingUiState())
+        private val _settingUiState = MutableStateFlow<SettingUiState>(SettingUiState.Loading)
         val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
 
         init {
-            loadNotificationSwitchState()
+            loadSettings()
         }
 
-        private fun loadNotificationSwitchState() {
+        private fun loadSettings() {
             viewModelScope.launch {
-                repository.notificationSwitchState.collectLatest { isChecked ->
+                try {
+                    // TODO: 비동기로 UserInfo를 가져오는 코드를 추가
+                    val userInfo = UserInfo("서재원", "전자전기공학부")
+
+                    settingsRepository.notificationSwitchState.collectLatest { isChecked ->
+                        _settingUiState.value =
+                            SettingUiState.Success(
+                                isNotificationSwitchChecked = isChecked,
+                                userInfo = userInfo,
+                            )
+                    }
+                } catch (e: Exception) {
                     _settingUiState.value =
-                        settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
+                        SettingUiState.Error("Failed to load settings: ${e.message}")
                 }
             }
         }
@@ -45,15 +57,20 @@ class SettingViewModel
         fun onWithdrawClick(context: Context) {
             viewModelScope.launch {
                 userRepository.withdraw()
+                AuthUI.getInstance().signOut(context)
             }
-            AuthUI.getInstance().signOut(context)
         }
 
         fun updateNotificationSwitchState(isChecked: Boolean) {
             viewModelScope.launch {
-                repository.saveNotificationSwitchState(isChecked)
-                _settingUiState.value =
-                    settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
+                settingsRepository.saveNotificationSwitchState(isChecked)
+                val currentState = _settingUiState.value
+                if (currentState is SettingUiState.Success) {
+                    _settingUiState.value =
+                        currentState.copy(
+                            isNotificationSwitchChecked = isChecked,
+                        )
+                }
             }
         }
     }
