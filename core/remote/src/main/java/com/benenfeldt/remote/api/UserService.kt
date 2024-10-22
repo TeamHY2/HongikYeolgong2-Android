@@ -1,5 +1,6 @@
 package com.benenfeldt.remote.api
 
+import com.benenfeldt.remote.dto.DefaultResponse
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignInResponse
 import com.benenfeldt.remote.dto.UserSignUpRequest
@@ -14,10 +15,10 @@ interface UserService {
         @Query("nickname") nickname: String,
     ): Result<Boolean>
 
-    @POST("/api/v1/auth/login")
+    @POST("/api/v1/auth/login-google")
     suspend fun signIn(
-        @Body signInRequest: UserSignInRequest,
-    ): Result<UserSignInResponse>
+        @Body userSignInRequest: UserSignInRequest,
+    ): Result<DefaultResponse<UserSignInResponse>>
 
     @POST("/api/v1/user/join")
     suspend fun signUp(
