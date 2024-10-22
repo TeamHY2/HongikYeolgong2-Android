@@ -36,14 +36,18 @@ import com.teamhy2.onboarding.presentation.R
 
 @Composable
 fun OnboardingRoute(
-    onGoogleSignInDone: () -> Unit,
+    onGuestSignedIn: () -> Unit,
+    onUserSignedIn: () -> Unit,
     modifier: Modifier = Modifier,
     onboardingViewModel: OnboardingViewModel = hiltViewModel(),
 ) {
     val signInState by onboardingViewModel.signInState.collectAsStateWithLifecycle()
 
-    if (signInState == SignInState.Success) {
-        onGoogleSignInDone()
+    if (signInState == SignInState.SuccessfulSignedInGuest) {
+        onGuestSignedIn()
+    }
+    if (signInState == SignInState.SuccessfulSignedInUser) {
+        onUserSignedIn()
     }
 
     OnboardingScreen(

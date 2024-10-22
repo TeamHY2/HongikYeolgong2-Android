@@ -36,8 +36,12 @@ class OnboardingViewModel
 
         private suspend fun requestSignInToServerWithIdToken(idToken: String) {
             userRepository.signIn(idToken)
-                .onSuccess {
-                    _signInState.update { SignInState.Success }
+                .onSuccess { isAlreadyExist ->
+                    if (isAlreadyExist) {
+                        _signInState.update { SignInState.SuccessfulSignedInUser }
+                        return@onSuccess
+                    }
+                    _signInState.update { SignInState.SuccessfulSignedInGuest }
                 }
                 .onFailure {
                     _signInState.update { SignInState.Failure }

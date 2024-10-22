@@ -80,10 +80,10 @@ class SignUpViewModel
                 userRepository.checkNicknameDuplication(nickname.value)
                     .onSuccess { isDuplicated ->
                         if (isDuplicated) {
-                            _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
+                            _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.DUPLICATED)
                             return@onSuccess
                         }
-                        _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.DUPLICATED)
+                        _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
                     }
                     .onFailure {
                         // TODO: error flow

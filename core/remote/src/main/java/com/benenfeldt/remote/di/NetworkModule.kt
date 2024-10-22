@@ -2,6 +2,11 @@ package com.benenfeldt.remote.di
 
 import android.util.Log
 import com.benenfeldt.remote.BuildConfig
+import com.benenfeldt.remote.token.AccessTokenInterceptor
+import com.benenfeldt.remote.token.NeedAuthClient
+import com.benenfeldt.remote.token.NeedAuthRetrofit
+import com.benenfeldt.remote.token.PublicClient
+import com.benenfeldt.remote.token.PublicRetrofit
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import dagger.Module
@@ -34,6 +39,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @PublicClient
     fun providePublicOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
@@ -45,7 +51,40 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providePublicRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @PublicRetrofit
+    fun providePublicRetrofit(
+        @PublicClient okHttpClient: OkHttpClient,
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(Json.asConverterFactory(CONTENT_TYPE.toMediaType()))
+            .addCallAdapterFactory(ResultCallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @NeedAuthClient
+    fun provideAuthOkHttpClient(
+        accessTokenInterceptor: AccessTokenInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(accessTokenInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @NeedAuthRetrofit
+    fun provideAuthRetrofit(
+        @NeedAuthClient okHttpClient: OkHttpClient,
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(Json.asConverterFactory(CONTENT_TYPE.toMediaType()))

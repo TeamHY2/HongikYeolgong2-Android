@@ -23,6 +23,8 @@ dependencies {
     implementation(libs.retrofit.adapters.result)
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.datastore.preferences)
 }
 
 fun getApiKey(propertyKey: String): String {

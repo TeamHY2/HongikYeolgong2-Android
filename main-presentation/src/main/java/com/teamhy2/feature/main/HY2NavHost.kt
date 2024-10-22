@@ -39,7 +39,8 @@ fun HY2NavHost(
             startDestination = startDestination,
         ) {
             onboardingScreen(
-                onGoogleSignInDone = navController::popUpToSignUp,
+                onUserSignedIn = navController::popUpToMain,
+                onGuestSignedIn = navController::popUpToSignUp,
             )
 
             signUpScreen(

@@ -1,5 +1,6 @@
 package com.teamhy2.onboarding.data.repository.fake
 
+import com.teamhy2.onboarding.domain.repository.AlreadyExist
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -17,8 +18,8 @@ class FakeUserRepository
             return Result.success(Unit)
         }
 
-        override suspend fun signIn(idToken: String): Result<Unit> {
-            return Result.success(Unit)
+        override suspend fun signIn(idToken: String): Result<AlreadyExist> {
+            return Result.success(true)
         }
 
         override suspend fun withdraw(): Result<Unit> {
