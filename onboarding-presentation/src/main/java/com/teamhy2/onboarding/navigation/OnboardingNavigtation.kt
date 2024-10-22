@@ -13,10 +13,14 @@ fun NavController.popUpToOnboarding() {
     }
 }
 
-fun NavGraphBuilder.onboardingScreen(onGoogleSignInDone: () -> Unit) {
+fun NavGraphBuilder.onboardingScreen(
+    onGuestSignedIn: () -> Unit,
+    onUserSignedIn: () -> Unit,
+) {
     composable(route = ROUTE) {
         OnboardingRoute(
-            onGoogleSignInDone = onGoogleSignInDone,
+            onGuestSignedIn = onGuestSignedIn,
+            onUserSignedIn = onUserSignedIn,
         )
     }
 }
