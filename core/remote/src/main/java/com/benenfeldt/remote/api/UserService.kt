@@ -1,6 +1,7 @@
 package com.benenfeldt.remote.api
 
 import com.benenfeldt.remote.dto.DefaultResponse
+import com.benenfeldt.remote.dto.UserNicknameDuplicationResponse
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignInResponse
 import com.benenfeldt.remote.dto.UserSignUpRequest
@@ -13,7 +14,7 @@ interface UserService {
     @GET("/api/v1/user/duplicate-nickname")
     suspend fun checkNicknameDuplication(
         @Query("nickname") nickname: String,
-    ): Result<Boolean>
+    ): Result<DefaultResponse<UserNicknameDuplicationResponse>>
 
     @POST("/api/v1/auth/login-google")
     suspend fun signIn(

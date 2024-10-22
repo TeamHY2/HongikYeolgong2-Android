@@ -3,6 +3,7 @@ package com.teamhy2.onboarding.data.repository
 import com.benenfeldt.remote.api.UserService
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
+import com.benenfeldt.remote.mapper.toResult
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ class RemoteUserRepository
         private val userService: UserService,
     ) : UserRepository {
         override suspend fun checkNicknameDuplication(nickname: String): Result<Boolean> {
-            return userService.checkNicknameDuplication(nickname)
+            return userService.checkNicknameDuplication(nickname).toResult { it.data.duplicate }
         }
 
         override suspend fun signUp(

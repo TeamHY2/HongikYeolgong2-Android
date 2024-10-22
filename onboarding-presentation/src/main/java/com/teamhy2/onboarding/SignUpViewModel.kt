@@ -78,13 +78,15 @@ class SignUpViewModel
         fun checkNicknameDuplication() {
             viewModelScope.launch {
                 userRepository.checkNicknameDuplication(nickname.value)
-                    .onSuccess {
-                        _signUpUiState.value =
-                            _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
+                    .onSuccess { isDuplicated ->
+                        if (isDuplicated) {
+                            _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
+                            return@onSuccess
+                        }
+                        _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.DUPLICATED)
                     }
                     .onFailure {
-                        _signUpUiState.value =
-                            _signUpUiState.value.copy(nicknameState = NicknameState.DUPLICATED)
+                        // TODO: error flow
                     }
             }
         }
