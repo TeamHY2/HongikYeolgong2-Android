@@ -1,6 +1,7 @@
 package com.teamhy2.ranking.model
 
 data class RankingUiState(
-    val currentWeek: String = "",
-    val departmentRankings: List<DepartmentRanking> = emptyList(),
+    val loading: Boolean = false,
+    val currentWeek: String,
+    val departmentRankings: List<DepartmentRanking>,
 )
