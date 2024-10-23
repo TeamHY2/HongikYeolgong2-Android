@@ -1,7 +1,12 @@
 package com.teamhy2.ranking.model
 
-data class RankingUiState(
-    val loading: Boolean = false,
-    val currentWeek: String,
-    val departmentRankings: List<DepartmentRanking>,
-)
+sealed interface RankingUiState {
+    object Loading : RankingUiState
+
+    data class Success(
+        val currentWeek: String,
+        val departmentRankings: List<DepartmentRanking>,
+    ) : RankingUiState
+
+    data class Error(val message: String) : RankingUiState
+}
