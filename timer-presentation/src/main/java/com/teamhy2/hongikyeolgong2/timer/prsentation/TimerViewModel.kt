@@ -8,6 +8,7 @@ import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
@@ -22,9 +23,10 @@ class TimerViewModel
         private lateinit var timer: Timer
 
         private val _timerState = MutableStateFlow(TimerUiModel())
-        val timerState: StateFlow<TimerUiModel> = _timerState
+        val timerState: StateFlow<TimerUiModel> = _timerState.asStateFlow()
 
-        private var durationHour: Duration? = null
+        private val _durationHour: MutableStateFlow<Duration> = MutableStateFlow(Duration.ZERO)
+        val durationHour: StateFlow<Duration> = _durationHour.asStateFlow()
 
         init {
             getStudyRoomDuration()
@@ -33,18 +35,16 @@ class TimerViewModel
         private fun getStudyRoomDuration() {
             viewModelScope.launch {
                 val hours = timerRepository.getStudyRoomHourDuration()
-                durationHour = Duration.ofHours(hours)
+                _durationHour.value = Duration.ofHours(hours)
             }
         }
 
         fun setTimer(
             startTime: LocalDateTime,
-            duration: Duration? = durationHour,
+            duration: Duration = durationHour.value,
             events: Map<Long, () -> Unit>,
         ) {
-            val timerDuration = duration ?: Duration.ofHours(6)
-
-            timer = Timer(startTime, timerDuration, events)
+            timer = Timer(startTime, duration, events)
             _timerState.value =
                 TimerUiModel(
                     startTime = timer.formattedStartTime,

@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
@@ -48,10 +47,11 @@ fun MainRoute(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
-    val uiState: MainUiState = mainViewModel.mainUiState.collectAsState().value
+    val uiState: MainUiState by mainViewModel.mainUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val timerViewModel: TimerViewModel = hiltViewModel()
-    val timerState by timerViewModel.timerState.collectAsState()
+    val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
+    val duration by timerViewModel.durationHour.collectAsStateWithLifecycle()
 
     mainViewModel.updateTimerStateFromTimerViewModel(timerState)
 
@@ -119,6 +119,7 @@ fun MainRoute(
     }
 
     MainScreen(
+        durationAsSecond = duration.seconds,
         uiState = uiState,
         modifier = modifier,
         onSettingClick = onSettingClick,
@@ -172,6 +173,7 @@ private fun startTimer(
 
 @Composable
 fun MainScreen(
+    durationAsSecond: Long,
     onSettingClick: () -> Unit,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
@@ -194,16 +196,15 @@ fun MainScreen(
                     .fillMaxWidth(),
         )
         MainBody(
+            durationAsSecond = durationAsSecond,
+            uiState = uiState,
             onSeatingChartClick = onSeatingChartClick,
             onStudyRoomStartClick = onStudyRoomStartClick,
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
-            uiState = uiState,
-            modifier =
-                Modifier
-                    .padding(horizontal = 24.dp),
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
     }
 }
@@ -248,13 +249,14 @@ private fun MainHeader(
 
 @Composable
 private fun MainBody(
+    durationAsSecond: Long,
+    uiState: MainUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
-    uiState: MainUiState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -266,15 +268,14 @@ private fun MainBody(
         when (uiState.isTimerRunning) {
             true -> {
                 RunningTimerComponent(
+                    durationAsSecond = durationAsSecond,
                     startTime = uiState.startTime,
                     endTime = uiState.endTime,
                     startTimeMeridiem = uiState.startTimeMeridiem,
                     endTimeMeridiem = uiState.endTimeMeridiem,
                     leftTime = uiState.leftTime,
-                    starCount = uiState.starCount,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
-                    modifier = Modifier.height(308.dp),
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -306,6 +307,7 @@ private fun MainScreenPreview() {
 
     HY2Theme {
         MainScreen(
+            durationAsSecond = 0,
             onSettingClick = { },
             onSeatingChartClick = { },
             onStudyRoomStartClick = { },

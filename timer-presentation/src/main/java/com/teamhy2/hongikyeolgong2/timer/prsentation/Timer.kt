@@ -1,5 +1,6 @@
 package com.teamhy2.hongikyeolgong2.timer.prsentation
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,17 +10,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Black
+import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.Yellow100
 import com.teamhy2.hongikyeolgong2.timer.presentation.R
@@ -28,6 +34,7 @@ private const val LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS = 30 * 60L
 
 @Composable
 fun HY2Timer(
+    durationAsSecond: Long,
     leftTime: String,
     startTime: String,
     endTime: String,
@@ -45,7 +52,11 @@ fun HY2Timer(
             endTimeMeridiem = endTimeMeridiem,
         )
         Spacer(modifier = Modifier.height(32.dp))
-        TimeLeftSection(leftTime = leftTime)
+        TimeLeftSection(
+            durationAsSecond = durationAsSecond,
+            leftTime = leftTime,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -124,20 +135,27 @@ fun StartEndSection(
 
 @Composable
 fun TimeLeftSection(
+    durationAsSecond: Long,
     leftTime: String,
     modifier: Modifier = Modifier,
 ) {
     val leftSeconds: Long =
         if (leftTime.isNotEmpty()) {
             val parts = leftTime.split(":")
-            if (parts.size == 3) {
-                // leftTime이 "HH:MM:SS" 형식일 경우
-                parts[0].toLong() * 3600 + parts[1].toLong() * 60 + parts[2].toLong()
-            } else if (parts.size == 2) {
-                // leftTime이 "MM:SS" 형식일 경우
-                parts[0].toLong() * 60 + parts[1].toLong()
-            } else {
-                0L
+            when (parts.size) {
+                3 -> {
+                    // leftTime이 "HH:MM:SS" 형식일 경우
+                    parts[0].toLong() * 3600 + parts[1].toLong() * 60 + parts[2].toLong()
+                }
+
+                2 -> {
+                    // leftTime이 "MM:SS" 형식일 경우
+                    parts[0].toLong() * 60 + parts[1].toLong()
+                }
+
+                else -> {
+                    0L
+                }
             }
         } else {
             0L
@@ -145,6 +163,11 @@ fun TimeLeftSection(
 
     val leftTimeTextColor =
         if (leftSeconds <= LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Gray100
+
+    val currentProgress by animateFloatAsState(
+        targetValue = leftSeconds / durationAsSecond.toFloat(),
+        label = "남은 시간에 대한 프로그레스 바 애니메이션",
+    )
 
     Column(modifier = modifier) {
         Text(
@@ -154,6 +177,19 @@ fun TimeLeftSection(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = leftTime, style = HY2Theme.typography.body01, color = leftTimeTextColor)
+        Spacer(modifier = Modifier.height(16.dp))
+        LinearProgressIndicator(
+            progress = { currentProgress },
+            color = if (leftSeconds <= LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS) Yellow100 else Blue100,
+            trackColor = Gray600,
+            strokeCap = StrokeCap.Square,
+            gapSize = 0.dp,
+            drawStopIndicator = {},
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(8.dp),
+        )
     }
 }
 
@@ -166,6 +202,7 @@ private fun HY2TimerPreview() {
 
     HY2Theme {
         HY2Timer(
+            durationAsSecond = 14400,
             leftTime = leftTime,
             startTime = startTime,
             endTime = endTime,
@@ -203,6 +240,7 @@ private fun TimeLeftSectionPreview() {
 
     HY2Theme {
         TimeLeftSection(
+            durationAsSecond = 14400,
             leftTime = leftTime,
             modifier =
                 Modifier
