@@ -7,9 +7,10 @@ sealed interface SettingUiState {
 
     data class Success(
         val isNotificationSwitchChecked: Boolean,
-        val isSignedOutOrWithDraw: Boolean,
         val userInfo: UserInfo,
     ) : SettingUiState
+
+    data object Expired : SettingUiState
 
     data class Error(val message: String) : SettingUiState
 }

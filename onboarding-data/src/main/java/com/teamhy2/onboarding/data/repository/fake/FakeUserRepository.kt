@@ -22,6 +22,10 @@ class FakeUserRepository
             return Result.success(true)
         }
 
+        override suspend fun signOut(): Result<Unit> {
+            return Result.success(Unit)
+        }
+
         override suspend fun withdraw(): Result<Unit> {
             return Result.success(Unit)
         }

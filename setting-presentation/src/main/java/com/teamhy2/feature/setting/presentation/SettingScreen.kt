@@ -2,7 +2,6 @@ package com.teamhy2.feature.setting.presentation
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +47,7 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 fun SettingRoute(
     noticeUrl: String,
     onInquiryClick: () -> Unit,
-    onLogoutOrWithdrawComplete: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
@@ -56,7 +56,7 @@ fun SettingRoute(
 
     SettingScreen(
         settingUiState = settingUiState,
-        onLogoutClick = viewModel::logout,
+        onLogoutClick = viewModel::signOut,
         onWithdrawClick = viewModel::withdraw,
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
@@ -66,7 +66,7 @@ fun SettingRoute(
             context.startActivity(intent)
         },
         onInquiryClick = onInquiryClick,
-        onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
+        onSignOutOrWithdrawComplete = onSignOutOrWithdrawComplete,
         modifier = modifier,
     )
 }
@@ -79,13 +79,11 @@ fun SettingScreen(
     onNotificationSwitchClick: (Boolean) -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
-    onLogoutOrWithdrawComplete: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showSignOutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
-
-    Log.d("bandal", "SettingScreen: $settingUiState")
 
     when (settingUiState) {
         is SettingUiState.Loading -> {
@@ -97,27 +95,24 @@ fun SettingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                androidx.compose.material3.CircularProgressIndicator()
+                CircularProgressIndicator()
             }
         }
 
         is SettingUiState.Success -> {
-            if (settingUiState.isSignedOutOrWithDraw) {
-                onLogoutOrWithdrawComplete()
-            }
-            if (showLogoutDialog) {
+            if (showSignOutDialog) {
                 HY2Dialog(
                     description = stringResource(R.string.setting_logout_dialog_description),
                     leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
                     rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
                     onLeftButtonClick = {
-                        showLogoutDialog = false
+                        showSignOutDialog = false
                         onLogoutClick()
                     },
                     onRightButtonClick = {
-                        showLogoutDialog = false
+                        showSignOutDialog = false
                     },
-                    onDismiss = { showLogoutDialog = false },
+                    onDismiss = { showSignOutDialog = false },
                 )
             }
 
@@ -151,10 +146,14 @@ fun SettingScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 SettingBottom(
-                    showLogoutDialog = { showLogoutDialog = true },
+                    showLogoutDialog = { showSignOutDialog = true },
                     showWithdrawDialog = { showWithdrawDialog = true },
                 )
             }
+        }
+
+        is SettingUiState.Expired -> {
+            onSignOutOrWithdrawComplete()
         }
 
         is SettingUiState.Error -> Unit
@@ -275,7 +274,6 @@ private fun SettingScreenPreview() {
         mutableStateOf(
             SettingUiState.Success(
                 isNotificationSwitchChecked = true,
-                isSignedOutOrWithDraw = false,
                 userInfo = sampleUserInfo,
             ),
         )
@@ -289,7 +287,7 @@ private fun SettingScreenPreview() {
             onNotificationSwitchClick = {},
             onNoticeClick = {},
             onInquiryClick = {},
-            onLogoutOrWithdrawComplete = {},
+            onSignOutOrWithdrawComplete = {},
             modifier = Modifier,
         )
     }
