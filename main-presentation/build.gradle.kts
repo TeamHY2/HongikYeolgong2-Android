@@ -25,6 +25,9 @@ dependencies {
     implementation(projects.settingPresentation)
     implementation(projects.settingDomain)
 
+    implementation(projects.rankingPresentation)
+    implementation(projects.rankingDomain)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
