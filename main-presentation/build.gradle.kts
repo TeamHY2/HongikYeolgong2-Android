@@ -38,4 +38,5 @@ dependencies {
 
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.compose.material)
 }
