@@ -55,14 +55,8 @@ fun SettingRoute(
 
     SettingScreen(
         settingUiState = settingUiState,
-        onLogoutClick = {
-            viewModel.onLogoutClick(context)
-            onLogoutOrWithdrawComplete()
-        },
-        onWithdrawClick = {
-            viewModel.onWithdrawClick(context)
-            onLogoutOrWithdrawComplete()
-        },
+        onLogoutClick = viewModel::logout,
+        onWithdrawClick = viewModel::withdraw,
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
         },
@@ -72,6 +66,7 @@ fun SettingRoute(
             context.startActivity(intent)
         },
         onInquiryClick = onInquiryClick,
+        onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
         modifier = modifier,
     )
 }
@@ -85,10 +80,15 @@ fun SettingScreen(
     onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
+
+    if (settingUiState.isSignedOutOrWithDraw) {
+        onLogoutOrWithdrawComplete()
+    }
 
     if (showLogoutDialog) {
         HY2Dialog(
@@ -229,7 +229,11 @@ fun SettingScreen(
 @Preview(showBackground = true)
 @Composable
 private fun SettingScreenPreview() {
-    val state by remember { mutableStateOf(SettingUiState(isNotificationSwitchChecked = true)) }
+    val state by remember {
+        mutableStateOf(
+            SettingUiState(isNotificationSwitchChecked = true, isSignedOutOrWithDraw = false),
+        )
+    }
 
     HY2Theme {
         SettingScreen(
@@ -240,6 +244,7 @@ private fun SettingScreenPreview() {
             onBackButtonClick = {},
             onNoticeClick = {},
             onInquiryClick = {},
+            onLogoutOrWithdrawComplete = {},
             modifier = Modifier,
         )
     }

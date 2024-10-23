@@ -64,7 +64,7 @@ fun HY2NavHost(
                 onInquiryClick = navController::navigateToInquiry,
                 onLogoutOrWithdrawComplete = {
                     onLogoutOrWithdrawComplete()
-                    navController::popUpToOnboarding
+                    navController.popUpToOnboarding()
                 },
             )
         }

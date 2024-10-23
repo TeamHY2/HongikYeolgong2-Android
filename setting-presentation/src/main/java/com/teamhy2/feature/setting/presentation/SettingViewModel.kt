@@ -1,6 +1,5 @@
 package com.teamhy2.feature.setting.presentation
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class SettingViewModel
         private val repository: SettingsRepository,
         private val userRepository: UserRepository,
     ) : ViewModel() {
-        private val _settingUiState = MutableStateFlow(SettingUiState())
+        private val _settingUiState = MutableStateFlow(SettingUiState(isSignedOutOrWithDraw = false))
         val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
 
         init {
@@ -37,17 +37,21 @@ class SettingViewModel
             }
         }
 
-        fun onLogoutClick(context: Context) {
+        fun logout() {
 //            AuthUI.getInstance().signOut(context)
             // TODO: 서버 마이그레이션
         }
 
-        fun onWithdrawClick(context: Context) {
+        fun withdraw() {
             viewModelScope.launch {
                 userRepository.withdraw()
+                    .onSuccess {
+                        _settingUiState.update { it.copy(isSignedOutOrWithDraw = true) }
+                    }
+                    .onFailure {
+                        // TODO: error flow 등록
+                    }
             }
-//            AuthUI.getInstance().signOut(context)
-            // TODO: 서버 마이그레이션
         }
 
         fun updateNotificationSwitchState(isChecked: Boolean) {
