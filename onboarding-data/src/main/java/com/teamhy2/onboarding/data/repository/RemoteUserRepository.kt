@@ -1,6 +1,6 @@
 package com.teamhy2.onboarding.data.repository
 
-import com.benenfeldt.remote.api.UserNoAuthService
+import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
@@ -14,7 +14,7 @@ class RemoteUserRepository
     @Inject
     constructor(
         private val userService: UserService,
-        private val userNoAuthService: UserNoAuthService,
+        private val userPublicService: UserPublicService,
         private val jwtManager: JwtManager,
     ) : UserRepository {
         override suspend fun checkNicknameDuplication(nickname: String): Result<Boolean> {
@@ -36,7 +36,7 @@ class RemoteUserRepository
         }
 
         override suspend fun signIn(idToken: String): Result<AlreadyExist> {
-            return userNoAuthService.signIn(
+            return userPublicService.signIn(
                 UserSignInRequest(
                     idToken = idToken,
                 ),
@@ -50,8 +50,6 @@ class RemoteUserRepository
         }
 
         override suspend fun withdraw(): Result<Unit> {
-//        return userService.withdraw()
-            // TODO: 추후 회원 탈퇴 서버 연결
-            return Result.success(Unit)
+            return userService.withdraw().toResult { }
         }
     }

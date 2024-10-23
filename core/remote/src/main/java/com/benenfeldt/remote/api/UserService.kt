@@ -4,6 +4,7 @@ import com.benenfeldt.remote.dto.DefaultResponse
 import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.dto.UserSignUpResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface UserService {
@@ -11,4 +12,7 @@ interface UserService {
     suspend fun signUp(
         @Body signUpRequest: UserSignUpRequest,
     ): Result<DefaultResponse<UserSignUpResponse>>
+
+    @DELETE("/api/v1/auth")
+    suspend fun withdraw(): Result<DefaultResponse<Unit>>
 }
