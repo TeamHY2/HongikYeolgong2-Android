@@ -16,20 +16,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,10 +49,34 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             HY2Theme {
+                val navController = rememberNavController()
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = currentBackStackEntry?.destination?.route
+
+                val showBottomBar =
+                    when (currentDestination) {
+                        "main", "record", "ranking", "setting" -> true
+                        else -> false
+                    }
+
                 Scaffold(
-                    modifier =
-                        Modifier
-                            .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        if (showBottomBar) {
+                            MainBottomBar(
+                                currentTab = MainTab.fromRoute(currentDestination),
+                                onTabSelected = { tab ->
+                                    navController.navigate(tab.route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                            )
+                        }
+                    },
                 ) { innerPadding ->
                     val postNotificationPermission =
                         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
@@ -63,10 +86,6 @@ class MainActivity : AppCompatActivity() {
                         if (!postNotificationPermission.status.isGranted) {
                             postNotificationPermission.launchPermissionRequest()
                         }
-                    }
-
-                    var backgroundState by remember {
-                        mutableStateOf(BackgroundState.DEFAULT)
                     }
 
                     Column(
@@ -86,7 +105,7 @@ class MainActivity : AppCompatActivity() {
 
                             is InitialUiState.Success -> {
                                 HY2NavHost(
-                                    navController = rememberNavController(),
+                                    navController = navController,
                                     urls = (initialUiState as InitialUiState.Success).urls,
                                     startDestination = (initialUiState as InitialUiState.Success).startDestination,
                                     onSendNotification = { pushText ->
