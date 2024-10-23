@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,15 +35,16 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
+import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 @Composable
 fun SettingRoute(
     noticeUrl: String,
-    onBackButtonClick: () -> Unit,
     onInquiryClick: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,7 +66,6 @@ fun SettingRoute(
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
         },
-        onBackButtonClick = onBackButtonClick,
         onNoticeClick = {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
             context.startActivity(intent)
@@ -82,7 +81,6 @@ fun SettingScreen(
     onLogoutClick: () -> Unit,
     onWithdrawClick: () -> Unit,
     onNotificationSwitchClick: (Boolean) -> Unit,
-    onBackButtonClick: () -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -90,146 +88,195 @@ fun SettingScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
 
-    if (showLogoutDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.setting_logout_dialog_description),
-            leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
-            rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
-            onLeftButtonClick = {
-                showLogoutDialog = false
-                onLogoutClick()
-            },
-            onRightButtonClick = {
-                showLogoutDialog = false
-            },
-            onDismiss = { showLogoutDialog = false },
-        )
-    }
+    when (settingUiState) {
+        is SettingUiState.Loading -> {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                androidx.compose.material3.CircularProgressIndicator()
+            }
+        }
 
-    if (showWithdrawDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.setting_withdrawal_dialog_description),
-            leftButtonText = stringResource(R.string.setting_withdrawal_dialog_left_button_text),
-            rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
-            onLeftButtonClick = {
-                showWithdrawDialog = false
-                onWithdrawClick()
-            },
-            onRightButtonClick = {
-                showWithdrawDialog = false
-            },
-            onDismiss = { showWithdrawDialog = false },
-        )
-    }
+        is SettingUiState.Success -> {
+            if (showLogoutDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.setting_logout_dialog_description),
+                    leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
+                    rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
+                    onLeftButtonClick = {
+                        showLogoutDialog = false
+                        onLogoutClick()
+                    },
+                    onRightButtonClick = {
+                        showLogoutDialog = false
+                    },
+                    onDismiss = { showLogoutDialog = false },
+                )
+            }
 
+            if (showWithdrawDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.setting_withdrawal_dialog_description),
+                    leftButtonText = stringResource(R.string.setting_withdrawal_dialog_left_button_text),
+                    rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
+                    onLeftButtonClick = {
+                        showWithdrawDialog = false
+                        onWithdrawClick()
+                    },
+                    onRightButtonClick = {
+                        showWithdrawDialog = false
+                    },
+                    onDismiss = { showWithdrawDialog = false },
+                )
+            }
+
+            Column(
+                modifier = modifier.fillMaxSize(),
+            ) {
+                SettingBody(
+                    userInfo = settingUiState.userInfo,
+                    isNotificationSwitchChecked = settingUiState.isNotificationSwitchChecked,
+                    onNotificationSwitchClick = onNotificationSwitchClick,
+                    onNoticeClick = onNoticeClick,
+                    onInquiryClick = onInquiryClick,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                SettingBottom(
+                    showLogoutDialog = { showLogoutDialog = true },
+                    showWithdrawDialog = { showWithdrawDialog = true },
+                )
+            }
+        }
+
+        is SettingUiState.Error -> Unit
+    }
+}
+
+@Composable
+fun SettingBody(
+    userInfo: UserInfo,
+    isNotificationSwitchChecked: Boolean,
+    onNotificationSwitchClick: (Boolean) -> Unit,
+    onNoticeClick: () -> Unit,
+    onInquiryClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier =
             modifier
-                .fillMaxSize(),
+                .padding(start = 24.dp, end = 24.dp, top = 34.dp, bottom = 36.dp)
+                .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        IconButton(
-            onClick = { onBackButtonClick() },
-            modifier = Modifier.padding(start = 20.dp),
+        SettingUserProfile(userInfo)
+        Spacer(modifier = Modifier.height(20.dp))
+        SettingButton(
+            text = stringResource(R.string.setting_notice),
+            onClick = onNoticeClick,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        SettingButton(
+            text = stringResource(R.string.setting_inquiry),
+            onClick = onInquiryClick,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        SettingButtonWithSwitch(
+            text = stringResource(R.string.setting_notification_reminder),
+            isChecked = isNotificationSwitchChecked,
+            onCheckedChanged = onNotificationSwitchClick,
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_back),
-                contentDescription = stringResource(R.string.setting_back_button_description),
+                painter = painterResource(R.drawable.ic_information),
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = stringResource(R.string.setting_notification_reminder_description),
+                color = Gray200,
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.CenterVertically),
             )
         }
-        Column(
+    }
+}
+
+@Composable
+fun SettingBottom(
+    showLogoutDialog: () -> Unit,
+    showWithdrawDialog: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(R.string.setting_logout),
+            color = Gray300,
+            style = HY2Theme.typography.body05,
             modifier =
-                Modifier
-                    .padding(start = 32.dp, end = 32.dp, top = 14.dp, bottom = 16.dp)
-                    .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            SettingButton(
-                text = stringResource(R.string.setting_notice),
-                onClick = onNoticeClick,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            SettingButton(
-                text = stringResource(R.string.setting_inquiry),
-                onClick = onInquiryClick,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            SettingButtonWithSwitch(
-                text = stringResource(R.string.setting_notification_reminder),
-                isChecked = settingUiState.isNotificationSwitchChecked,
-                onCheckedChanged = { isChecked ->
-                    onNotificationSwitchClick(isChecked)
-                },
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_information),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .size(14.dp)
-                            .align(Alignment.CenterVertically),
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(R.string.setting_notification_reminder_description),
-                    color = Gray200,
-                    fontSize = 12.sp,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-
-            val interactionSource: MutableInteractionSource =
-                remember { MutableInteractionSource() }
-
-            Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.setting_logout),
-                    color = Gray300,
-                    style = HY2Theme.typography.body05,
-                    modifier =
-                        Modifier.clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                        ) { showLogoutDialog = true },
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(
-                    text = "|",
-                    color = Gray300,
-                    style = HY2Theme.typography.body05,
-                )
-                Spacer(modifier = Modifier.width(24.dp))
-                Text(
-                    text = stringResource(R.string.setting_withdrawal),
-                    color = Gray300,
-                    style = HY2Theme.typography.body05,
-                    modifier =
-                        Modifier.clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                        ) { showWithdrawDialog = true },
-                )
-            }
-        }
+                Modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                ) { showLogoutDialog() },
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        Text(
+            text = "|",
+            color = Gray300,
+            style = HY2Theme.typography.body05,
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        Text(
+            text = stringResource(R.string.setting_withdrawal),
+            color = Gray300,
+            style = HY2Theme.typography.body05,
+            modifier =
+                Modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                ) { showWithdrawDialog() },
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun SettingScreenPreview() {
-    val state by remember { mutableStateOf(SettingUiState(isNotificationSwitchChecked = true)) }
+    val sampleUserInfo =
+        UserInfo(
+            name = "서재원",
+            department = "전자전기공학부",
+        )
+
+    val state by remember {
+        mutableStateOf(
+            SettingUiState.Success(
+                isNotificationSwitchChecked = true,
+                userInfo = sampleUserInfo,
+            ),
+        )
+    }
 
     HY2Theme {
         SettingScreen(
@@ -237,7 +284,6 @@ private fun SettingScreenPreview() {
             onLogoutClick = {},
             onWithdrawClick = {},
             onNotificationSwitchClick = {},
-            onBackButtonClick = {},
             onNoticeClick = {},
             onInquiryClick = {},
             modifier = Modifier,
