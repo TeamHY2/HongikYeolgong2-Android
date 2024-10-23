@@ -57,24 +57,40 @@ fun RankingScreen(
             .padding(horizontal = 24.dp)
             .fillMaxSize(),
 ) {
-    Column(
-        modifier = modifier,
-    ) {
-        RankingHeader(
-            rankingUiState = rankingUiState,
-            onLastWeekClick = onLastWeekClick,
-            onNextWeekClick = onNextWeekClick,
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        RankingBody(
-            rankingUiState = rankingUiState,
-        )
+    when (rankingUiState) {
+        is RankingUiState.Loading -> {
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                androidx.compose.material3.CircularProgressIndicator()
+            }
+        }
+
+        is RankingUiState.Success -> {
+            Column(
+                modifier = modifier,
+            ) {
+                RankingHeader(
+                    currentWeek = rankingUiState.currentWeek,
+                    onLastWeekClick = onLastWeekClick,
+                    onNextWeekClick = onNextWeekClick,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                RankingBody(
+                    departmentRankings = rankingUiState.departmentRankings,
+                )
+            }
+        }
+
+        is RankingUiState.Error -> Unit
     }
 }
 
 @Composable
 fun RankingHeader(
-    rankingUiState: RankingUiState,
+    currentWeek: String,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -86,7 +102,7 @@ fun RankingHeader(
                 .fillMaxWidth()
                 .padding(top = 34.dp),
     ) {
-        Text(text = rankingUiState.currentWeek, style = HY2Typography().title01, color = Gray100)
+        Text(text = currentWeek, style = HY2Typography().title01, color = Gray100)
         Spacer(modifier = Modifier.weight(1F))
         IconButton(onClick = onLastWeekClick, modifier = Modifier.size(34.dp)) {
             Image(
@@ -105,17 +121,15 @@ fun RankingHeader(
 
 @Composable
 fun RankingBody(
-    rankingUiState: RankingUiState,
+    departmentRankings: List<DepartmentRanking>,
     modifier: Modifier = Modifier,
 ) {
-    val rankingItems = rankingUiState.departmentRankings
-
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.fillMaxSize(),
     ) {
-        items(rankingItems.size) { index ->
-            val item = rankingItems[index]
+        items(departmentRankings.size) { index ->
+            val item = departmentRankings[index]
             RankingItem(
                 rank = item.rank,
                 departmentName = item.departmentName,
@@ -142,20 +156,10 @@ fun RankingScreenPreview() {
             DepartmentRanking(8, "국어교육과", 50, 1),
             DepartmentRanking(9, "체육교육과", 45, -2),
             DepartmentRanking(10, "음악교육과", 40, 3),
-            DepartmentRanking(11, "영어교육과", 38, 0),
-            DepartmentRanking(12, "역사학과", 35, 1),
-            DepartmentRanking(13, "철학과", 33, -3),
-            DepartmentRanking(14, "미술학부", 30, 2),
-            DepartmentRanking(15, "전자공학과", 28, 0),
-            DepartmentRanking(16, "컴퓨터공학과", 25, -1),
-            DepartmentRanking(17, "화학과", 22, 3),
-            DepartmentRanking(18, "생물학과", 20, -2),
-            DepartmentRanking(19, "지리학과", 18, 1),
-            DepartmentRanking(20, "경제학과", 15, 2),
         )
 
     val sampleUiState =
-        RankingUiState(
+        RankingUiState.Success(
             currentWeek = "9월 1주차",
             departmentRankings = sampleItems,
         )
