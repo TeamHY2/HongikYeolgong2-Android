@@ -25,6 +25,9 @@ dependencies {
     implementation(projects.settingPresentation)
     implementation(projects.settingDomain)
 
+    implementation(projects.rankingPresentation)
+    implementation(projects.rankingDomain)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
@@ -39,4 +42,5 @@ dependencies {
     implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.compose.material)
 }

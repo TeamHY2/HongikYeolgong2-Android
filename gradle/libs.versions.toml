@@ -17,7 +17,7 @@ activityCompose = "1.9.0"
 composeBom = "2024.09.01"
 ktlint = "12.1.0"
 appcompat = "1.7.0"
-material = "1.1.0"
+material = "1.2.1"
 jetbrainsKotlinJvm = "1.9.0"
 androidxComposeCompiler = "1.5.1"
 kotest = "5.6.2"
@@ -59,12 +59,12 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
+androidx-compose-material = { group = "androidx.compose.material", name = "material",version.ref = "material" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
