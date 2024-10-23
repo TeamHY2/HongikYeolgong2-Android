@@ -12,5 +12,7 @@ interface UserRepository {
 
     suspend fun signIn(idToken: String): Result<AlreadyExist>
 
+    suspend fun signOut(): Result<Unit>
+
     suspend fun withdraw(): Result<Unit>
 }

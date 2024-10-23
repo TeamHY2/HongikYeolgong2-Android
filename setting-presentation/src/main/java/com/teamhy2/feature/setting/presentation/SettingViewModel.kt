@@ -1,6 +1,5 @@
 package com.teamhy2.feature.setting.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
@@ -40,7 +39,6 @@ class SettingViewModel
                         _settingUiState.update {
                             SettingUiState.Success(
                                 isNotificationSwitchChecked = isChecked,
-                                isSignedOutOrWithDraw = false,
                                 userInfo = userInfo,
                             )
                         }
@@ -49,23 +47,23 @@ class SettingViewModel
             }
         }
 
-        fun logout() {
-//            AuthUI.getInstance().signOut(context)
-            // TODO: 서버 마이그레이션
+        fun signOut() {
+            viewModelScope.launch {
+                userRepository.signOut()
+                    .onSuccess {
+                        _settingUiState.update { SettingUiState.Expired }
+                    }
+                    .onFailure {
+                        // TODO: error flow 등록
+                    }
+            }
         }
 
         fun withdraw() {
             viewModelScope.launch {
                 userRepository.withdraw()
                     .onSuccess {
-                        Log.d("bandal", "withdraw: onSuccess")
-                        _settingUiState.update { currentState ->
-                            if (currentState is SettingUiState.Success) {
-                                currentState.copy(isSignedOutOrWithDraw = true)
-                            } else {
-                                currentState
-                            }
-                        }
+                        _settingUiState.update { SettingUiState.Expired }
                     }
                     .onFailure {
                         // TODO: error flow 등록

@@ -49,7 +49,13 @@ class RemoteUserRepository
                 }
         }
 
+        override suspend fun signOut(): Result<Unit> {
+            return runCatching { jwtManager.clearAllTokens() }
+        }
+
         override suspend fun withdraw(): Result<Unit> {
-            return userService.withdraw().toResult { }
+            return userService.withdraw()
+                .onSuccess { jwtManager.clearAllTokens() }
+                .toResult { }
         }
     }
