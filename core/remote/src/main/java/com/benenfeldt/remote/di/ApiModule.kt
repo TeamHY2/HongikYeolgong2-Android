@@ -1,6 +1,6 @@
 package com.benenfeldt.remote.di
 
-import com.benenfeldt.remote.api.UserNoAuthService
+import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
 import com.benenfeldt.remote.token.NeedAuthRetrofit
 import com.benenfeldt.remote.token.PublicRetrofit
@@ -24,9 +24,9 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideUserNoAuthService(
+    fun provideUserPublicService(
         @PublicRetrofit retrofit: Retrofit,
-    ): UserNoAuthService {
-        return retrofit.create(UserNoAuthService::class.java)
+    ): UserPublicService {
+        return retrofit.create(UserPublicService::class.java)
     }
 }
