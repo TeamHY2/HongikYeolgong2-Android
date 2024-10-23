@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,21 +33,19 @@ class SettingViewModel
 
         private fun loadSettings() {
             viewModelScope.launch {
-                try {
-                    // TODO: 비동기로 UserInfo를 가져오는 코드를 추가
-                    val userInfo = UserInfo("서재원", "전자전기공학부")
-
+                runCatching {
+                    // TODO: 서버에서 유저 정보를 가져오는 로직으로 대체
+                    UserInfo("서재원", "전자전기공학부")
+                }.onSuccess { userInfo ->
                     settingsRepository.notificationSwitchState.collectLatest { isChecked ->
-                        _settingUiState.value =
+                        _settingUiState.update {
                             SettingUiState.Success(
                                 isNotificationSwitchChecked = isChecked,
                                 userInfo = userInfo,
                             )
+                        }
                     }
-                } catch (e: Exception) {
-                    _settingUiState.value =
-                        SettingUiState.Error("Failed to load settings: ${e.message}")
-                }
+                }.onFailure {}
             }
         }
 
@@ -64,12 +63,14 @@ class SettingViewModel
         fun updateNotificationSwitchState(isChecked: Boolean) {
             viewModelScope.launch {
                 settingsRepository.saveNotificationSwitchState(isChecked)
-                val currentState = _settingUiState.value
-                if (currentState is SettingUiState.Success) {
-                    _settingUiState.value =
+                _settingUiState.update { currentState ->
+                    if (currentState is SettingUiState.Success) {
                         currentState.copy(
                             isNotificationSwitchChecked = isChecked,
                         )
+                    } else {
+                        currentState
+                    }
                 }
             }
         }
