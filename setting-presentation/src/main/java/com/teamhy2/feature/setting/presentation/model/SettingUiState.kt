@@ -1,6 +1,15 @@
 package com.teamhy2.feature.setting.presentation.model
 
-data class SettingUiState(
-    val isNotificationSwitchChecked: Boolean = false,
-    val isSignedOutOrWithDraw: Boolean,
-)
+import com.teamhy2.feature.setting.domain.repository.model.UserInfo
+
+sealed interface SettingUiState {
+    data object Loading : SettingUiState
+
+    data class Success(
+        val isNotificationSwitchChecked: Boolean,
+        val isSignedOutOrWithDraw: Boolean,
+        val userInfo: UserInfo,
+    ) : SettingUiState
+
+    data class Error(val message: String) : SettingUiState
+}

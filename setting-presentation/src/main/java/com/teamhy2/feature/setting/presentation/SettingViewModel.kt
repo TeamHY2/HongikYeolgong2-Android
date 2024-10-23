@@ -1,8 +1,10 @@
 package com.teamhy2.feature.setting.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
+import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,22 +20,32 @@ import javax.inject.Inject
 class SettingViewModel
     @Inject
     constructor(
-        private val repository: SettingsRepository,
+        private val settingsRepository: SettingsRepository,
         private val userRepository: UserRepository,
     ) : ViewModel() {
-        private val _settingUiState = MutableStateFlow(SettingUiState(isSignedOutOrWithDraw = false))
+        private val _settingUiState = MutableStateFlow<SettingUiState>(SettingUiState.Loading)
         val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
 
         init {
-            loadNotificationSwitchState()
+            loadSettings()
         }
 
-        private fun loadNotificationSwitchState() {
+        private fun loadSettings() {
             viewModelScope.launch {
-                repository.notificationSwitchState.collectLatest { isChecked ->
-                    _settingUiState.value =
-                        settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
-                }
+                runCatching {
+                    // TODO: 서버에서 유저 정보를 가져오는 로직으로 대체
+                    UserInfo("서재원", "전자전기공학부")
+                }.onSuccess { userInfo ->
+                    settingsRepository.notificationSwitchState.collectLatest { isChecked ->
+                        _settingUiState.update {
+                            SettingUiState.Success(
+                                isNotificationSwitchChecked = isChecked,
+                                isSignedOutOrWithDraw = false,
+                                userInfo = userInfo,
+                            )
+                        }
+                    }
+                }.onFailure {}
             }
         }
 
@@ -46,7 +58,14 @@ class SettingViewModel
             viewModelScope.launch {
                 userRepository.withdraw()
                     .onSuccess {
-                        _settingUiState.update { it.copy(isSignedOutOrWithDraw = true) }
+                        Log.d("bandal", "withdraw: onSuccess")
+                        _settingUiState.update { currentState ->
+                            if (currentState is SettingUiState.Success) {
+                                currentState.copy(isSignedOutOrWithDraw = true)
+                            } else {
+                                currentState
+                            }
+                        }
                     }
                     .onFailure {
                         // TODO: error flow 등록
@@ -56,9 +75,16 @@ class SettingViewModel
 
         fun updateNotificationSwitchState(isChecked: Boolean) {
             viewModelScope.launch {
-                repository.saveNotificationSwitchState(isChecked)
-                _settingUiState.value =
-                    settingUiState.value.copy(isNotificationSwitchChecked = isChecked)
+                settingsRepository.saveNotificationSwitchState(isChecked)
+                _settingUiState.update { currentState ->
+                    if (currentState is SettingUiState.Success) {
+                        currentState.copy(
+                            isNotificationSwitchChecked = isChecked,
+                        )
+                    } else {
+                        currentState
+                    }
+                }
             }
         }
     }

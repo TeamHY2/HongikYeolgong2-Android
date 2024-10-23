@@ -7,8 +7,8 @@ android {
 }
 
 dependencies {
-
     implementation(projects.core.designsystem)
     implementation(projects.settingDomain)
     implementation(projects.onboardingDomain)
+    implementation(libs.coil)
 }
