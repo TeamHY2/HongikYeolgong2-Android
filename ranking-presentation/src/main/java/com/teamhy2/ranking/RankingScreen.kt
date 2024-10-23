@@ -60,7 +60,7 @@ fun RankingScreen(
     when (rankingUiState) {
         is RankingUiState.Loading -> {
             Column(
-                modifier = modifier,
+                modifier = modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
