@@ -55,9 +55,10 @@ object NetworkModule {
     fun providePublicRetrofit(
         @PublicClient okHttpClient: OkHttpClient,
     ): Retrofit {
+        val jsonConfig = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(Json.asConverterFactory(CONTENT_TYPE.toMediaType()))
+            .addConverterFactory(jsonConfig.asConverterFactory(CONTENT_TYPE.toMediaType()))
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
             .client(okHttpClient)
             .build()
@@ -85,9 +86,10 @@ object NetworkModule {
     fun provideAuthRetrofit(
         @NeedAuthClient okHttpClient: OkHttpClient,
     ): Retrofit {
+        val jsonConfig = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(Json.asConverterFactory(CONTENT_TYPE.toMediaType()))
+            .addConverterFactory(jsonConfig.asConverterFactory(CONTENT_TYPE.toMediaType()))
             .addCallAdapterFactory(ResultCallAdapterFactory.create())
             .client(okHttpClient)
             .build()
