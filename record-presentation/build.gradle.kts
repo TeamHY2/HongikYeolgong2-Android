@@ -10,4 +10,7 @@ dependencies {
 
     implementation(projects.core.designsystem)
     implementation(projects.recordDomain)
+
+    implementation(projects.calendarPresentation)
+    implementation(projects.calendarDomain)
 }
