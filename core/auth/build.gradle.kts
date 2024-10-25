@@ -2,7 +2,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 plugins {
     id("hongikyeolgong2.android.feature")
-    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.services)
 }
 
 android {
