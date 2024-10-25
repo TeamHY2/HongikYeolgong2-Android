@@ -11,6 +11,8 @@ dependencies {
 
     implementation(projects.mainDomain)
 
+    implementation(projects.core.remote)
+
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)
 

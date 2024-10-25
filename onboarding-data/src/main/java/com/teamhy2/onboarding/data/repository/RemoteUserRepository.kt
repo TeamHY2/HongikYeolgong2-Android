@@ -6,6 +6,7 @@ import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.mapper.toResult
 import com.benenfeldt.remote.token.JwtManager
+import com.teamhy2.core.auth.SocialSignIn
 import com.teamhy2.onboarding.domain.repository.AlreadyExist
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import javax.inject.Inject
@@ -16,11 +17,10 @@ class RemoteUserRepository
         private val userService: UserService,
         private val userPublicService: UserPublicService,
         private val jwtManager: JwtManager,
+        private val socialSignIn: SocialSignIn,
     ) : UserRepository {
         override suspend fun checkNicknameDuplication(nickname: String): Result<Boolean> {
-            // TODO: 쿼리파라미터 수정완료 되면 주석 해제
-//            return userNoAuthService.checkNicknameDuplication(nickname).toResult { it.data.duplicate }
-            return Result.success(false)
+            return userPublicService.checkNicknameDuplication(nickname).toResult { it.data.duplicate }
         }
 
         override suspend fun signUp(
@@ -50,7 +50,8 @@ class RemoteUserRepository
         }
 
         override suspend fun signOut(): Result<Unit> {
-            return runCatching { jwtManager.clearAllTokens() }
+            return socialSignIn.requestSignOut()
+                .onSuccess { jwtManager.clearAllTokens() }
         }
 
         override suspend fun withdraw(): Result<Unit> {

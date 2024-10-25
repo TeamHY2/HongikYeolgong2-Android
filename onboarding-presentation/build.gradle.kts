@@ -9,6 +9,7 @@ android {
 dependencies {
     implementation(projects.onboardingDomain)
     implementation(projects.core.auth)
+    implementation(projects.core.remote)
 
     implementation(libs.accompanist.permissions)
 

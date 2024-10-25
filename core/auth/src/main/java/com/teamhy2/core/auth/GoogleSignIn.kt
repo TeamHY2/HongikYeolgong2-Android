@@ -1,8 +1,10 @@
 package com.teamhy2.core.auth
 
 import android.content.Context
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import java.security.MessageDigest
@@ -19,9 +21,10 @@ class GoogleSignIn
             GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(BuildConfig.WEB_CLIENT_ID)
+                .setAutoSelectEnabled(false)
                 .setNonce(createHashedNonce())
                 .build()
-        private val request: GetCredentialRequest =
+        private val credentialRequest: GetCredentialRequest =
             GetCredentialRequest.Builder()
                 .addCredentialOption(googleIdOption)
                 .build()
@@ -40,16 +43,23 @@ class GoogleSignIn
 
         override suspend fun requestSignInWithIdToken(): Result<IdToken> {
             return runCatching {
-                val result =
+                val credentialResponse: GetCredentialResponse =
                     credentialManager.getCredential(
-                        request = request,
+                        request = credentialRequest,
                         context = context,
                     )
-                val credential = result.credential
+
+                val credential = credentialResponse.credential
 
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
 
                 googleIdTokenCredential.idToken
+            }
+        }
+
+        override suspend fun requestSignOut(): Result<Unit> {
+            return runCatching {
+                credentialManager.clearCredentialState(request = ClearCredentialStateRequest())
             }
         }
 
