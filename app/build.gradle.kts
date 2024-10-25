@@ -1,6 +1,6 @@
 plugins {
     id("hongikyeolgong2.android.application")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
 }
 
