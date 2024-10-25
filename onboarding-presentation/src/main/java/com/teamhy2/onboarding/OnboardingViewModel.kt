@@ -2,6 +2,7 @@ package com.teamhy2.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.SocialSignIn
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ class OnboardingViewModel
     constructor(
         private val userRepository: UserRepository,
         private val socialSignIn: SocialSignIn,
+        private val jwtManager: JwtManager,
     ) : ViewModel() {
         private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
         val signInState: StateFlow<SignInState> = _signInState.asStateFlow()
@@ -27,6 +29,7 @@ class OnboardingViewModel
                 socialSignIn.requestSignInWithIdToken()
                     .onSuccess { idToken: String ->
                         requestSignInToServerWithIdToken(idToken)
+                        jwtManager.saveGoogleIdToken(idToken)
                     }
                     .onFailure {
                         _signInState.update { SignInState.Failure }

@@ -10,7 +10,9 @@ import javax.inject.Inject
 
 class DefaultJwtManager
     @Inject
-    constructor(private val dataStore: DataStore<Preferences>) :
+    constructor(
+        private val dataStore: DataStore<Preferences>,
+    ) :
     JwtManager {
         override suspend fun saveAccessJwt(token: String) {
             dataStore.edit { preferences ->
@@ -28,6 +30,22 @@ class DefaultJwtManager
             }.firstOrNull()
         }
 
+        override suspend fun saveGoogleIdToken(token: String) {
+            dataStore.edit { preferences ->
+                preferences[googleIdTokenKey] = token
+            }
+
+            dataStore.data.map { preferences ->
+                preferences[googleIdTokenKey]
+            }.firstOrNull()
+        }
+
+        override suspend fun getGoogleIdToken(): String? {
+            return dataStore.data.map { preferences ->
+                preferences[googleIdTokenKey]
+            }.firstOrNull()
+        }
+
         override suspend fun clearAllTokens() {
             dataStore.edit { preferences ->
                 preferences.remove(accessJwtKey)
@@ -36,8 +54,8 @@ class DefaultJwtManager
 
         companion object {
             private const val ACCESS_JWT_KEY_NAME = "access_jwt"
-            private const val REFRESH_JWT_KEY_NAME = "refresh_jwt"
+            private const val GOOGLE_ID_TOKEN_KEY_NAME = "google_id_token"
             val accessJwtKey = stringPreferencesKey(ACCESS_JWT_KEY_NAME)
-            val refreshJwtKey = stringPreferencesKey(REFRESH_JWT_KEY_NAME)
+            val googleIdTokenKey = stringPreferencesKey(GOOGLE_ID_TOKEN_KEY_NAME)
         }
     }
