@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface WiseSayingService {
     @GET("/api/v1/wise-saying")
-    fun getWiseSaying(): Result<BaseResponse<WiseSayingResponse>>
+    suspend fun getWiseSaying(): Result<BaseResponse<WiseSayingResponse>>
 }

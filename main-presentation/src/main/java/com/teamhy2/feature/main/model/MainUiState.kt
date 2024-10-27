@@ -9,7 +9,7 @@ data class MainUiState(
     val isTimePickerVisible: Boolean = false,
     val isStudyRoomExtendDialog: Boolean = false,
     val isStudyRoomEndDialog: Boolean = false,
-    val wiseSaying: WiseSaying = WiseSaying("", ""),
+    val wiseSaying: WiseSaying = WiseSaying.DEFAULT,
     val selectedTime: LocalDateTime = LocalDateTime.now(),
     val calendar: Calendar = Calendar(studyDays = emptyList()),
     val startTime: String = "",
