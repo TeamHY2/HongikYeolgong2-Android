@@ -57,7 +57,7 @@ fun HY2DropdownTextField(
     ExposedDropdownMenuBox(
         modifier = modifier.wrapContentWidth(),
         expanded = hasFocused,
-        onExpandedChange = { if (hasFocused) focusManager.clearFocus() else focusRequester.requestFocus() },
+        onExpandedChange = {},
     ) {
         HY2TextField(
             value = value,
@@ -70,7 +70,7 @@ fun HY2DropdownTextField(
 
         DropdownMenu(
             expanded = hasFocused,
-            onDismissRequest = { if (hasFocused) focusManager.clearFocus() },
+            onDismissRequest = {},
             properties = PopupProperties(focusable = false),
             offset = DpOffset(x = 0.dp, y = (16).dp),
             modifier =
