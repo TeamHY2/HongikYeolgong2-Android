@@ -1,9 +1,7 @@
 package com.teamhy2.feature.setting.presentation
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.firebase.ui.auth.AuthUI
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
 import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
@@ -49,14 +47,27 @@ class SettingViewModel
             }
         }
 
-        fun onLogoutClick(context: Context) {
-            AuthUI.getInstance().signOut(context)
+        fun signOut() {
+            viewModelScope.launch {
+                userRepository.signOut()
+                    .onSuccess {
+                        _settingUiState.update { SettingUiState.Expired }
+                    }
+                    .onFailure {
+                        // TODO: error flow 등록
+                    }
+            }
         }
 
-        fun onWithdrawClick(context: Context) {
+        fun withdraw() {
             viewModelScope.launch {
                 userRepository.withdraw()
-                AuthUI.getInstance().signOut(context)
+                    .onSuccess {
+                        _settingUiState.update { SettingUiState.Expired }
+                    }
+                    .onFailure {
+                        // TODO: error flow 등록
+                    }
             }
         }
 
