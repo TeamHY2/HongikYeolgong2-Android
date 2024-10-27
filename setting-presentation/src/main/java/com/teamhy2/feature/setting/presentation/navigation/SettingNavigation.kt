@@ -19,7 +19,7 @@ fun NavGraphBuilder.settingScreen(
         SettingRoute(
             noticeUrl = noticeUrl,
             onInquiryClick = onInquiryClick,
-            onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
+            onSignOutOrWithdrawComplete = onLogoutOrWithdrawComplete,
         )
     }
 }

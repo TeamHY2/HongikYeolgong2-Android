@@ -10,6 +10,5 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.settingDomain)
     implementation(projects.onboardingDomain)
-    implementation(libs.firebase.ui.auth)
     implementation(libs.coil)
 }
