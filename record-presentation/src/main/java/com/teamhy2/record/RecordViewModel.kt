@@ -13,8 +13,7 @@ class RecordViewModel
     @Inject
     constructor() : ViewModel() {
         private val _recordUiState = MutableStateFlow<RecordUiState>(RecordUiState.Loading)
-        val recordUiState: StateFlow<RecordUiState>
-            get() = _recordUiState.asStateFlow()
+        val recordUiState: StateFlow<RecordUiState> = _recordUiState.asStateFlow()
 
         init {
             loadRecordData()
