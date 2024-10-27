@@ -8,8 +8,9 @@ android {
 
 dependencies {
     implementation(projects.onboardingDomain)
-    implementation(projects.app.auth)
-    implementation(libs.firebase.ui.auth)
+    implementation(projects.core.auth)
+    implementation(projects.core.remote)
+
     implementation(libs.accompanist.permissions)
 
     implementation(projects.app.notification)

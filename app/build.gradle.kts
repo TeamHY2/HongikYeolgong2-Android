@@ -1,6 +1,6 @@
 plugins {
     id("hongikyeolgong2.android.application")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
 }
 
@@ -22,6 +22,12 @@ android {
 }
 
 dependencies {
+    implementation(projects.app.notification)
+
+    implementation(projects.core.designsystem)
+    implementation(projects.core.remote)
+    implementation(projects.core.auth)
+
     implementation(projects.mainPresentation)
     implementation(projects.mainData)
     implementation(projects.mainDomain)
@@ -37,10 +43,6 @@ dependencies {
     implementation(projects.timerPresentation)
     implementation(projects.timerData)
     implementation(projects.timerDomain)
-
-    implementation(projects.core.designsystem)
-    implementation(projects.app.notification)
-    implementation(projects.app.auth)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)

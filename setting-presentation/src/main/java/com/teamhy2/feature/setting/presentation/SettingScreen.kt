@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,7 +47,7 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 fun SettingRoute(
     noticeUrl: String,
     onInquiryClick: () -> Unit,
-    onLogoutOrWithdrawComplete: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
@@ -55,14 +56,8 @@ fun SettingRoute(
 
     SettingScreen(
         settingUiState = settingUiState,
-        onLogoutClick = {
-            viewModel.onLogoutClick(context)
-            onLogoutOrWithdrawComplete()
-        },
-        onWithdrawClick = {
-            viewModel.onWithdrawClick(context)
-            onLogoutOrWithdrawComplete()
-        },
+        onLogoutClick = viewModel::signOut,
+        onWithdrawClick = viewModel::withdraw,
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
         },
@@ -71,6 +66,7 @@ fun SettingRoute(
             context.startActivity(intent)
         },
         onInquiryClick = onInquiryClick,
+        onSignOutOrWithdrawComplete = onSignOutOrWithdrawComplete,
         modifier = modifier,
     )
 }
@@ -83,9 +79,10 @@ fun SettingScreen(
     onNotificationSwitchClick: (Boolean) -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showSignOutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
 
     when (settingUiState) {
@@ -98,24 +95,24 @@ fun SettingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                androidx.compose.material3.CircularProgressIndicator()
+                CircularProgressIndicator()
             }
         }
 
         is SettingUiState.Success -> {
-            if (showLogoutDialog) {
+            if (showSignOutDialog) {
                 HY2Dialog(
                     description = stringResource(R.string.setting_logout_dialog_description),
                     leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
                     rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
                     onLeftButtonClick = {
-                        showLogoutDialog = false
+                        showSignOutDialog = false
                         onLogoutClick()
                     },
                     onRightButtonClick = {
-                        showLogoutDialog = false
+                        showSignOutDialog = false
                     },
-                    onDismiss = { showLogoutDialog = false },
+                    onDismiss = { showSignOutDialog = false },
                 )
             }
 
@@ -149,10 +146,14 @@ fun SettingScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 SettingBottom(
-                    showLogoutDialog = { showLogoutDialog = true },
+                    showLogoutDialog = { showSignOutDialog = true },
                     showWithdrawDialog = { showWithdrawDialog = true },
                 )
             }
+        }
+
+        is SettingUiState.Expired -> {
+            onSignOutOrWithdrawComplete()
         }
 
         is SettingUiState.Error -> Unit
@@ -286,6 +287,7 @@ private fun SettingScreenPreview() {
             onNotificationSwitchClick = {},
             onNoticeClick = {},
             onInquiryClick = {},
+            onSignOutOrWithdrawComplete = {},
             modifier = Modifier,
         )
     }

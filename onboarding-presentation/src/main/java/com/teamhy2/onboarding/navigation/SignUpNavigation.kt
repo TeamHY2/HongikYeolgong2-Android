@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import com.teamhy2.onboarding.SignUpRoute
 import com.teamhy2.onboarding.navigation.SignUp.ROUTE
 
-fun NavController.navigateToSignUp() {
+fun NavController.popUpToSignUp() {
     navigate(ROUTE) {
         popUpTo(graph.startDestinationId) { inclusive = true }
     }
