@@ -12,7 +12,7 @@ import javax.inject.Inject
 class RankingViewModel
     @Inject
     constructor() : ViewModel() {
-        private lateinit var _rankingUiState: MutableStateFlow<RankingUiState.Loading>
+        private val _rankingUiState = MutableStateFlow<RankingUiState>(RankingUiState.Loading)
         val rankingUiState: StateFlow<RankingUiState>
             get() = _rankingUiState.asStateFlow()
 

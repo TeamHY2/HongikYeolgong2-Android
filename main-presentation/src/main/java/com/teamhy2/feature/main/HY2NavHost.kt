@@ -18,6 +18,7 @@ import com.teamhy2.onboarding.navigation.onboardingScreen
 import com.teamhy2.onboarding.navigation.popUpToOnboarding
 import com.teamhy2.onboarding.navigation.popUpToSignUp
 import com.teamhy2.onboarding.navigation.signUpScreen
+import com.teamhy2.ranking.navigation.rankingScreen
 
 @Composable
 fun HY2NavHost(
@@ -66,6 +67,8 @@ fun HY2NavHost(
                     navController.popUpToOnboarding()
                 },
             )
+
+            rankingScreen()
         }
     }
 }
