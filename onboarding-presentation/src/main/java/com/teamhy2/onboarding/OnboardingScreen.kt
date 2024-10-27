@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -15,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.common.SignInButton
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamhy2.core.auth.GoogleSignInButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
@@ -32,22 +36,29 @@ import com.teamhy2.onboarding.presentation.R
 
 @Composable
 fun OnboardingRoute(
-    onGoogleLoginClick: () -> Unit,
-    onGoogleLoginDone: () -> Unit,
+    onGuestSignedIn: () -> Unit,
+    onUserSignedIn: () -> Unit,
     modifier: Modifier = Modifier,
+    onboardingViewModel: OnboardingViewModel = hiltViewModel(),
 ) {
+    val signInState by onboardingViewModel.signInState.collectAsStateWithLifecycle()
+
+    if (signInState == SignInState.SuccessfulSignedInGuest) {
+        onGuestSignedIn()
+    }
+    if (signInState == SignInState.SuccessfulSignedInUser) {
+        onUserSignedIn()
+    }
+
     OnboardingScreen(
-        onGoogleLoginClick = {
-            onGoogleLoginClick()
-            onGoogleLoginDone()
-        },
+        onGoogleSignInClick = onboardingViewModel::signInWithGoogleIdToken,
         modifier = modifier,
     )
 }
 
 @Composable
 fun OnboardingScreen(
-    onGoogleLoginClick: () -> Unit,
+    onGoogleSignInClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val onboardingImages =
@@ -92,25 +103,16 @@ fun OnboardingScreen(
             modifier =
                 Modifier
                     .wrapContentHeight()
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .fillMaxWidth(),
             count = pagerState.pageCount,
             index = pagerState.currentPage,
         )
-        AndroidView(
-            factory = { context ->
-                val signInButton = SignInButton(context)
-                signInButton.setOnClickListener {
-                    onGoogleLoginClick()
-                }
-                signInButton
-            },
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp),
+        Spacer(modifier = Modifier.height(32.dp))
+        GoogleSignInButton(
+            onGoogleSignInClick = onGoogleSignInClick,
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -170,7 +172,7 @@ private fun OnboardingScreenPreview() {
     HY2Theme {
         OnboardingScreen(
             modifier = Modifier.fillMaxSize(),
-            onGoogleLoginClick = { },
+            onGoogleSignInClick = {},
         )
     }
 }

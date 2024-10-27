@@ -14,16 +14,15 @@ import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
-import com.teamhy2.onboarding.navigation.navigateToSignUp
 import com.teamhy2.onboarding.navigation.onboardingScreen
 import com.teamhy2.onboarding.navigation.popUpToOnboarding
+import com.teamhy2.onboarding.navigation.popUpToSignUp
 import com.teamhy2.onboarding.navigation.signUpScreen
 
 @Composable
 fun HY2NavHost(
     navController: NavHostController,
     urls: Map<String, String>,
-    googleSignIn: () -> Unit,
     onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -40,8 +39,8 @@ fun HY2NavHost(
             startDestination = startDestination,
         ) {
             onboardingScreen(
-                onGoogleLoginClick = googleSignIn,
-                onGoogleLoginDone = navController::navigateToSignUp,
+                onUserSignedIn = navController::popUpToMain,
+                onGuestSignedIn = navController::popUpToSignUp,
             )
 
             signUpScreen(
@@ -64,7 +63,7 @@ fun HY2NavHost(
                 onInquiryClick = navController::navigateToInquiry,
                 onLogoutOrWithdrawComplete = {
                     onLogoutOrWithdrawComplete()
-                    navController::popUpToOnboarding
+                    navController.popUpToOnboarding()
                 },
             )
         }
