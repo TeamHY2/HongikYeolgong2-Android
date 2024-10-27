@@ -44,8 +44,8 @@ dependencies {
     implementation(projects.timerData)
     implementation(projects.timerDomain)
 
-    implementation(projects.rankingPresentation)
     implementation(projects.rankingDomain)
+    implementation(projects.rankingPresentation)
 
     implementation(projects.userData)
     implementation(projects.userDomain)
