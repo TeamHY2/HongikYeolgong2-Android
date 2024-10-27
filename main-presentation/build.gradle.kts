@@ -25,6 +25,9 @@ dependencies {
     implementation(projects.settingPresentation)
     implementation(projects.settingDomain)
 
+    implementation(projects.rankingPresentation)
+    implementation(projects.rankingDomain)
+
     implementation(projects.userDomain)
 
     implementation(libs.androidx.core.ktx)
@@ -40,4 +43,5 @@ dependencies {
 
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.compose.material)
 }
