@@ -28,7 +28,7 @@ fun MainBottomBar(
     currentTab: MainTab,
     onTabSelected: (MainTab) -> Unit,
 ) {
-    val tabs = enumValues<MainTab>().toList()
+    val tabs = MainTab.entries
 
     BottomNavigation(
         backgroundColor = Gray800,
