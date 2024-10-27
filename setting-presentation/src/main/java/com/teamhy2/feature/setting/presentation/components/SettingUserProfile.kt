@@ -16,16 +16,16 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.HY2Typography
-import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.img_settting_profile
+import com.teamhy2.user.domain.model.UserInfo
 
 private const val PROFILE_IMAGE_SIZE = 56
 
 @Composable
 fun SettingUserProfile(
     userInfo: UserInfo,
-    profileImageUrl: String = "",
     modifier: Modifier = Modifier,
+    profileImageUrl: String = "",
 ) {
     val profileImagePainter =
         if (profileImageUrl.isNotBlank()) {
@@ -47,7 +47,7 @@ fun SettingUserProfile(
         Spacer(modifier = Modifier.width(20.dp))
         Row {
             Text(
-                text = userInfo.name,
+                text = userInfo.nickname,
                 style = HY2Typography().body05,
                 color = Gray200,
             )
@@ -72,7 +72,8 @@ fun SettingUserProfile(
 private fun SettingUserProfilePreview() {
     val userInfo =
         UserInfo(
-            name = "유림",
+            nickname = "유림",
+            email = "urim@gmail.com",
             department = "디자인컨버전스학부",
         )
     SettingUserProfile(userInfo)

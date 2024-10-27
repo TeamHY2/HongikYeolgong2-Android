@@ -9,6 +9,6 @@ android {
 dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.settingDomain)
-    implementation(projects.onboardingDomain)
+    implementation(projects.userDomain)
     implementation(libs.coil)
 }

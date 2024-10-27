@@ -3,10 +3,8 @@ package com.teamhy2.feature.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benenfeldt.remote.token.JwtManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
-import com.teamhy2.onboarding.domain.repository.UserRepository
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +20,7 @@ import javax.inject.Inject
 class InitialViewModel
     @Inject
     constructor(
-        private val userRepository: UserRepository,
         private val webViewRepository: WebViewRepository,
-        private val jwtManager: JwtManager,
         val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _initialUiState: MutableStateFlow<InitialUiState> =
