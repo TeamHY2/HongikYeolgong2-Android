@@ -8,4 +8,6 @@ data class BaseResponse<T>(
     val `data`: T,
     val status: String,
     val message: String,
-)
+) {
+    fun isSuccess() = code in 200..299
+}
