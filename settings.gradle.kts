@@ -49,3 +49,6 @@ include(":onboarding-domain")
 
 include(":ranking-presentation")
 include(":ranking-domain")
+
+include(":user-data")
+include(":user-domain")

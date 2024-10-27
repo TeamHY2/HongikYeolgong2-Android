@@ -44,6 +44,12 @@ dependencies {
     implementation(projects.timerData)
     implementation(projects.timerDomain)
 
+    implementation(projects.rankingPresentation)
+    implementation(projects.rankingDomain)
+
+    implementation(projects.userData)
+    implementation(projects.userDomain)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)
     implementation(libs.firebase.analytics)
