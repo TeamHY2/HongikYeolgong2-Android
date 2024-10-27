@@ -3,9 +3,9 @@ package com.teamhy2.feature.setting.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
-import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
-import com.teamhy2.onboarding.domain.repository.UserRepository
+import com.teamhy2.user.domain.model.UserInfo
+import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +33,7 @@ class SettingViewModel
             viewModelScope.launch {
                 runCatching {
                     // TODO: 서버에서 유저 정보를 가져오는 로직으로 대체
-                    UserInfo("서재원", "전자전기공학부")
+                    UserInfo("서재원", "librarywon@gmail.com", "전자전기공학부")
                 }.onSuccess { userInfo ->
                     settingsRepository.notificationSwitchState.collectLatest { isChecked ->
                         _settingUiState.update {
@@ -43,7 +43,8 @@ class SettingViewModel
                             )
                         }
                     }
-                }.onFailure {}
+                }.onFailure {
+                }
             }
         }
 

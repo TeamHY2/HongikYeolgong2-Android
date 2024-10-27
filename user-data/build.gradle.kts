@@ -7,5 +7,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.remote)
+    implementation(projects.core.auth)
+
     implementation(projects.userDomain)
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.SocialSignIn
-import com.teamhy2.onboarding.domain.repository.UserRepository
+import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
