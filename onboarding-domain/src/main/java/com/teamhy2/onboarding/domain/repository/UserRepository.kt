@@ -1,9 +1,10 @@
 package com.teamhy2.onboarding.domain.repository
 
 typealias AlreadyExist = Boolean
+typealias Duplication = Boolean
 
 interface UserRepository {
-    suspend fun checkNicknameDuplication(nickname: String): Result<Boolean>
+    suspend fun checkNicknameDuplication(nickname: String): Result<Duplication>
 
     suspend fun signUp(
         nickname: String,

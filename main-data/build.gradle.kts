@@ -8,6 +8,7 @@ android {
 
 dependencies {
     implementation(projects.mainDomain)
+    implementation(projects.core.remote)
 
     implementation(libs.firebase.firestore.ktx)
 }

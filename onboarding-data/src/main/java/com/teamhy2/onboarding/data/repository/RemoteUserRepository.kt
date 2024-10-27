@@ -8,6 +8,7 @@ import com.benenfeldt.remote.mapper.toResult
 import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.SocialSignIn
 import com.teamhy2.onboarding.domain.repository.AlreadyExist
+import com.teamhy2.onboarding.domain.repository.Duplication
 import com.teamhy2.onboarding.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -19,8 +20,10 @@ class RemoteUserRepository
         private val jwtManager: JwtManager,
         private val socialSignIn: SocialSignIn,
     ) : UserRepository {
-        override suspend fun checkNicknameDuplication(nickname: String): Result<Boolean> {
-            return userPublicService.checkNicknameDuplication(nickname).toResult { it.data.duplicate }
+        override suspend fun checkNicknameDuplication(nickname: String): Result<Duplication> {
+            return userPublicService.checkNicknameDuplication(nickname).toResult { baseResponse ->
+                baseResponse.data.duplicate
+            }
         }
 
         override suspend fun signUp(
@@ -32,7 +35,7 @@ class RemoteUserRepository
                     nickname = nickname,
                     department = department,
                 ),
-            ).toResult { it.code in 200 until 300 }
+            ).toResult()
         }
 
         override suspend fun signIn(idToken: String): Result<AlreadyExist> {
@@ -41,11 +44,13 @@ class RemoteUserRepository
                     idToken = idToken,
                 ),
             )
-                .onSuccess {
-                    jwtManager.saveAccessJwt(it.data.accessToken)
+                .onSuccess { baseResponse ->
+                    if (baseResponse.isSuccess()) {
+                        jwtManager.saveAccessJwt(baseResponse.data.accessToken)
+                    }
                 }
-                .toResult {
-                    it.data.alreadyExist
+                .toResult { baseResponse ->
+                    baseResponse.data.alreadyExist
                 }
         }
 
@@ -56,7 +61,11 @@ class RemoteUserRepository
 
         override suspend fun withdraw(): Result<Unit> {
             return userService.withdraw()
-                .onSuccess { jwtManager.clearAllTokens() }
-                .toResult { }
+                .onSuccess { baseResponse ->
+                    if (baseResponse.isSuccess()) {
+                        jwtManager.clearAllTokens()
+                    }
+                }
+                .toResult()
         }
     }

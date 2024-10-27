@@ -38,10 +38,10 @@ class MainViewModel
 
         private fun getWiseSaying() {
             viewModelScope.launch {
-                _mainUiState.value =
-                    _mainUiState.value.copy(
-                        wiseSaying = wiseSayingRepository.fetchWiseSaying(),
-                    )
+                wiseSayingRepository.fetchWiseSaying()
+                    .onSuccess { wiseSaying ->
+                        _mainUiState.value = _mainUiState.value.copy(wiseSaying = wiseSaying)
+                    }
             }
         }
 
