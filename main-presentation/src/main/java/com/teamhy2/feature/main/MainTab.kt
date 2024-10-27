@@ -1,12 +1,13 @@
 package com.teamhy2.feature.main
 
+import androidx.annotation.DrawableRes
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.ic_home
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.ic_ranking
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.ic_record
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.ic_setting
 
 enum class MainTab(
-    val iconResId: Int,
+    @DrawableRes val iconResId: Int,
     val contentDescription: String,
     val route: String,
 ) {
