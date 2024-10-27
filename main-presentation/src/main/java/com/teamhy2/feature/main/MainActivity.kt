@@ -53,11 +53,8 @@ class MainActivity : AppCompatActivity() {
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = currentBackStackEntry?.destination?.route
 
-                val showBottomBar =
-                    when (currentDestination) {
-                        "main", "record", "ranking", "setting" -> true
-                        else -> false
-                    }
+                val tabRoutes = MainTab.entries.map { it.route }.toSet()
+                val showBottomBar = currentDestination in tabRoutes
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
