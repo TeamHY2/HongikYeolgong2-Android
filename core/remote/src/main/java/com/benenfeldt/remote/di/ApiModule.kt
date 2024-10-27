@@ -2,6 +2,7 @@ package com.benenfeldt.remote.di
 
 import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
+import com.benenfeldt.remote.api.WiseSayingService
 import com.benenfeldt.remote.token.NeedAuthRetrofit
 import com.benenfeldt.remote.token.PublicRetrofit
 import dagger.Module
@@ -28,5 +29,13 @@ object ApiModule {
         @PublicRetrofit retrofit: Retrofit,
     ): UserPublicService {
         return retrofit.create(UserPublicService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWiseSayingService(
+        @NeedAuthRetrofit retrofit: Retrofit,
+    ): WiseSayingService {
+        return retrofit.create(WiseSayingService::class.java)
     }
 }
