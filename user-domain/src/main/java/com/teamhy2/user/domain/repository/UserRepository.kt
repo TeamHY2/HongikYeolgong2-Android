@@ -1,4 +1,6 @@
-package com.teamhy2.onboarding.domain.repository
+package com.teamhy2.user.domain.repository
+
+import com.teamhy2.user.domain.model.UserInfo
 
 typealias AlreadyExist = Boolean
 typealias Duplication = Boolean
@@ -16,4 +18,6 @@ interface UserRepository {
     suspend fun signOut(): Result<Unit>
 
     suspend fun withdraw(): Result<Unit>
+
+    suspend fun getUserInfo(): Result<UserInfo>
 }

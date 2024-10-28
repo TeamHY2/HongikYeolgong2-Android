@@ -1,4 +1,4 @@
-package com.teamhy2.onboarding.data.repository
+package com.teamhy2.user.data.repository
 
 import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
@@ -7,9 +7,11 @@ import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.mapper.toResult
 import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.SocialSignIn
-import com.teamhy2.onboarding.domain.repository.AlreadyExist
-import com.teamhy2.onboarding.domain.repository.Duplication
-import com.teamhy2.onboarding.domain.repository.UserRepository
+import com.teamhy2.user.data.mapper.toDomain
+import com.teamhy2.user.domain.model.UserInfo
+import com.teamhy2.user.domain.repository.AlreadyExist
+import com.teamhy2.user.domain.repository.Duplication
+import com.teamhy2.user.domain.repository.UserRepository
 import javax.inject.Inject
 
 class RemoteUserRepository
@@ -67,5 +69,10 @@ class RemoteUserRepository
                     }
                 }
                 .toResult()
+        }
+
+        override suspend fun getUserInfo(): Result<UserInfo> {
+            return userService.getUserInfo()
+                .toResult { it.data.toDomain() }
         }
     }

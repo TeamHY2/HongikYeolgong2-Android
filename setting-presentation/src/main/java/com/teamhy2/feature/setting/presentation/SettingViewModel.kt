@@ -3,9 +3,8 @@ package com.teamhy2.feature.setting.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
-import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
-import com.teamhy2.onboarding.domain.repository.UserRepository
+import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,24 +25,26 @@ class SettingViewModel
         val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
 
         init {
-            loadSettings()
+            initSettingUiState()
         }
 
-        private fun loadSettings() {
+        private fun initSettingUiState() {
             viewModelScope.launch {
-                runCatching {
-                    // TODO: 서버에서 유저 정보를 가져오는 로직으로 대체
-                    UserInfo("서재원", "전자전기공학부")
-                }.onSuccess { userInfo ->
-                    settingsRepository.notificationSwitchState.collectLatest { isChecked ->
-                        _settingUiState.update {
-                            SettingUiState.Success(
-                                isNotificationSwitchChecked = isChecked,
-                                userInfo = userInfo,
-                            )
+                val userInfoResult = userRepository.getUserInfo()
+                settingsRepository.notificationSwitchState.collectLatest { isNotificationSwitchChecked ->
+                    userInfoResult
+                        .onSuccess { userInfo ->
+                            _settingUiState.update {
+                                SettingUiState.Success(
+                                    isNotificationSwitchChecked = isNotificationSwitchChecked,
+                                    userInfo = userInfo,
+                                )
+                            }
                         }
-                    }
-                }.onFailure {}
+                        .onFailure {
+                            // TODO: error flow 등록
+                        }
+                }
             }
         }
 

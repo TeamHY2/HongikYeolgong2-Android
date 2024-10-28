@@ -36,12 +36,12 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.feature.setting.domain.repository.model.UserInfo
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
+import com.teamhy2.user.domain.model.UserInfo
 
 @Composable
 fun SettingRoute(
@@ -257,7 +257,8 @@ fun SettingBottom(
 private fun SettingScreenPreview() {
     val sampleUserInfo =
         UserInfo(
-            name = "서재원",
+            nickname = "서재원",
+            email = "librarywon@gmail.com",
             department = "전자전기공학부",
         )
 
