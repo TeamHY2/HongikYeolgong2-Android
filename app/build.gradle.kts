@@ -50,8 +50,8 @@ dependencies {
     implementation(projects.recordDomain)
     implementation(projects.recordPresentation)
 
-    implementation(projects.core.designsystem)
-    implementation(projects.app.notification)
+    implementation(projects.userData)
+    implementation(projects.userDomain)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)

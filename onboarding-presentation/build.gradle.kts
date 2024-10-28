@@ -11,6 +11,8 @@ dependencies {
     implementation(projects.core.auth)
     implementation(projects.core.remote)
 
+    implementation(projects.userDomain)
+
     implementation(libs.accompanist.permissions)
 
     implementation(projects.app.notification)

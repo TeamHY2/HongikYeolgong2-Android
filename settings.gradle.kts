@@ -53,4 +53,5 @@ include(":ranking-domain")
 include(":record-presentation")
 include(":record-domain")
 
-include(":app:notification")
+include(":user-data")
+include(":user-domain")

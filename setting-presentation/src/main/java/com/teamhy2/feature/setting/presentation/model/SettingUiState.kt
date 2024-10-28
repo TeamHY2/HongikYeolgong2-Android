@@ -1,6 +1,6 @@
 package com.teamhy2.feature.setting.presentation.model
 
-import com.teamhy2.feature.setting.domain.repository.model.UserInfo
+import com.teamhy2.user.domain.model.UserInfo
 
 sealed interface SettingUiState {
     data object Loading : SettingUiState
