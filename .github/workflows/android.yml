@@ -1,16 +1,16 @@
-name: Build Test Lint CI
+name: Android Build Test Lint CI
 
 on:
   push:
     branches:
       - "main"
       - "develop"
-      - "release"
+      - "Release/*"
   pull_request:
     branches:
       - "main"
       - "develop"
-      - "release"
+      - "Release/*"
 
 jobs:
   pre-steps:
@@ -36,7 +36,7 @@ jobs:
         id: get-modules
         run: |
           CHANGED_MODULES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^modules/' | cut -d'/' -f1 | sort | uniq)
-          echo "::set-output name=changed_modules::$CHANGED_MODULES"
+          echo "changed_modules=$CHANGED_MODULES" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
@@ -65,14 +65,16 @@ jobs:
 
       - name: Selective Build
         run: |
-          if [[ -n "${{ needs.pre-steps.outputs.changed_modules }}" ]]; then
-            for module in ${{ needs.pre-steps.outputs.changed_modules }}; do
+          if [[ -n "${{ env.changed_modules }}" ]]; then
+            for module in ${{ env.changed_modules }}; do
               echo "Building $module"
               ./gradlew $module:assemble
             done
           else
             echo "No changes detected in modules."
           fi
+        env:
+          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
 
   test:
     runs-on: ubuntu-latest
@@ -101,14 +103,16 @@ jobs:
 
       - name: Selective Test
         run: |
-          if [[ -n "${{ needs.pre-steps.outputs.changed_modules }}" ]]; then
-            for module in ${{ needs.pre-steps.outputs.changed_modules }}; do
+          if [[ -n "${{ env.changed_modules }}" ]]; then
+            for module in ${{ env.changed_modules }}; do
               echo "Testing $module"
               ./gradlew $module:test
             done
           else
             echo "No changes detected in modules."
           fi
+        env:
+          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
 
   lint:
     runs-on: ubuntu-latest
@@ -137,11 +141,13 @@ jobs:
 
       - name: Selective Lint
         run: |
-          if [[ -n "${{ needs.pre-steps.outputs.changed_modules }}" ]]; then
-            for module in ${{ needs.pre-steps.outputs.changed_modules }}; do
+          if [[ -n "${{ env.changed_modules }}" ]]; then
+            for module in ${{ env.changed_modules }}; do
               echo "Linting $module"
               ./gradlew $module:ktlintCheck
             done
           else
             echo "No changes detected in modules."
           fi
+        env:
+          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
