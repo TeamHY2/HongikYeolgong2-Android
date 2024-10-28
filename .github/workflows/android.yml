@@ -35,7 +35,7 @@ jobs:
       - name: Determine changed modules
         id: get-modules
         run: |
-          CHANGED_MODULES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^modules/' | cut -d'/' -f1 | sort | uniq)
+          CHANGED_MODULES=$(git diff --name-only origin/develop HEAD | grep '^modules/' | cut -d'/' -f1 | sort | uniq)
           echo "changed_modules=$CHANGED_MODULES" >> $GITHUB_ENV
 
   build:
