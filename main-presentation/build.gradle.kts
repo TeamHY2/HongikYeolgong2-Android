@@ -28,6 +28,9 @@ dependencies {
     implementation(projects.rankingPresentation)
     implementation(projects.rankingDomain)
 
+    implementation(projects.recordDomain)
+    implementation(projects.recordPresentation)
+
     implementation(projects.userDomain)
 
     implementation(libs.androidx.core.ktx)

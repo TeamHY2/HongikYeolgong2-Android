@@ -47,6 +47,9 @@ dependencies {
     implementation(projects.rankingDomain)
     implementation(projects.rankingPresentation)
 
+    implementation(projects.recordDomain)
+    implementation(projects.recordPresentation)
+
     implementation(projects.userData)
     implementation(projects.userDomain)
 
