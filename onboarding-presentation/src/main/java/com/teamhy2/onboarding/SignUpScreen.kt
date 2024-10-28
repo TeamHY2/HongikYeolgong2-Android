@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,10 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.modifier.addFocusCleaner
 import com.teamhy2.onboarding.presentation.R
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SignUpRoute(
@@ -55,6 +58,13 @@ fun SignUpRoute(
     val uiState by signUpViewModel.signUpUiState.collectAsStateWithLifecycle()
     val nickname by signUpViewModel.nickname.collectAsStateWithLifecycle()
     val department by signUpViewModel.department.collectAsStateWithLifecycle()
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        signUpViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
 
     SignUpScreen(
         nickname = nickname,

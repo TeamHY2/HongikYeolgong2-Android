@@ -3,8 +3,11 @@ package com.teamhy2.ranking
 import androidx.lifecycle.ViewModel
 import com.teamhy2.ranking.model.RankingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
@@ -15,6 +18,9 @@ class RankingViewModel
         private val _rankingUiState = MutableStateFlow<RankingUiState>(RankingUiState.Loading)
         val rankingUiState: StateFlow<RankingUiState>
             get() = _rankingUiState.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
             loadRankingData()

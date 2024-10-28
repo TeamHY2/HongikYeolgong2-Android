@@ -3,8 +3,11 @@ package com.teamhy2.record
 import androidx.lifecycle.ViewModel
 import com.teamhy2.record.model.RecordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
@@ -14,6 +17,9 @@ class RecordViewModel
     constructor() : ViewModel() {
         private val _recordUiState = MutableStateFlow<RecordUiState>(RecordUiState.Loading)
         val recordUiState: StateFlow<RecordUiState> = _recordUiState.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
             loadRecordData()
