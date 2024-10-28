@@ -6,8 +6,11 @@ import com.teamhy2.onboarding.domain.model.NicknameValidation
 import com.teamhy2.onboarding.domain.repository.DepartmentRepository
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,6 +38,9 @@ class SignUpViewModel
 
         private val _department: MutableStateFlow<String> = MutableStateFlow("")
         val department: StateFlow<String> = _department.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
             viewModelScope.launch {
@@ -85,8 +91,8 @@ class SignUpViewModel
                         }
                         _signUpUiState.value = _signUpUiState.value.copy(nicknameState = NicknameState.NOT_DUPLICATED)
                     }
-                    .onFailure {
-                        // TODO: error flow
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
             }
         }
@@ -94,6 +100,11 @@ class SignUpViewModel
         fun signUp() {
             viewModelScope.launch {
                 userRepository.signUp(nickname.value, department.value)
+                    .onSuccess {
+                    }
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
+                    }
             }
         }
     }

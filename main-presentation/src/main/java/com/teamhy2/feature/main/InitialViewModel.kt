@@ -8,8 +8,11 @@ import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,6 +29,9 @@ class InitialViewModel
         private val _initialUiState: MutableStateFlow<InitialUiState> =
             MutableStateFlow(InitialUiState.Loading)
         val initialUiState: StateFlow<InitialUiState> = _initialUiState.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
             fetchStartDestination()

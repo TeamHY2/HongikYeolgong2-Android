@@ -10,8 +10,11 @@ import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -31,6 +34,9 @@ class MainViewModel
 
         private val studyDays = mutableMapOf<String, List<StudyDay>>()
 
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
+
         init {
             getWiseSaying()
             getCalendarData()
@@ -41,6 +47,9 @@ class MainViewModel
                 wiseSayingRepository.fetchWiseSaying()
                     .onSuccess { wiseSaying ->
                         _mainUiState.value = _mainUiState.value.copy(wiseSaying = wiseSaying)
+                    }
+                    .onFailure { exception ->
+                        _errorFlow.emit(exception)
                     }
             }
         }
