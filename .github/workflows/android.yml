@@ -15,14 +15,10 @@ on:
 jobs:
   pre-steps:
     runs-on: ubuntu-latest
-    outputs:
-      changed_modules: ${{ steps.get-modules.outputs.changed_modules }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Load Google Service file
         env:
@@ -34,12 +30,6 @@ jobs:
           LOCAL_PROPERTIES_CONTENTS: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
         run: echo "${LOCAL_PROPERTIES_CONTENTS}" > local.properties
 
-      - name: Determine changed modules
-        id: get-modules
-        run: |
-          CHANGED_MODULES=$(git diff --name-only origin/develop HEAD | grep '^modules/' | cut -d'/' -f1 | sort | uniq)
-          echo "changed_modules=$CHANGED_MODULES" >> $GITHUB_ENV
-          
   build:
     runs-on: ubuntu-latest
     needs: pre-steps
@@ -65,18 +55,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Selective Build
-        run: |
-          if [[ -n "${{ env.changed_modules }}" ]]; then
-            for module in ${{ env.changed_modules }}; do
-              echo "Building $module"
-              ./gradlew $module:assemble
-            done
-          else
-            echo "No changes detected in modules."
-          fi
-        env:
-          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
+      - name: Build All Modules
+        run: ./gradlew assemble
 
   test:
     runs-on: ubuntu-latest
@@ -103,18 +83,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Selective Test
-        run: |
-          if [[ -n "${{ env.changed_modules }}" ]]; then
-            for module in ${{ env.changed_modules }}; do
-              echo "Testing $module"
-              ./gradlew $module:test
-            done
-          else
-            echo "No changes detected in modules."
-          fi
-        env:
-          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
+      - name: Run All Tests
+        run: ./gradlew test
 
   lint:
     runs-on: ubuntu-latest
@@ -141,15 +111,5 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Selective Lint
-        run: |
-          if [[ -n "${{ env.changed_modules }}" ]]; then
-            for module in ${{ env.changed_modules }}; do
-              echo "Linting $module"
-              ./gradlew $module:ktlintCheck
-            done
-          else
-            echo "No changes detected in modules."
-          fi
-        env:
-          changed_modules: ${{ needs.pre-steps.outputs.changed_modules }}
+      - name: Run Lint Check
+        run: ./gradlew ktlintCheck
