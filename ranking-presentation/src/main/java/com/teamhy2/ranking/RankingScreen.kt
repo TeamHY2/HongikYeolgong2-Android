@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Typography
@@ -59,13 +60,7 @@ fun RankingScreen(
 ) {
     when (rankingUiState) {
         is RankingUiState.Loading -> {
-            Column(
-                modifier = modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                androidx.compose.material3.CircularProgressIndicator()
-            }
+            HY2CircularLoading()
         }
 
         is RankingUiState.Success -> {
