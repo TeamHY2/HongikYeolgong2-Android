@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
+import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.common.HY2TextField
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
@@ -66,22 +67,26 @@ fun SignUpRoute(
         }
     }
 
-    SignUpScreen(
-        nickname = nickname,
-        isNicknameValidate = uiState.isNicknameValidate,
-        nicknameState = uiState.nicknameState,
-        isDepartmentValidate = uiState.isDepartmentValidate,
-        department = department,
-        departments = uiState.departments,
-        onDepartmentChange = signUpViewModel::updateDepartment,
-        onNicknameChange = signUpViewModel::updateNickname,
-        onNicknameDuplicateCheckClicked = signUpViewModel::checkNicknameDuplication,
-        onSignUpButtonClicked = {
-            signUpViewModel.signUp()
-            onSignUpButtonClicked()
-        },
-        modifier = modifier,
-    )
+    when (uiState) {
+        SignUpUiState.Loading -> HY2LoadingScreen()
+        SignUpUiState.SignUpDone -> onSignUpButtonClicked()
+        is SignUpUiState.Success -> {
+            val success = (uiState as SignUpUiState.Success)
+            SignUpScreen(
+                nickname = nickname,
+                isNicknameValidate = success.isNicknameValidate,
+                nicknameState = success.nicknameState,
+                isDepartmentValidate = success.isDepartmentValidate,
+                department = department,
+                departments = success.departments,
+                onDepartmentChange = signUpViewModel::updateDepartment,
+                onNicknameChange = signUpViewModel::updateNickname,
+                onNicknameDuplicateCheckClicked = signUpViewModel::checkNicknameDuplication,
+                onSignUpButtonClicked = signUpViewModel::signUp,
+                modifier = modifier,
+            )
+        }
+    }
 }
 
 @Composable
