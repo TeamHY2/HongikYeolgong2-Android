@@ -6,11 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.teamhy2.feature.main.navigation.mainScreen
-import com.teamhy2.feature.main.navigation.popUpToMain
+import com.teamhy2.feature.home.navigation.homeScreen
+import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
-import com.teamhy2.feature.setting.presentation.navigation.navigateToSetting
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
@@ -41,24 +40,22 @@ fun HY2NavHost(
             startDestination = startDestination,
         ) {
             onboardingScreen(
-                onUserSignedIn = navController::popUpToMain,
+                onUserSignedIn = navController::popUpToHome,
                 onGuestSignedIn = navController::popUpToSignUp,
             )
 
             signUpScreen(
-                onSignUpButtonClicked = navController::popUpToMain,
+                onSignUpButtonClicked = navController::popUpToHome,
             )
 
-            mainScreen(
+            homeScreen(
                 seatingChartUrl = urls["seatingChart"] ?: "",
-                onSettingClick = navController::navigateToSetting,
                 onSendNotification = onSendNotification,
             )
 
-            inquiryScreen(
-                url = urls["inquiry"] ?: "",
-                onCloseButtonClick = navController::popBackStack,
-            )
+            rankingScreen()
+
+            recordScreen()
 
             settingScreen(
                 noticeUrl = urls["notice"] ?: "",
@@ -69,9 +66,10 @@ fun HY2NavHost(
                 },
             )
 
-            rankingScreen()
-
-            recordScreen()
+            inquiryScreen(
+                url = urls["inquiry"] ?: "",
+                onCloseButtonClick = navController::popBackStack,
+            )
         }
     }
 }
