@@ -6,8 +6,11 @@ import com.teamhy2.feature.setting.domain.repository.SettingsRepository
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
@@ -23,6 +26,9 @@ class SettingViewModel
     ) : ViewModel() {
         private val _settingUiState = MutableStateFlow<SettingUiState>(SettingUiState.Loading)
         val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
             initSettingUiState()
@@ -41,8 +47,8 @@ class SettingViewModel
                                 )
                             }
                         }
-                        .onFailure {
-                            // TODO: error flow 등록
+                        .onFailure { throwable ->
+                            _errorFlow.emit(throwable)
                         }
                 }
             }
@@ -54,8 +60,8 @@ class SettingViewModel
                     .onSuccess {
                         _settingUiState.update { SettingUiState.Expired }
                     }
-                    .onFailure {
-                        // TODO: error flow 등록
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
             }
         }
@@ -66,8 +72,8 @@ class SettingViewModel
                     .onSuccess {
                         _settingUiState.update { SettingUiState.Expired }
                     }
-                    .onFailure {
-                        // TODO: error flow 등록
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
             }
         }

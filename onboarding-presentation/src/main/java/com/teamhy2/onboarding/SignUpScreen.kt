@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
+import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.common.HY2TextField
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
@@ -43,8 +45,10 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.modifier.addFocusCleaner
 import com.teamhy2.onboarding.presentation.R
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SignUpRoute(
@@ -56,22 +60,33 @@ fun SignUpRoute(
     val nickname by signUpViewModel.nickname.collectAsStateWithLifecycle()
     val department by signUpViewModel.department.collectAsStateWithLifecycle()
 
-    SignUpScreen(
-        nickname = nickname,
-        isNicknameValidate = uiState.isNicknameValidate,
-        nicknameState = uiState.nicknameState,
-        isDepartmentValidate = uiState.isDepartmentValidate,
-        department = department,
-        departments = uiState.departments,
-        onDepartmentChange = signUpViewModel::updateDepartment,
-        onNicknameChange = signUpViewModel::updateNickname,
-        onNicknameDuplicateCheckClicked = signUpViewModel::checkNicknameDuplication,
-        onSignUpButtonClicked = {
-            signUpViewModel.signUp()
-            onSignUpButtonClicked()
-        },
-        modifier = modifier,
-    )
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        signUpViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
+
+    when (uiState) {
+        SignUpUiState.Loading -> HY2LoadingScreen()
+        SignUpUiState.SignUpDone -> onSignUpButtonClicked()
+        is SignUpUiState.Success -> {
+            val success = (uiState as SignUpUiState.Success)
+            SignUpScreen(
+                nickname = nickname,
+                isNicknameValidate = success.isNicknameValidate,
+                nicknameState = success.nicknameState,
+                isDepartmentValidate = success.isDepartmentValidate,
+                department = department,
+                departments = success.departments,
+                onDepartmentChange = signUpViewModel::updateDepartment,
+                onNicknameChange = signUpViewModel::updateNickname,
+                onNicknameDuplicateCheckClicked = signUpViewModel::checkNicknameDuplication,
+                onSignUpButtonClicked = signUpViewModel::signUp,
+                modifier = modifier,
+            )
+        }
+    }
 }
 
 @Composable
