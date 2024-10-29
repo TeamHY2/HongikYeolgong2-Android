@@ -44,7 +44,7 @@ fun RankingRoute(
 
     val localShowSnackBar = LocalShowSnackBar.current
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { throwable ->
+        rankingViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
     }
