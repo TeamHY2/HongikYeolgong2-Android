@@ -14,7 +14,7 @@ enum class MainTab(
     HOME(
         iconResId = ic_home,
         contentDescription = "홈",
-        route = "main",
+        route = "home",
     ),
     RECORD(
         iconResId = ic_record,
