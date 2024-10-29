@@ -147,9 +147,9 @@ fun RankingItemPreview(
     @PreviewParameter(SampleRankingProvider::class) departmentRanking: DepartmentRanking,
 ) {
     RankingItem(
-        rank = departmentRanking.rank,
-        departmentName = departmentRanking.departmentName,
-        hours = departmentRanking.weeklyStudyTime,
+        rank = departmentRanking.currentRank,
+        departmentName = departmentRanking.department,
+        hours = departmentRanking.studyDurationOfWeek,
         rankChange = departmentRanking.rankChange,
     )
 }
@@ -158,27 +158,27 @@ class SampleRankingProvider : PreviewParameterProvider<DepartmentRanking> {
     override val values =
         sequenceOf(
             DepartmentRanking(
-                rank = 1,
-                departmentName = "국어국문학과",
-                weeklyStudyTime = 200,
+                department = "국어국문학과",
+                studyDurationOfWeek = 200,
+                currentRank = 1,
                 rankChange = 1,
             ),
             DepartmentRanking(
-                rank = 2,
-                departmentName = "디자인학부",
-                weeklyStudyTime = 170,
+                department = "디자인학부",
+                studyDurationOfWeek = 170,
+                currentRank = 2,
                 rankChange = -1,
             ),
             DepartmentRanking(
-                rank = 3,
-                departmentName = "경영학부",
-                weeklyStudyTime = 120,
+                department = "경영학부",
+                studyDurationOfWeek = 120,
+                currentRank = 3,
                 rankChange = 2,
             ),
             DepartmentRanking(
-                rank = 4,
-                departmentName = "전자전기공학부",
-                weeklyStudyTime = 100,
+                department = "전자전기공학부",
+                studyDurationOfWeek = 100,
+                currentRank = 4,
                 rankChange = 0,
             ),
         )
