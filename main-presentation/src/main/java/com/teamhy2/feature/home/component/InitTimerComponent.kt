@@ -1,4 +1,4 @@
-package com.teamhy2.feature.main.component
+package com.teamhy2.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
-import com.teamhy2.feature.main.model.MainUiState
+import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.main.domain.model.WiseSaying
 
@@ -24,7 +24,7 @@ private const val BUTTON_HEIGHT = 52
 fun InitTimerComponent(
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
-    uiState: MainUiState,
+    uiState: HomeUiState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -65,7 +65,7 @@ fun InitTimerComponent(
 @Composable
 fun TimerScreenPreview() {
     val dummyUiState =
-        MainUiState(
+        HomeUiState(
             wiseSaying =
                 WiseSaying(
                     quote = "삶이 아무리 어려워 보일지라도\n항상 당신이 할 수 있고 성공할 수 있는 일이 있습니다.",
