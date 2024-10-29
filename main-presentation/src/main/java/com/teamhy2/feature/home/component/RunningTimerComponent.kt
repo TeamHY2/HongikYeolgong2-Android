@@ -1,4 +1,4 @@
-package com.teamhy2.feature.main.component
+package com.teamhy2.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
