@@ -48,6 +48,7 @@ include(":onboarding-data")
 include(":onboarding-domain")
 
 include(":ranking-presentation")
+include(":ranking-data")
 include(":ranking-domain")
 
 include(":record-presentation")
