@@ -6,8 +6,11 @@ import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.SocialSignIn
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,6 +27,9 @@ class OnboardingViewModel
         private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
         val signInState: StateFlow<SignInState> = _signInState.asStateFlow()
 
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
+
         fun signInWithGoogleIdToken() {
             viewModelScope.launch {
                 socialSignIn.requestSignInWithIdToken()
@@ -31,8 +37,9 @@ class OnboardingViewModel
                         requestSignInToServerWithIdToken(idToken)
                         jwtManager.saveGoogleIdToken(idToken)
                     }
-                    .onFailure {
+                    .onFailure { throwable ->
                         _signInState.update { SignInState.Failure }
+                        _errorFlow.emit(throwable)
                     }
             }
         }
@@ -46,8 +53,9 @@ class OnboardingViewModel
                     }
                     _signInState.update { SignInState.SuccessfulSignedInGuest }
                 }
-                .onFailure {
+                .onFailure { throwable ->
                     _signInState.update { SignInState.Failure }
+                    _errorFlow.emit(throwable)
                 }
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,10 +28,12 @@ import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R
 import com.teamhy2.ranking.components.RankingItem
 import com.teamhy2.ranking.model.DepartmentRanking
 import com.teamhy2.ranking.model.RankingUiState
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RankingRoute(
@@ -38,6 +41,13 @@ fun RankingRoute(
     rankingViewModel: RankingViewModel = hiltViewModel(),
 ) {
     val rankingUiState by rankingViewModel.rankingUiState.collectAsStateWithLifecycle()
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        viewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
 
     RankingScreen(
         rankingUiState = rankingUiState,

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,12 +37,14 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 import com.teamhy2.user.domain.model.UserInfo
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingRoute(
@@ -53,6 +56,13 @@ fun SettingRoute(
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        viewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
 
     SettingScreen(
         settingUiState = settingUiState,

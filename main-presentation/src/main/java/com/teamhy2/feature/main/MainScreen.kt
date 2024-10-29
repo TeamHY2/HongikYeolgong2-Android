@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.feature.main.component.InitTimerComponent
 import com.teamhy2.feature.main.component.RunningTimerComponent
 import com.teamhy2.feature.main.model.MainUiState
@@ -36,6 +38,7 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
+import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -54,6 +57,13 @@ fun MainRoute(
     val duration by timerViewModel.durationHour.collectAsStateWithLifecycle()
 
     mainViewModel.updateTimerStateFromTimerViewModel(timerState)
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        mainViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
 
     if (uiState.isTimePickerVisible) {
         HY2TimePicker(
