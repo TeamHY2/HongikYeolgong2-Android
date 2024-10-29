@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,9 +18,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.record.components.StudySummaryCard
 import com.teamhy2.record.model.RecordUiState
 import com.teamhy2.record.model.StudySummary
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RecordRoute(
@@ -27,6 +30,13 @@ fun RecordRoute(
     recordViewModel: RecordViewModel = hiltViewModel(),
 ) {
     val recordUiState by recordViewModel.recordUiState.collectAsStateWithLifecycle()
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        recordViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
+    }
 
     RecordScreen(
         recordUiState = recordUiState,
