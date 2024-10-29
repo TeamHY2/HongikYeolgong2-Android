@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +33,9 @@ import com.teamhy2.core.auth.GoogleSignInButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.onboarding.presentation.R
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun OnboardingRoute(
@@ -48,6 +51,13 @@ fun OnboardingRoute(
     }
     if (signInState == SignInState.SuccessfulSignedInUser) {
         onUserSignedIn()
+    }
+
+    val localShowSnackBar = LocalShowSnackBar.current
+    LaunchedEffect(true) {
+        onboardingViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
     }
 
     OnboardingScreen(

@@ -14,8 +14,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
@@ -28,9 +33,13 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.ShowSnackBar
 import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
 
@@ -56,8 +65,21 @@ class MainActivity : AppCompatActivity() {
                 val tabRoutes = MainTab.entries.map { it.route }.toSet()
                 val showBottomBar = currentDestination in tabRoutes
 
+                val scope = rememberCoroutineScope()
+                val snackBarHostState = remember { SnackbarHostState() }
+
+                val showSnackBar =
+                    ShowSnackBar { message: String? ->
+                        scope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
+                            )
+                        }
+                    }
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                     bottomBar = {
                         if (showBottomBar) {
                             MainBottomBar(
@@ -98,19 +120,29 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             is InitialUiState.Success -> {
-                                HY2NavHost(
-                                    navController = navController,
-                                    urls = (initialUiState as InitialUiState.Success).urls,
-                                    startDestination = (initialUiState as InitialUiState.Success).startDestination,
-                                    onSendNotification = { pushText ->
-                                        initialViewModel.notificationHandler.showSimpleNotification(
-                                            pushText,
-                                        )
-                                    },
-                                    onLogoutOrWithdrawComplete = {
-                                        restartMainActivity()
-                                    },
-                                )
+                                CompositionLocalProvider(
+                                    LocalShowSnackBar provides showSnackBar,
+                                ) {
+                                    LaunchedEffect(true) {
+                                        initialViewModel.errorFlow.collectLatest {
+                                            showSnackBar.showSnackBar(it.message)
+                                        }
+                                    }
+
+                                    HY2NavHost(
+                                        navController = navController,
+                                        urls = (initialUiState as InitialUiState.Success).urls,
+                                        startDestination = (initialUiState as InitialUiState.Success).startDestination,
+                                        onSendNotification = { pushText ->
+                                            initialViewModel.notificationHandler.showSimpleNotification(
+                                                pushText,
+                                            )
+                                        },
+                                        onLogoutOrWithdrawComplete = {
+                                            restartMainActivity()
+                                        },
+                                    )
+                                }
                             }
 
                             is InitialUiState.NeedUpdate -> {

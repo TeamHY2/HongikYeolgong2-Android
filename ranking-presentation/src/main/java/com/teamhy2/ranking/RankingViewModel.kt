@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.teamhy2.ranking.model.RankingUiState
 import com.teamhy2.ranking.repository.RankingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,6 +25,9 @@ class RankingViewModel
         private val _rankingUiState = MutableStateFlow<RankingUiState>(RankingUiState.Loading)
         val rankingUiState: StateFlow<RankingUiState>
             get() = _rankingUiState.asStateFlow()
+
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         private var currentWeekNumber: Int? = null
         private var latestWeekNumber: Int? = null
