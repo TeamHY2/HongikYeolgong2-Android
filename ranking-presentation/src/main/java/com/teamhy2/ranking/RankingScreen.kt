@@ -38,22 +38,26 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun RankingRoute(
     modifier: Modifier = Modifier,
-    viewModel: RankingViewModel = hiltViewModel(),
+    rankingViewModel: RankingViewModel = hiltViewModel(),
 ) {
-    val rankingUiState by viewModel.rankingUiState.collectAsStateWithLifecycle()
+    val rankingUiState by rankingViewModel.rankingUiState.collectAsStateWithLifecycle()
 
     val localShowSnackBar = LocalShowSnackBar.current
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { throwable ->
+        rankingViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
     }
 
     RankingScreen(
         rankingUiState = rankingUiState,
-        onLastWeekClick = { viewModel.loadLastWeekRanking() },
-        onNextWeekClick = { viewModel.loadNextWeekRanking() },
-        modifier = modifier,
+        onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
+        onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
+        modifier =
+            modifier
+                .background(BackgroundBlack)
+                .padding(horizontal = 24.dp)
+                .fillMaxSize(),
     )
 }
 
@@ -62,11 +66,7 @@ fun RankingScreen(
     rankingUiState: RankingUiState,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
-    modifier: Modifier =
-        Modifier
-            .background(BackgroundBlack)
-            .padding(horizontal = 24.dp)
-            .fillMaxSize(),
+    modifier: Modifier = Modifier,
 ) {
     when (rankingUiState) {
         is RankingUiState.Loading -> {
@@ -136,9 +136,9 @@ fun RankingBody(
         items(departmentRankings.size) { index ->
             val item = departmentRankings[index]
             RankingItem(
-                rank = item.rank,
-                departmentName = item.departmentName,
-                hours = item.weeklyStudyTime,
+                rank = item.currentRank,
+                departmentName = item.department,
+                hours = item.studyDurationOfWeek,
                 rankChange = item.rankChange,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -151,16 +151,66 @@ fun RankingBody(
 fun RankingScreenPreview() {
     val sampleItems =
         listOf(
-            DepartmentRanking(1, "국어국문학과", 200, 1),
-            DepartmentRanking(2, "디자인학부", 170, 1),
-            DepartmentRanking(3, "경영학부", 120, -1),
-            DepartmentRanking(4, "건축학부", 80, 1),
-            DepartmentRanking(5, "불어불문학과", 78, -4),
-            DepartmentRanking(6, "사회교육과", 60, 0),
-            DepartmentRanking(7, "수학교육과", 56, 2),
-            DepartmentRanking(8, "국어교육과", 50, 1),
-            DepartmentRanking(9, "체육교육과", 45, -2),
-            DepartmentRanking(10, "음악교육과", 40, 3),
+            DepartmentRanking(
+                department = "국어국문학과",
+                studyDurationOfWeek = 200,
+                currentRank = 1,
+                rankChange = 1,
+            ),
+            DepartmentRanking(
+                department = "디자인학부",
+                studyDurationOfWeek = 170,
+                currentRank = 2,
+                rankChange = 1,
+            ),
+            DepartmentRanking(
+                department = "경영학부",
+                studyDurationOfWeek = 120,
+                currentRank = 3,
+                rankChange = -1,
+            ),
+            DepartmentRanking(
+                department = "건축학부",
+                studyDurationOfWeek = 80,
+                currentRank = 4,
+                rankChange = 1,
+            ),
+            DepartmentRanking(
+                department = "불어불문학과",
+                studyDurationOfWeek = 78,
+                currentRank = 5,
+                rankChange = -4,
+            ),
+            DepartmentRanking(
+                department = "사회교육과",
+                studyDurationOfWeek = 60,
+                currentRank = 6,
+                rankChange = 0,
+            ),
+            DepartmentRanking(
+                department = "수학교육과",
+                studyDurationOfWeek = 56,
+                currentRank = 7,
+                rankChange = 2,
+            ),
+            DepartmentRanking(
+                department = "국어교육과",
+                studyDurationOfWeek = 50,
+                currentRank = 8,
+                rankChange = 1,
+            ),
+            DepartmentRanking(
+                department = "체육교육과",
+                studyDurationOfWeek = 45,
+                currentRank = 9,
+                rankChange = -2,
+            ),
+            DepartmentRanking(
+                department = "음악교육과",
+                studyDurationOfWeek = 40,
+                currentRank = 10,
+                rankChange = 3,
+            ),
         )
 
     val sampleUiState =

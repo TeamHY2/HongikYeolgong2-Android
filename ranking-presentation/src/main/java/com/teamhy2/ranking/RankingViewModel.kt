@@ -1,7 +1,9 @@
 package com.teamhy2.ranking
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.teamhy2.ranking.model.RankingUiState
+import com.teamhy2.ranking.repository.RankingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,12 +11,17 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class RankingViewModel
     @Inject
-    constructor() : ViewModel() {
+    constructor(
+        private val rankingRepository: RankingRepository,
+    ) : ViewModel() {
         private val _rankingUiState = MutableStateFlow<RankingUiState>(RankingUiState.Loading)
         val rankingUiState: StateFlow<RankingUiState>
             get() = _rankingUiState.asStateFlow()
@@ -22,19 +29,57 @@ class RankingViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
+        private var currentWeekNumber: Int? = null
+        private var latestWeekNumber: Int? = null
+
         init {
-            loadRankingData()
+            getWeekNumber()
         }
 
-        private fun loadRankingData() {
-            // TODO: 랭킹을 서버로부터 불러 오는 로직을 구현
+        private fun getWeekNumber() {
+            viewModelScope.launch {
+                rankingRepository.fetchWeekNumber(LocalDate.now())
+                    .onSuccess { weekNumber ->
+                        currentWeekNumber = weekNumber.weekNumber
+                        latestWeekNumber = weekNumber.weekNumber
+                        getDepartmentRankings(weekNumber.weekNumber)
+                    }
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
+                    }
+            }
         }
 
-        fun loadLastWeekRanking() {
-            // TODO: 이전 주 랭킹을 불러오는 로직 구현
+        private fun getDepartmentRankings(weekNumber: Int) {
+            viewModelScope.launch {
+                rankingRepository.fetchRanking(weekNumber)
+                    .onSuccess { ranking ->
+                        currentWeekNumber = weekNumber
+                        _rankingUiState.update {
+                            RankingUiState.Success(
+                                currentWeek = ranking.weekName,
+                                departmentRankings = ranking.departmentRankings,
+                            )
+                        }
+                    }
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
+                    }
+            }
         }
 
-        fun loadNextWeekRanking() {
-            // TODO: 다음 주 랭킹을 불러오는 로직 구현
+        fun getLastWeekRanking() {
+            currentWeekNumber?.let { currentWeekNumber ->
+                getDepartmentRankings(currentWeekNumber - 1)
+            }
+        }
+
+        fun getNextWeekRanking() {
+            currentWeekNumber?.let { currentWeekNumber ->
+                if (currentWeekNumber >= (latestWeekNumber ?: currentWeekNumber)) {
+                    return
+                }
+                getDepartmentRankings(currentWeekNumber + 1)
+            }
         }
     }
