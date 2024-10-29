@@ -45,6 +45,7 @@ dependencies {
     implementation(projects.timerDomain)
 
     implementation(projects.rankingDomain)
+    implementation(projects.rankingData)
     implementation(projects.rankingPresentation)
 
     implementation(projects.recordDomain)
