@@ -44,8 +44,8 @@ class RankingViewModel
                         latestWeekNumber = weekNumber.weekNumber
                         getDepartmentRankings(weekNumber.weekNumber)
                     }
-                    .onFailure {
-                        // TODO: error flow 등록
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
             }
         }
@@ -62,8 +62,8 @@ class RankingViewModel
                             )
                         }
                     }
-                    .onFailure {
-                        // TODO: error flow 등록
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
             }
         }
