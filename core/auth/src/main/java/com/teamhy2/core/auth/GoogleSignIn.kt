@@ -7,15 +7,18 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.MessageDigest
 import java.util.UUID
 import javax.inject.Inject
 
+private typealias IdToken = String
+
 class GoogleSignIn
     @Inject
     constructor(
-        private val context: Context,
-    ) : SocialSignIn {
+        @ApplicationContext private val context: Context,
+    ) {
         private val credentialManager = CredentialManager.create(context)
         private val googleIdOption: GetGoogleIdOption =
             GetGoogleIdOption.Builder()
@@ -41,7 +44,7 @@ class GoogleSignIn
             return hashedNonce
         }
 
-        override suspend fun requestSignInWithIdToken(): Result<IdToken> {
+        suspend fun requestSignInWithIdToken(): Result<IdToken> {
             return runCatching {
                 val credentialResponse: GetCredentialResponse =
                     credentialManager.getCredential(
@@ -57,7 +60,7 @@ class GoogleSignIn
             }
         }
 
-        override suspend fun requestSignOut(): Result<Unit> {
+        suspend fun requestSignOut(): Result<Unit> {
             return runCatching {
                 credentialManager.clearCredentialState(request = ClearCredentialStateRequest())
             }
