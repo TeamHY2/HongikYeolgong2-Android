@@ -72,7 +72,7 @@ private fun getStarDrawableId(studyCount: Int): Int {
 
 @Preview
 @Composable
-private fun PreviewWeeklyDayComponent() {
+private fun PreviewWeeklyStudyDayComponent() {
     WeeklyDayComponent(
         dayOfWeek = "월",
         studyCount = 3,

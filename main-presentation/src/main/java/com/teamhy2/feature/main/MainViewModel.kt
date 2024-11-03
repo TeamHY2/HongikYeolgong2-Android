@@ -1,14 +1,12 @@
 package com.teamhy2.feature.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.mapper.StudyDayMapper
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import com.teamhy2.main.domain.repository.StudyDayRepository
-import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -25,7 +22,6 @@ import javax.inject.Inject
 class MainViewModel
     @Inject
     constructor(
-        private val wiseSayingRepository: WiseSayingRepository,
         private val studyDayRepository: StudyDayRepository,
     ) : ViewModel() {
         private val today = LocalDate.now()
@@ -38,20 +34,7 @@ class MainViewModel
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
-            getWiseSaying()
             getCalendarData()
-        }
-
-        private fun getWiseSaying() {
-            viewModelScope.launch {
-                wiseSayingRepository.fetchWiseSaying()
-                    .onSuccess { wiseSaying ->
-                        _mainUiState.value = _mainUiState.value.copy(wiseSaying = wiseSaying)
-                    }
-                    .onFailure { exception ->
-                        _errorFlow.emit(exception)
-                    }
-            }
         }
 
         private fun getCalendarData() {

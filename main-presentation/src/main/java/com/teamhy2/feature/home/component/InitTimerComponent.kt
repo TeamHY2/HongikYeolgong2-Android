@@ -16,6 +16,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
+import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 
 private const val BUTTON_HEIGHT = 52
@@ -71,6 +72,12 @@ fun TimerScreenPreview() {
                     quote = "삶이 아무리 어려워 보일지라도\n항상 당신이 할 수 있고 성공할 수 있는 일이 있습니다.",
                     author = "스티븐 호킹",
                 ),
+            listOf(
+                WeeklyStudyDay(
+                    studyCount = 3,
+                    date = "9/23",
+                ),
+            ),
         )
 
     HY2Theme {

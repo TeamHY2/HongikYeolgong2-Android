@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -31,8 +32,9 @@ import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
-import com.teamhy2.feature.main.component.InitTimerComponent
-import com.teamhy2.feature.main.component.RunningTimerComponent
+import com.teamhy2.feature.home.component.InitTimerComponent
+import com.teamhy2.feature.home.component.RunningTimerComponent
+import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
@@ -199,12 +201,14 @@ fun MainScreen(
             modifier
                 .fillMaxSize(),
     ) {
+        Spacer(modifier = Modifier.height(34.dp))
         MainHeader(
             onSettingClick = onSettingClick,
             modifier =
                 Modifier
                     .fillMaxWidth(),
         )
+        Spacer(modifier = Modifier.height(36.dp))
         MainBody(
             durationAsSecond = durationAsSecond,
             uiState = uiState,
@@ -294,7 +298,7 @@ private fun MainBody(
                 InitTimerComponent(
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
-                    uiState = uiState,
+                    uiState = HomeUiState(),
                     modifier = Modifier.weight(12f),
                 )
             }
