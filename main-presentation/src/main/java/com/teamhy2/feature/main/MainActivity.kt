@@ -86,7 +86,11 @@ class MainActivity : AppCompatActivity() {
                                 currentTab = MainTab.fromRoute(currentDestination),
                                 onTabSelected = { tab ->
                                     navController.navigate(tab.route) {
-                                        popUpTo(navController.graph.startDestinationId)
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                            inclusive = true
+                                        }
+                                        restoreState = true
                                         launchSingleTop = true
                                     }
                                 },
