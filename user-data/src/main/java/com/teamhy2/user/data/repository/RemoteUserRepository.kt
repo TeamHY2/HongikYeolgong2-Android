@@ -6,7 +6,6 @@ import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.mapper.toResult
 import com.benenfeldt.remote.token.JwtManager
-import com.teamhy2.core.auth.GoogleSignIn
 import com.teamhy2.user.data.mapper.toDomain
 import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.AlreadyExist
@@ -20,7 +19,6 @@ class RemoteUserRepository
         private val userService: UserService,
         private val userPublicService: UserPublicService,
         private val jwtManager: JwtManager,
-        private val googleSignIn: GoogleSignIn,
     ) : UserRepository {
         override suspend fun checkNicknameDuplication(nickname: String): Result<Duplication> {
             return userPublicService.checkNicknameDuplication(nickname).toResult { baseResponse ->
@@ -57,8 +55,9 @@ class RemoteUserRepository
         }
 
         override suspend fun signOut(): Result<Unit> {
-            return googleSignIn.requestSignOut()
-                .onSuccess { jwtManager.clearAllTokens() }
+            return runCatching {
+                jwtManager.clearAllTokens()
+            }
         }
 
         override suspend fun withdraw(): Result<Unit> {
