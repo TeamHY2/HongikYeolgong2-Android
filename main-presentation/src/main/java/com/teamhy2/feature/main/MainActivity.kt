@@ -11,8 +11,12 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -78,7 +82,10 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 Scaffold(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier =
+                        Modifier.windowInsetsPadding(
+                            WindowInsets.systemBars.only(WindowInsetsSides.Bottom),
+                        ),
                     snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
                     bottomBar = {
                         if (showBottomBar) {
