@@ -21,7 +21,6 @@ class OnboardingViewModel
     @Inject
     constructor(
         private val userRepository: UserRepository,
-        private val googleSignIn: GoogleSignIn,
         private val jwtManager: JwtManager,
     ) : ViewModel() {
         private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
@@ -30,7 +29,7 @@ class OnboardingViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
-        fun signInWithGoogleIdToken() {
+        fun signInWithGoogleIdToken(googleSignIn: GoogleSignIn) {
             viewModelScope.launch {
                 googleSignIn.requestSignInWithIdToken()
                     .onSuccess { idToken: String ->
