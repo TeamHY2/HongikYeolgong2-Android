@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -14,30 +15,28 @@ import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Black
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
-import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
-import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 
 private const val BUTTON_HEIGHT = 52
 
 @Composable
 fun InitTimerComponent(
+    wiseSaying: WiseSaying,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
-    uiState: HomeUiState,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(bottom = 36.dp),
     ) {
         Spacer(modifier = Modifier.weight(1f))
         WiseSayingComponent(
-            quote = uiState.wiseSaying.quote,
-            author = uiState.wiseSaying.author,
+            quote = wiseSaying.quote,
+            author = wiseSaying.author,
             modifier = Modifier.fillMaxWidth(),
         )
-        Spacer(modifier = Modifier.weight(1.5f))
+        Spacer(modifier = Modifier.weight(2f))
         Row(
             modifier =
                 Modifier
@@ -65,26 +64,17 @@ fun InitTimerComponent(
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview() {
-    val dummyUiState =
-        HomeUiState(
-            wiseSaying =
-                WiseSaying(
-                    quote = "삶이 아무리 어려워 보일지라도\n항상 당신이 할 수 있고 성공할 수 있는 일이 있습니다.",
-                    author = "스티븐 호킹",
-                ),
-            listOf(
-                WeeklyStudyDay(
-                    studyCount = 3,
-                    date = "9/23",
-                ),
-            ),
+    val dummyWiseSaying =
+        WiseSaying(
+            quote = "삶이 아무리 어려워 보일지라도\n항상 당신이 할 수 있고 성공할 수 있는 일이 있습니다.",
+            author = "스티븐 호킹",
         )
 
     HY2Theme {
         InitTimerComponent(
+            wiseSaying = dummyWiseSaying,
             onSeatingChartClick = { },
             onStudyRoomStartClick = { },
-            uiState = dummyUiState,
             modifier =
                 Modifier
                     .background(Black)
