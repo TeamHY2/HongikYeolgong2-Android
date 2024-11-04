@@ -3,7 +3,9 @@ package com.teamhy2.feature.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.benenfeldt.remote.token.JwtManager
 import com.google.firebase.firestore.FirebaseFirestore
+import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
@@ -24,6 +26,7 @@ class InitialViewModel
     @Inject
     constructor(
         private val webViewRepository: WebViewRepository,
+        private val jwtManager: JwtManager,
         val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _initialUiState: MutableStateFlow<InitialUiState> =
@@ -51,8 +54,15 @@ class InitialViewModel
                 }
             }
 
-            // TODO: 자동 로그인 구현 시 변경
-            setStartDestination(Onboarding.ROUTE)
+            viewModelScope.launch {
+                val accessToken: String? = jwtManager.getAccessJwt()
+
+                if (accessToken == null) {
+                    setStartDestination(Onboarding.ROUTE)
+                    return@launch
+                }
+                setStartDestination(Main.ROUTE)
+            }
         }
 
         private fun fetchFirebaseUrls() {
