@@ -30,7 +30,7 @@ fun WeeklyStudyCalendar(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         DAYS_OF_WEEK.forEachIndexed { index, dayOfWeek ->
             val isFutureDate = isDateInFuture(weeklyStudyDays[index].date, currentDate)
