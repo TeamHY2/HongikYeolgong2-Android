@@ -6,7 +6,7 @@ import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
-import com.teamhy2.main.domain.repository.WeeklyStudyDayRepository
+import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -27,7 +27,7 @@ class HomeViewModel
     @Inject
     constructor(
         private val wiseSayingRepository: WiseSayingRepository,
-        private val weeklyStudyDayRepository: WeeklyStudyDayRepository,
+        private val studyDayRepository: StudyDayRepository,
     ) : ViewModel() {
         private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
         val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -67,7 +67,7 @@ class HomeViewModel
         }
 
         private suspend fun fetchWeeklyStudyDay(): List<WeeklyStudyDay> {
-            return weeklyStudyDayRepository.fetchWeeklyStudyDay().getOrElse { throw it }
+            return studyDayRepository.fetchWeeklyStudyDay().getOrElse { throw it }
         }
 
         fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
@@ -78,6 +78,7 @@ class HomeViewModel
                             timerUiModel = timerState,
                         )
                     }
+
                     else -> currentState
                 }
             }
