@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,18 +44,18 @@ class HomeViewModel
             viewModelScope.launch {
                 runCatching {
                     listOf(
-                        async { fetchWiseSaying() },
-                        async { fetchWeeklyStudyDay() },
+                        async { wiseSayingRepository.fetchWiseSaying().getOrThrow() },
+                        async { studyDayRepository.fetchWeeklyStudyDay().getOrThrow() },
                     ).awaitAll()
                 }.onSuccess { results ->
-                    val wiseSaying = results[0] as WiseSaying
-                    val weeklyStudyDays = results[1] as List<WeeklyStudyDay>
+                    val (wiseSaying, weeklyStudyDays) = results
 
-                    _homeUiState.value =
+                    _homeUiState.update {
                         HomeUiState.Success(
-                            wiseSaying = wiseSaying,
-                            weeklyStudyDays = weeklyStudyDays,
+                            wiseSaying = wiseSaying as WiseSaying,
+                            weeklyStudyDays = weeklyStudyDays as List<WeeklyStudyDay>,
                         )
+                    }
                 }.onFailure { exception ->
                     _errorFlow.tryEmit(exception)
                     _homeUiState.value = HomeUiState.Error(exception.message)
@@ -62,12 +63,43 @@ class HomeViewModel
             }
         }
 
-        private suspend fun fetchWiseSaying(): WiseSaying {
-            return wiseSayingRepository.fetchWiseSaying().getOrElse { throw it }
+        fun saveStudyDay() {
+            val currentState = _homeUiState.value
+            if (currentState is HomeUiState.Success) {
+                val startDateTime =
+                    parseStartTimeToLocalDateTime(
+                        currentState.timerUiModel.startTime,
+                        currentState.timerUiModel.startTimeMeridiem,
+                    )
+                val endDateTime = LocalDateTime.now()
+
+                viewModelScope.launch {
+                    studyDayRepository.saveStudyDay(startDateTime, endDateTime)
+                        .onSuccess {
+                            loadHomeData()
+                        }.onFailure { throwable ->
+                            _errorFlow.emit(throwable)
+                        }
+                }
+            }
         }
 
-        private suspend fun fetchWeeklyStudyDay(): List<WeeklyStudyDay> {
-            return studyDayRepository.fetchWeeklyStudyDay().getOrElse { throw it }
+        private fun parseStartTimeToLocalDateTime(
+            startTime: String,
+            startTimeMeridiem: String,
+        ): LocalDateTime {
+            val timeParts = startTime.split(":").map { it.toInt() }
+            var hour = timeParts[0]
+            val minute = timeParts[1]
+
+            if (startTimeMeridiem == "PM" && hour < 12) {
+                hour += 12
+            } else if (startTimeMeridiem == "AM" && hour == 12) {
+                hour = 0
+            }
+
+            val startTimeLocalTime = LocalTime.of(hour, minute)
+            return LocalDateTime.of(LocalDateTime.now().toLocalDate(), startTimeLocalTime)
         }
 
         fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
