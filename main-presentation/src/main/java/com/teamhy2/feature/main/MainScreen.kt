@@ -73,7 +73,6 @@ fun MainRoute(
                     updateSelectedTime(selectedTime)
                     updateTimePickerVisibility(false)
                     updateTimerRunning(true)
-                    updateTodayStudyCount()
                 }
                 startTimer(selectedTime, mainViewModel, timerViewModel, onSendNotification)
             },
