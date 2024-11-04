@@ -1,7 +1,9 @@
 package com.teamhy2.feature.home
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,10 +57,23 @@ fun HomeRoute(
     val timerViewModel: TimerViewModel = hiltViewModel()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val duration by timerViewModel.durationHour.collectAsStateWithLifecycle()
+    val localShowSnackBar = LocalShowSnackBar.current
 
     homeViewModel.updateTimerStateFromTimerViewModel(timerState)
 
-    val localShowSnackBar = LocalShowSnackBar.current
+    var backPressedTime by remember {
+        mutableLongStateOf(0L)
+    }
+
+    BackHandler(enabled = true) {
+        if (System.currentTimeMillis() - backPressedTime <= 2000L) {
+            (context as Activity).finish()
+        } else {
+            localShowSnackBar.showSnackBar("한 번 더 누르면 앱이 종료됩니다.")
+        }
+        backPressedTime = System.currentTimeMillis()
+    }
+
     LaunchedEffect(true) {
         homeViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
@@ -124,7 +142,7 @@ fun HomeRoute(
                     onRightButtonClick = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
                         homeViewModel.updateTimerRunning(false)
-                        // homeViewModel.addStudyDay()
+                        homeViewModel.saveStudyDay()
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
@@ -187,7 +205,7 @@ private fun startTimer(
                 },
                 Timer.TIME_OVER_SECONDS to {
                     homeViewModel.updateTimerRunning(false)
-                    // homeViewModel.addStudyDay()
+                    homeViewModel.saveStudyDay()
                 },
             ),
     )
