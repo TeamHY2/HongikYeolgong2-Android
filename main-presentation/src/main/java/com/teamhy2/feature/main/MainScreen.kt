@@ -32,9 +32,7 @@ import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
-import com.teamhy2.feature.home.component.InitTimerComponent
 import com.teamhy2.feature.home.component.RunningTimerComponent
-import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
@@ -295,12 +293,6 @@ private fun MainBody(
             }
 
             false -> {
-                InitTimerComponent(
-                    onSeatingChartClick = onSeatingChartClick,
-                    onStudyRoomStartClick = onStudyRoomStartClick,
-                    uiState = HomeUiState(),
-                    modifier = Modifier.weight(12f),
-                )
             }
         }
         Spacer(modifier = Modifier.weight(1f))
