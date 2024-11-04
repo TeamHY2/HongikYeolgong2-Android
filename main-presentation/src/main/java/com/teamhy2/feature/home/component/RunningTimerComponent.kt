@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,7 +33,7 @@ fun RunningTimerComponent(
     extendThreshold: String = "00:30:00",
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(bottom = 36.dp),
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         Box {
@@ -45,7 +46,12 @@ fun RunningTimerComponent(
                 endTimeMeridiem = endTimeMeridiem,
             )
         }
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(
+            modifier =
+                Modifier
+                    .height(28.dp)
+                    .weight(1f),
+        )
 
         if (leftTime <= extendThreshold) {
             HY2Button(

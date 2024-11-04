@@ -13,7 +13,10 @@ fun NavController.navigateToHome() {
 
 fun NavController.popUpToHome() {
     navigate(ROUTE) {
-        popUpTo(graph.startDestinationId) { inclusive = true }
+        popUpTo(graph.startDestinationId) {
+            inclusive = true
+        }
+        launchSingleTop = true
     }
 }
 

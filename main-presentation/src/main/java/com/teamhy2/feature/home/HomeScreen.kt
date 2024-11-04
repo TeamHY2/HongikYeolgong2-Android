@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.HY2Theme
@@ -27,12 +28,13 @@ import com.teamhy2.feature.home.component.InitTimerComponent
 import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.feature.home.model.HomeUiState
-import com.teamhy2.feature.main.MainViewModel
-import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
+import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
+import com.teamhy2.main.domain.model.WeeklyStudyDay
+import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -42,10 +44,8 @@ fun HomeRoute(
     seatingChartUrl: String,
     onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val mainUiState: MainUiState by mainViewModel.mainUiState.collectAsStateWithLifecycle()
     val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -53,108 +53,125 @@ fun HomeRoute(
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val duration by timerViewModel.durationHour.collectAsStateWithLifecycle()
 
-    mainViewModel.updateTimerStateFromTimerViewModel(timerState)
+    homeViewModel.updateTimerStateFromTimerViewModel(timerState)
 
     val localShowSnackBar = LocalShowSnackBar.current
     LaunchedEffect(true) {
-        mainViewModel.errorFlow.collectLatest { throwable ->
+        homeViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
     }
 
-    if (mainUiState.isTimePickerVisible) {
-        HY2TimePicker(
-            title = stringResource(R.string.main_study_room_use_start_time),
-            onSelected = { selectedTime ->
-                mainViewModel.run {
-                    updateSelectedTime(selectedTime)
-                    updateTimePickerVisibility(false)
-                    updateTimerRunning(true)
-                    updateTodayStudyCount()
-                }
-                startTimer(selectedTime, mainViewModel, timerViewModel, onSendNotification)
-            },
-            onCancelled = {
-                mainViewModel.updateTimePickerVisibility(false)
-            },
-            onDismiss = {
-                mainViewModel.updateTimePickerVisibility(false)
-            },
-        )
-    }
+    when (homeUiState) {
+        is HomeUiState.Loading -> {
+            HY2CircularLoading(modifier = Modifier.fillMaxSize())
+        }
 
-    if (mainUiState.isStudyRoomExtendDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.main_extend_dialog_title),
-            leftButtonText = stringResource(R.string.main_extend_dialog_negative_button),
-            rightButtonText = stringResource(R.string.main_extend_dialog_positive_button),
-            onLeftButtonClick = {
-                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
-            },
-            onRightButtonClick = {
-                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
-                startTimer(
-                    LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                    mainViewModel,
-                    timerViewModel,
-                    onSendNotification,
+        is HomeUiState.Success -> {
+            val uiState = homeUiState as HomeUiState.Success
+
+            if (uiState.isTimePickerVisible) {
+                HY2TimePicker(
+                    title = stringResource(R.string.main_study_room_use_start_time),
+                    onSelected = { selectedTime ->
+                        homeViewModel.run {
+                            updateSelectedTime(selectedTime)
+                            updateTimePickerVisibility(false)
+                            updateTimerRunning(true)
+                        }
+                        startTimer(selectedTime, homeViewModel, timerViewModel, onSendNotification)
+                    },
+                    onCancelled = {
+                        homeViewModel.updateTimePickerVisibility(false)
+                    },
+                    onDismiss = {
+                        homeViewModel.updateTimePickerVisibility(false)
+                    },
                 )
-            },
-            onDismiss = {
-                mainViewModel.updateStudyRoomExtendDialogVisibility(false)
-            },
-        )
-    }
+            }
 
-    if (mainUiState.isStudyRoomEndDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.main_end_dialog_title),
-            leftButtonText = stringResource(R.string.main_end_dialog_negative_button),
-            rightButtonText = stringResource(R.string.main_end_dialog_positive_button),
-            onLeftButtonClick = {
-                mainViewModel.updateStudyRoomEndDialogVisibility(false)
-            },
-            onRightButtonClick = {
-                mainViewModel.updateStudyRoomEndDialogVisibility(false)
-                mainViewModel.updateTimerRunning(false)
-                mainViewModel.addStudyDay()
-            },
-            onDismiss = {
-                mainViewModel.updateStudyRoomEndDialogVisibility(false)
-            },
-        )
-    }
+            if (uiState.isStudyRoomExtendDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.main_extend_dialog_title),
+                    leftButtonText = stringResource(R.string.main_extend_dialog_negative_button),
+                    rightButtonText = stringResource(R.string.main_extend_dialog_positive_button),
+                    onLeftButtonClick = {
+                        homeViewModel.updateStudyRoomExtendDialogVisibility(false)
+                    },
+                    onRightButtonClick = {
+                        homeViewModel.updateStudyRoomExtendDialogVisibility(false)
+                        startTimer(
+                            LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                            homeViewModel,
+                            timerViewModel,
+                            onSendNotification,
+                        )
+                    },
+                    onDismiss = {
+                        homeViewModel.updateStudyRoomExtendDialogVisibility(false)
+                    },
+                )
+            }
 
-    HomeScreen(
-        durationAsSecond = duration.seconds,
-        mainUiState = mainUiState,
-        homeUiState = homeUiState,
-        modifier = modifier,
-        onSeatingChartClick = {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
-            context.startActivity(intent)
-        },
-        onStudyRoomStartClick = {
-            mainViewModel.updateTimePickerVisibility(true)
-        },
-        onStudyRoomExtendClick = {
-            mainViewModel.updateStudyRoomExtendDialogVisibility(true)
-            startTimer(
-                LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                mainViewModel,
-                timerViewModel,
-                onSendNotification,
+            if (uiState.isStudyRoomEndDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.main_end_dialog_title),
+                    leftButtonText = stringResource(R.string.main_end_dialog_negative_button),
+                    rightButtonText = stringResource(R.string.main_end_dialog_positive_button),
+                    onLeftButtonClick = {
+                        homeViewModel.updateStudyRoomEndDialogVisibility(false)
+                    },
+                    onRightButtonClick = {
+                        homeViewModel.updateStudyRoomEndDialogVisibility(false)
+                        homeViewModel.updateTimerRunning(false)
+                        // homeViewModel.addStudyDay()
+                    },
+                    onDismiss = {
+                        homeViewModel.updateStudyRoomEndDialogVisibility(false)
+                    },
+                )
+            }
+
+            HomeScreen(
+                weeklyStudyDays = uiState.weeklyStudyDays,
+                wiseSaying = uiState.wiseSaying,
+                durationAsSecond = duration.seconds,
+                isTimerRunning = uiState.isTimerRunning,
+                timerUiModel = uiState.timerUiModel,
+                modifier = modifier,
+                onSeatingChartClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
+                    context.startActivity(intent)
+                },
+                onStudyRoomStartClick = {
+                    homeViewModel.updateTimePickerVisibility(true)
+                },
+                onStudyRoomExtendClick = {
+                    homeViewModel.updateStudyRoomExtendDialogVisibility(true)
+                    startTimer(
+                        LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                        homeViewModel,
+                        timerViewModel,
+                        onSendNotification,
+                    )
+                },
+                onStudyRoomEndClick = {
+                    homeViewModel.updateStudyRoomEndDialogVisibility(true)
+                },
             )
-        },
-        onStudyRoomEndClick = {
-            mainViewModel.updateStudyRoomEndDialogVisibility(true)
-        },
-    )
+        }
+
+        is HomeUiState.Error -> {
+            localShowSnackBar.showSnackBar(
+                (homeUiState as HomeUiState.Error).message,
+            )
+        }
+    }
 }
 
 private fun startTimer(
     startTime: LocalDateTime,
-    mainViewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
     onSendNotification: (PushText) -> Unit,
 ) {
@@ -169,8 +186,8 @@ private fun startTimer(
                     onSendNotification(PushText.TEN_MINUTES)
                 },
                 Timer.TIME_OVER_SECONDS to {
-                    mainViewModel.updateTimerRunning(false)
-                    mainViewModel.addStudyDay()
+                    homeViewModel.updateTimerRunning(false)
+                    // homeViewModel.addStudyDay()
                 },
             ),
     )
@@ -178,14 +195,16 @@ private fun startTimer(
 
 @Composable
 fun HomeScreen(
+    weeklyStudyDays: List<WeeklyStudyDay>,
+    wiseSaying: WiseSaying,
     durationAsSecond: Long,
+    isTimerRunning: Boolean,
+    timerUiModel: TimerUiModel,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     modifier: Modifier = Modifier,
-    mainUiState: MainUiState,
-    homeUiState: HomeUiState,
 ) {
     Column(
         modifier =
@@ -194,16 +213,16 @@ fun HomeScreen(
     ) {
         Spacer(modifier = Modifier.height(34.dp))
         HomeHeader(
-            homeUiState = homeUiState,
+            weeklyStudyDays = weeklyStudyDays,
             modifier =
-                Modifier
-                    .fillMaxWidth(),
+            Modifier,
         )
         Spacer(modifier = Modifier.height(36.dp))
         HomeBody(
             durationAsSecond = durationAsSecond,
-            mainUiState = mainUiState,
-            homeUiState = homeUiState,
+            wiseSaying = wiseSaying,
+            isTimerRunning = isTimerRunning,
+            timerUiModel = timerUiModel,
             onSeatingChartClick = onSeatingChartClick,
             onStudyRoomStartClick = onStudyRoomStartClick,
             onStudyRoomExtendClick = onStudyRoomExtendClick,
@@ -215,17 +234,24 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader(
-    homeUiState: HomeUiState,
+    weeklyStudyDays: List<WeeklyStudyDay>,
     modifier: Modifier = Modifier,
 ) {
-    WeeklyStudyCalendar(weeklyStudyDays = homeUiState.weekStudyDays, modifier = modifier)
+    WeeklyStudyCalendar(
+        weeklyStudyDays = weeklyStudyDays,
+        modifier =
+            modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth(),
+    )
 }
 
 @Composable
 private fun HomeBody(
     durationAsSecond: Long,
-    mainUiState: MainUiState,
-    homeUiState: HomeUiState,
+    wiseSaying: WiseSaying,
+    isTimerRunning: Boolean,
+    timerUiModel: TimerUiModel,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -238,15 +264,15 @@ private fun HomeBody(
                 .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        when (mainUiState.isTimerRunning) {
+        when (isTimerRunning) {
             true -> {
                 RunningTimerComponent(
                     durationAsSecond = durationAsSecond,
-                    startTime = mainUiState.startTime,
-                    endTime = mainUiState.endTime,
-                    startTimeMeridiem = mainUiState.startTimeMeridiem,
-                    endTimeMeridiem = mainUiState.endTimeMeridiem,
-                    leftTime = mainUiState.leftTime,
+                    startTime = timerUiModel.startTime,
+                    endTime = timerUiModel.endTime,
+                    startTimeMeridiem = timerUiModel.startTimeMeridiem,
+                    endTimeMeridiem = timerUiModel.endTimeMeridiem,
+                    leftTime = timerUiModel.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                 )
@@ -255,9 +281,9 @@ private fun HomeBody(
 
             false -> {
                 InitTimerComponent(
+                    wiseSaying = wiseSaying,
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
-                    uiState = homeUiState,
                     modifier = Modifier.weight(12f),
                 )
             }
@@ -268,18 +294,17 @@ private fun HomeBody(
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    val mainUiState = MainUiState()
-    val homeUiState = HomeUiState()
-
     HY2Theme {
         HomeScreen(
+            weeklyStudyDays = WeeklyStudyDay.defaultWeek(),
+            wiseSaying = WiseSaying.DEFAULT,
             durationAsSecond = 0,
             onSeatingChartClick = { },
             onStudyRoomStartClick = { },
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
-            mainUiState = mainUiState,
-            homeUiState = homeUiState,
+            isTimerRunning = false,
+            timerUiModel = TimerUiModel(),
         )
     }
 }
