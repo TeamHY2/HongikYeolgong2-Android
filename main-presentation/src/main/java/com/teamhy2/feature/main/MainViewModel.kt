@@ -6,7 +6,6 @@ import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.feature.main.mapper.StudyDayMapper
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
-import com.teamhy2.main.domain.repository.StudyDayRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel
     @Inject
-    constructor(
-        private val studyDayRepository: StudyDayRepository,
-    ) : ViewModel() {
+    constructor() : ViewModel() {
         private val today = LocalDate.now()
         private val _mainUiState = MutableStateFlow(MainUiState())
         val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()

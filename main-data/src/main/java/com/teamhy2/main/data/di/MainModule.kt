@@ -1,10 +1,8 @@
 package com.teamhy2.main.data.di
 
-import com.teamhy2.main.data.repository.DefaultStudyDayRepository
 import com.teamhy2.main.data.repository.DefaultWiseSayingRepository
-import com.teamhy2.main.data.repository.RemoteWeeklyStudyDayRepository
+import com.teamhy2.main.data.repository.RemoteStudyDayRepository
 import com.teamhy2.main.domain.repository.StudyDayRepository
-import com.teamhy2.main.domain.repository.WeeklyStudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.Binds
 import dagger.Module
@@ -21,9 +19,5 @@ abstract class MainModule {
 
     @Binds
     @Singleton
-    abstract fun bindStudyDayRepository(impl: DefaultStudyDayRepository): StudyDayRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindWeeklyStudyDayRepository(impl: RemoteWeeklyStudyDayRepository): WeeklyStudyDayRepository
+    abstract fun bindStudyDayRepository(impl: RemoteStudyDayRepository): StudyDayRepository
 }
