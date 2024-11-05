@@ -35,7 +35,14 @@ class RemoteUserRepository
                     nickname = nickname,
                     department = department,
                 ),
-            ).toResult()
+            )
+                .onSuccess { baseResponse ->
+                    if (baseResponse.isSuccess()) {
+                        jwtManager.clearAllTokens()
+                        jwtManager.saveAccessJwt(baseResponse.data.accessToken)
+                    }
+                }
+                .toResult()
         }
 
         override suspend fun signIn(idToken: String): Result<AlreadyExist> {
