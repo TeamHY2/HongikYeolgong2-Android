@@ -19,16 +19,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamhy2.core.auth.GoogleSignIn
 import com.teamhy2.core.auth.GoogleSignInButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray600
@@ -54,6 +57,9 @@ fun OnboardingRoute(
     }
 
     val localShowSnackBar = LocalShowSnackBar.current
+    val context = LocalContext.current
+    val googleSignIn: GoogleSignIn = remember { GoogleSignIn(context) }
+
     LaunchedEffect(true) {
         onboardingViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
@@ -61,7 +67,7 @@ fun OnboardingRoute(
     }
 
     OnboardingScreen(
-        onGoogleSignInClick = onboardingViewModel::signInWithGoogleIdToken,
+        onGoogleSignInClick = { onboardingViewModel.signInWithGoogleIdToken(googleSignIn) },
         modifier = modifier,
     )
 }

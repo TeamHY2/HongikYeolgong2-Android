@@ -36,7 +36,7 @@ private val LocalHY2Typography =
         error("No HY2Typography provided")
     }
 
-/*
+/**
 * HY2Theme
 *
 * Typo를 변경하고 싶다면 HY2Theme.typography.title01 방식으로 접근
