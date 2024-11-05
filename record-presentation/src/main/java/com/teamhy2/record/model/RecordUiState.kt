@@ -1,12 +1,13 @@
 package com.teamhy2.record.model
 
 import com.hongikyeolgong2.calendar.model.Calendar
+import com.teamhy2.record.domain.model.StudyDuration
 
 sealed interface RecordUiState {
     data object Loading : RecordUiState
 
     data class Success(
-        val studySummary: StudySummary,
+        val studySummary: StudyDuration,
         val calendar: Calendar = Calendar(studyDays = emptyList()),
     ) : RecordUiState
 
