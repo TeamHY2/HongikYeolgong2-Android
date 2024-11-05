@@ -9,4 +9,6 @@ android {
 dependencies {
     implementation(projects.recordDomain)
     implementation(projects.core.remote)
+
+    implementation(projects.calendarDomain)
 }
