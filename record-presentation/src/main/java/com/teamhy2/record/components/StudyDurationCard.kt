@@ -22,7 +22,7 @@ import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 
 @Composable
-fun StudySummaryCard(
+fun StudyDurationCard(
     title: String,
     studyHours: Int,
     studyMinutes: Int,
@@ -53,8 +53,8 @@ fun StudySummaryCard(
 
 @Preview(showBackground = true)
 @Composable
-fun StudySummaryCardPreview() {
-    StudySummaryCard(
+fun StudyDurationCardPreview() {
+    StudyDurationCard(
         title = "연간",
         studyHours = 200,
         studyMinutes = 4,
@@ -63,19 +63,19 @@ fun StudySummaryCardPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun StudySummaryCardGroupPreview() {
+fun StudyDurationCardGroupPreview() {
     Column(
         modifier = Modifier.padding(16.dp),
     ) {
         Row {
-            StudySummaryCard(
+            StudyDurationCard(
                 title = "연간",
                 studyHours = 200,
                 studyMinutes = 4,
                 modifier = Modifier.weight(1f),
             )
             Spacer(modifier = Modifier.width(8.dp))
-            StudySummaryCard(
+            StudyDurationCard(
                 title = "이번학기",
                 studyHours = 120,
                 studyMinutes = 4,
@@ -84,14 +84,14 @@ fun StudySummaryCardGroupPreview() {
         }
         Spacer(modifier = Modifier.height(14.dp))
         Row {
-            StudySummaryCard(
+            StudyDurationCard(
                 title = "월간",
                 studyHours = 50,
                 studyMinutes = 4,
                 modifier = Modifier.weight(1f),
             )
             Spacer(modifier = Modifier.width(8.dp))
-            StudySummaryCard(
+            StudyDurationCard(
                 title = "투데이",
                 studyHours = 3,
                 studyMinutes = 24,

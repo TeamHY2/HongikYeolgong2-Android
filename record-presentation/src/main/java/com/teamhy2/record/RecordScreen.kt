@@ -19,7 +19,7 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
-import com.teamhy2.record.components.StudySummaryCard
+import com.teamhy2.record.components.StudyDurationCard
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.model.RecordUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -92,14 +92,14 @@ fun RecordBody(
         Spacer(modifier = Modifier.weight(1f))
         Column {
             Row {
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "연간",
                     studyHours = recordUiState.studyDuration.yearHours,
                     studyMinutes = recordUiState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(13.dp))
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "이번학기",
                     studyHours = recordUiState.studyDuration.semesterHours,
                     studyMinutes = recordUiState.studyDuration.semesterMinutes,
@@ -108,14 +108,14 @@ fun RecordBody(
             }
             Spacer(modifier = Modifier.height(14.dp))
             Row {
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "월간",
                     studyHours = recordUiState.studyDuration.monthHours,
                     studyMinutes = recordUiState.studyDuration.monthMinutes,
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(13.dp))
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "투데이",
                     studyHours = recordUiState.studyDuration.dayHours,
                     studyMinutes = recordUiState.studyDuration.dayMinutes,
