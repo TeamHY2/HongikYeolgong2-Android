@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
+import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 
@@ -32,7 +33,7 @@ fun StudySummaryCard(
             modifier
                 .fillMaxWidth()
                 .background(Gray800, shape = RoundedCornerShape(8.dp))
-                .border(1.dp, Gray200, shape = RoundedCornerShape(8.dp))
+                .border(1.dp, Gray600, shape = RoundedCornerShape(8.dp))
                 .padding(start = 28.dp, top = 18.dp, bottom = 18.dp),
     ) {
         Text(
