@@ -6,7 +6,7 @@ import com.teamhy2.main.domain.model.WiseSaying
 import java.time.LocalDateTime
 
 sealed interface HomeUiState {
-    object Loading : HomeUiState
+    data object Loading : HomeUiState
 
     data class Success(
         val wiseSaying: WiseSaying = WiseSaying.DEFAULT,
