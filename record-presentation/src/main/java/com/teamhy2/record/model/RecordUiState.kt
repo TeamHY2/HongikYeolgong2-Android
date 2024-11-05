@@ -7,7 +7,7 @@ sealed interface RecordUiState {
     data object Loading : RecordUiState
 
     data class Success(
-        val studySummary: StudyDuration,
+        val studyDuration: StudyDuration,
         val calendar: Calendar = Calendar(studyDays = emptyList()),
     ) : RecordUiState
 
