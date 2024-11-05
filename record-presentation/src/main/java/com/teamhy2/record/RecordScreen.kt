@@ -98,7 +98,7 @@ fun RecordBody(
                     studyMinutes = recordUiState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(13.dp))
                 StudySummaryCard(
                     title = "이번학기",
                     studyHours = recordUiState.studyDuration.semesterHours,
@@ -106,7 +106,7 @@ fun RecordBody(
                     modifier = Modifier.weight(1f),
                 )
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(14.dp))
             Row {
                 StudySummaryCard(
                     title = "월간",
@@ -114,7 +114,7 @@ fun RecordBody(
                     studyMinutes = recordUiState.studyDuration.monthMinutes,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(13.dp))
                 StudySummaryCard(
                     title = "투데이",
                     studyHours = recordUiState.studyDuration.dayHours,
