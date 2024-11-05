@@ -1,9 +1,11 @@
 package com.benenfeldt.remote.api
 
 import com.benenfeldt.remote.dto.BaseResponse
+import com.benenfeldt.remote.dto.CalendarStudyDayResponse
 import com.benenfeldt.remote.dto.RankingResponse
 import com.benenfeldt.remote.dto.StudyDayRequest
 import com.benenfeldt.remote.dto.StudyDayResponse
+import com.benenfeldt.remote.dto.StudyDurationResponse
 import com.benenfeldt.remote.dto.WeeklyStudyDayResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -23,4 +25,10 @@ interface StudyService {
     suspend fun postStudyDay(
         @Body studyDayRequest: StudyDayRequest,
     ): Result<BaseResponse<StudyDayResponse>>
+
+    @GET("/api/v1/study/count-all")
+    suspend fun getCalendarStudyDay(): Result<BaseResponse<List<CalendarStudyDayResponse>>>
+
+    @GET("/api/v1/study/duration")
+    suspend fun getStudyDuration(): Result<BaseResponse<StudyDurationResponse>>
 }
