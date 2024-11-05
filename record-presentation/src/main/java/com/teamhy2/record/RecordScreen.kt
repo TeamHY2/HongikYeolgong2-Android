@@ -20,8 +20,8 @@ import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.record.components.StudySummaryCard
+import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.model.RecordUiState
-import com.teamhy2.record.model.StudySummary
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -130,7 +130,7 @@ fun RecordBody(
 @Composable
 fun RecordScreenPreview() {
     val sampleStudySummary =
-        StudySummary(
+        StudyDuration(
             yearHours = 200,
             yearMinutes = 4,
             monthHours = 50,

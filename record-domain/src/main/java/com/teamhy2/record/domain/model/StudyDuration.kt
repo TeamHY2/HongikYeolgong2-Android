@@ -1,6 +1,6 @@
-package com.teamhy2.record.model
+package com.teamhy2.record.domain.model
 
-data class StudySummary(
+data class StudyDuration(
     val yearHours: Int,
     val yearMinutes: Int,
     val monthHours: Int,
