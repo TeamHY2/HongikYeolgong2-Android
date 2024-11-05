@@ -4,11 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benenfeldt.remote.token.JwtManager
+import com.benenfeldt.remote.token.TokenRole
+import com.benenfeldt.remote.token.TokenValidator
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.feature.main.navigation.Main
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
+import com.teamhy2.onboarding.navigation.SignUp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +30,7 @@ class InitialViewModel
     constructor(
         private val webViewRepository: WebViewRepository,
         private val jwtManager: JwtManager,
+        private val tokenValidator: TokenValidator,
         val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _initialUiState: MutableStateFlow<InitialUiState> =
@@ -61,7 +65,26 @@ class InitialViewModel
                     setStartDestination(Onboarding.ROUTE)
                     return@launch
                 }
-                setStartDestination(Main.ROUTE)
+
+                tokenValidator.validate()
+                    .onSuccess { tokenInformation ->
+                        if (tokenInformation.isValidToken) {
+                            if (tokenInformation.role == TokenRole.USER) {
+                                setStartDestination(Main.ROUTE)
+                            }
+                            if (tokenInformation.role == TokenRole.GUEST) {
+                                setStartDestination(SignUp.ROUTE)
+                            }
+                            return@launch
+                        }
+                        jwtManager.clearAllTokens()
+                        setStartDestination(Onboarding.ROUTE)
+                    }
+                    .onFailure {
+                        _errorFlow.emit(it)
+                        jwtManager.clearAllTokens()
+                        setStartDestination(Onboarding.ROUTE)
+                    }
             }
         }
 
