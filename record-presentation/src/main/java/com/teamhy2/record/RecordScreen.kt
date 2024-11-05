@@ -94,15 +94,15 @@ fun RecordBody(
             Row {
                 StudySummaryCard(
                     title = "연간",
-                    studyHours = recordUiState.studySummary.yearHours,
-                    studyMinutes = recordUiState.studySummary.yearMinutes,
+                    studyHours = recordUiState.studyDuration.yearHours,
+                    studyMinutes = recordUiState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 StudySummaryCard(
                     title = "이번학기",
-                    studyHours = recordUiState.studySummary.semesterHours,
-                    studyMinutes = recordUiState.studySummary.semesterMinutes,
+                    studyHours = recordUiState.studyDuration.semesterHours,
+                    studyMinutes = recordUiState.studyDuration.semesterMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -110,15 +110,15 @@ fun RecordBody(
             Row {
                 StudySummaryCard(
                     title = "월간",
-                    studyHours = recordUiState.studySummary.monthHours,
-                    studyMinutes = recordUiState.studySummary.monthMinutes,
+                    studyHours = recordUiState.studyDuration.monthHours,
+                    studyMinutes = recordUiState.studyDuration.monthMinutes,
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 StudySummaryCard(
                     title = "투데이",
-                    studyHours = recordUiState.studySummary.dayHours,
-                    studyMinutes = recordUiState.studySummary.dayMinutes,
+                    studyHours = recordUiState.studyDuration.dayHours,
+                    studyMinutes = recordUiState.studyDuration.dayMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -145,7 +145,7 @@ fun RecordScreenPreview() {
 
     val sampleRecordUiState =
         RecordUiState.Success(
-            studySummary = sampleStudySummary,
+            studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
 
