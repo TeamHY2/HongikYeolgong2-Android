@@ -10,13 +10,13 @@ data class WeeklyStudyDay(
 ) {
     companion object {
         private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M/dd")
-        private const val DAYS_IN_WEEK: Int = 7
 
         fun defaultWeek(): List<WeeklyStudyDay> {
             val today: LocalDate = LocalDate.now()
             val startOfWeek: LocalDate = today.with(DayOfWeek.MONDAY)
+            val weekRange: IntRange = 0 until 7
 
-            return (0 until DAYS_IN_WEEK).map { offset: Int ->
+            return weekRange.map { offset: Int ->
                 val date: String = startOfWeek.plusDays(offset.toLong()).format(formatter)
                 WeeklyStudyDay(date = date, studyCount = 0)
             }
