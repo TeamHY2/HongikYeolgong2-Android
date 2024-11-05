@@ -1,12 +1,14 @@
 package com.teamhy2.main.domain.repository
 
-import com.teamhy2.main.domain.model.StudyDayResponse
+import com.teamhy2.main.domain.model.StudyDayRecord
+import com.teamhy2.main.domain.model.WeeklyStudyDay
+import java.time.LocalDateTime
 
 interface StudyDayRepository {
-    suspend fun addStudyDay(
-        uid: String,
-        startTime: String,
-    )
+    suspend fun fetchWeeklyStudyDay(): Result<List<WeeklyStudyDay>>
 
-    suspend fun getStudyDays(uid: String): Map<String, List<StudyDayResponse>>
+    suspend fun saveStudyDay(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+    ): Result<StudyDayRecord>
 }

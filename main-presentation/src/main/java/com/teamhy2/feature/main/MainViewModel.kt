@@ -1,14 +1,9 @@
 package com.teamhy2.feature.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.hongikyeolgong2.calendar.model.StudyDay
-import com.hongikyeolgong2.calendar.model.StudyRoomUsage
-import com.teamhy2.feature.main.mapper.StudyDayMapper
 import com.teamhy2.feature.main.model.MainUiState
 import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
-import com.teamhy2.main.domain.repository.StudyDayRepository
-import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +11,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -24,10 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel
     @Inject
-    constructor(
-        private val wiseSayingRepository: WiseSayingRepository,
-        private val studyDayRepository: StudyDayRepository,
-    ) : ViewModel() {
+    constructor() : ViewModel() {
         private val today = LocalDate.now()
         private val _mainUiState = MutableStateFlow(MainUiState())
         val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
@@ -38,20 +29,7 @@ class MainViewModel
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
-            getWiseSaying()
             getCalendarData()
-        }
-
-        private fun getWiseSaying() {
-            viewModelScope.launch {
-                wiseSayingRepository.fetchWiseSaying()
-                    .onSuccess { wiseSaying ->
-                        _mainUiState.value = _mainUiState.value.copy(wiseSaying = wiseSaying)
-                    }
-                    .onFailure { exception ->
-                        _errorFlow.emit(exception)
-                    }
-            }
         }
 
         private fun getCalendarData() {
@@ -88,49 +66,6 @@ class MainViewModel
             val studyDaysForMonth = studyDays[yearMonthKey] ?: emptyList()
             val updatedCalendar = _mainUiState.value.calendar.copy(studyDays = studyDaysForMonth)
             _mainUiState.value = _mainUiState.value.copy(calendar = updatedCalendar)
-        }
-
-        fun updateTodayStudyCount() {
-            val yearMonthKey = "${today.year}-${String.format("%02d", today.monthValue)}"
-            val studyDaysForMonth = studyDays[yearMonthKey]?.toMutableList() ?: mutableListOf()
-
-            val todayStudyDayIndex = studyDaysForMonth.indexOfFirst { it.date == today }
-            if (todayStudyDayIndex != -1) {
-                val updatedStudyRoomUsage =
-                    StudyDayMapper.getNextStudyRoomUsage(studyDaysForMonth[todayStudyDayIndex].studyRoomUsage)
-                studyDaysForMonth[todayStudyDayIndex] =
-                    studyDaysForMonth[todayStudyDayIndex].copy(
-                        studyRoomUsage = updatedStudyRoomUsage,
-                    )
-            } else {
-                studyDaysForMonth.add(
-                    StudyDay(date = today, studyRoomUsage = StudyRoomUsage.USED_ONCE),
-                )
-            }
-
-            studyDays[yearMonthKey] = studyDaysForMonth
-
-            val starCount = calculateTodayStarCount(studyDaysForMonth.find { it.date == today })
-
-            if (mainUiState.value.calendar.date.year == today.year && mainUiState.value.calendar.date.monthValue == today.monthValue) {
-                val updatedCalendar = _mainUiState.value.calendar.copy(studyDays = studyDaysForMonth)
-                _mainUiState.value =
-                    _mainUiState.value.copy(
-                        calendar = updatedCalendar,
-                        starCount = starCount,
-                    )
-            } else {
-                _mainUiState.value =
-                    _mainUiState.value.copy(
-                        starCount = starCount,
-                    )
-            }
-        }
-
-        private fun calculateTodayStarCount(todayStudyDay: StudyDay?): Int {
-            return StudyDayMapper.mapStudyRoomUsageToStarCount(
-                todayStudyDay?.studyRoomUsage ?: StudyRoomUsage.NEVER_USED,
-            )
         }
 
         fun updateCalendarMonth(isNextMonth: Boolean) {
