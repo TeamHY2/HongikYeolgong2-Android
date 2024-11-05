@@ -1,7 +1,7 @@
 package com.teamhy2.main.data.di
 
-import com.teamhy2.main.data.repository.DefaultStudyDayRepository
-import com.teamhy2.main.data.repository.DefaultWiseSayingRepository
+import com.teamhy2.main.data.repository.RemoteStudyDayRepository
+import com.teamhy2.main.data.repository.RemoteWiseSayingRepository
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.Binds
@@ -15,9 +15,9 @@ import javax.inject.Singleton
 abstract class MainModule {
     @Binds
     @Singleton
-    abstract fun bindWiseSayingRepository(impl: DefaultWiseSayingRepository): WiseSayingRepository
+    abstract fun bindWiseSayingRepository(impl: RemoteWiseSayingRepository): WiseSayingRepository
 
     @Binds
     @Singleton
-    abstract fun bindStudyDayRepository(impl: DefaultStudyDayRepository): StudyDayRepository
+    abstract fun bindStudyDayRepository(impl: RemoteStudyDayRepository): StudyDayRepository
 }

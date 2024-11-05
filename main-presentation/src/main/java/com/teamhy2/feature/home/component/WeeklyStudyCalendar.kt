@@ -1,4 +1,4 @@
-package com.teamhy2.feature.main.component
+package com.teamhy2.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamhy2.designsystem.ui.theme.Gray400
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
-import com.teamhy2.feature.main.model.WeeklyDay
+import com.teamhy2.main.domain.model.WeeklyStudyDay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
@@ -22,23 +22,23 @@ private val DAYS_OF_WEEK = listOf("월", "화", "수", "목", "금", "토", "일
 private const val DATE_FORMAT_PATTERN = "M/d"
 
 @Composable
-fun WeeklyCalendar(
-    weeklyDays: List<WeeklyDay>,
+fun WeeklyStudyCalendar(
+    weeklyStudyDays: List<WeeklyStudyDay>,
     modifier: Modifier = Modifier,
 ) {
     val currentDate = LocalDate.now()
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         DAYS_OF_WEEK.forEachIndexed { index, dayOfWeek ->
-            val isFutureDate = isDateInFuture(weeklyDays[index].date, currentDate)
+            val isFutureDate = isDateInFuture(weeklyStudyDays[index].date, currentDate)
 
             WeeklyDayComponent(
                 dayOfWeek = dayOfWeek,
-                studyCount = weeklyDays[index].studyCount,
-                date = weeklyDays[index].date,
+                studyCount = weeklyStudyDays[index].studyCount,
+                date = weeklyStudyDays[index].date,
                 textColor = if (isFutureDate) Gray400 else White,
             )
         }
@@ -60,19 +60,19 @@ private fun isDateInFuture(
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewWeeklyCalendar() {
+private fun PreviewWeeklyStudyCalendar() {
     val thisWeeksDates: List<String> = getThisWeeksDates()
-    val weeklyDays =
+    val weeklyStudyDays =
         thisWeeksDates.mapIndexed { index, date ->
-            WeeklyDay(
+            WeeklyStudyDay(
                 studyCount = listOf(3, 1, 2, 0, 0, 0, 0).getOrElse(index) { 0 },
                 date = date,
             )
         }
 
     HY2Theme {
-        WeeklyCalendar(
-            weeklyDays = weeklyDays,
+        WeeklyStudyCalendar(
+            weeklyStudyDays = weeklyStudyDays,
             modifier = Modifier.background(Color.Black),
         )
     }
