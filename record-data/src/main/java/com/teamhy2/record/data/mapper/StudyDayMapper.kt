@@ -12,7 +12,7 @@ fun CalendarStudyDayResponse.toDomain(): StudyDay {
     )
 }
 
-fun Int.toStudyRoomUsage(): StudyRoomUsage {
+internal fun Int.toStudyRoomUsage(): StudyRoomUsage {
     return when (this) {
         0 -> StudyRoomUsage.NEVER_USED
         1 -> StudyRoomUsage.USED_ONCE
