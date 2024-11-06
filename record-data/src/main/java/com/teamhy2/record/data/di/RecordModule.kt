@@ -15,9 +15,11 @@ import javax.inject.Singleton
 abstract class RecordModule {
     @Binds
     @Singleton
-    abstract fun bindStudyDayDurationRepository(imp: RemoteStudyDurationRepository): StudyDurationRepository
+    abstract fun bindStudyDayDurationRepository(remoteStudyDurationRepository: RemoteStudyDurationRepository): StudyDurationRepository
 
     @Binds
     @Singleton
-    abstract fun bindCalendarStudyDayRepository(imp: RemoteCalendarStudyDayRepository): CalendarStudyDayRepository
+    abstract fun bindCalendarStudyDayRepository(
+        remoteCalendarStudyDayRepository: RemoteCalendarStudyDayRepository,
+    ): CalendarStudyDayRepository
 }
