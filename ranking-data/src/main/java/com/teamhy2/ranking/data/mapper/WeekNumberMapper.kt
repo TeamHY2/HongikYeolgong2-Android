@@ -5,8 +5,6 @@ import com.teamhy2.ranking.model.WeekNumber
 
 fun WeekNumberResponse.toDomain(): WeekNumber {
     return WeekNumber(
-        year = year,
-        weekName = weekName,
         weekNumber = weekNumber,
     )
 }

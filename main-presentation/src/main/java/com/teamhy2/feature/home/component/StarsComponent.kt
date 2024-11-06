@@ -1,3 +1,5 @@
+package com.teamhy2.feature.home.component
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size

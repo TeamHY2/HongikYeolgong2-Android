@@ -1,6 +1,5 @@
-package com.teamhy2.feature.main.component
+package com.teamhy2.feature.home.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -16,7 +14,6 @@ import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
-import com.teamhy2.hongikyeolgong2.main.presentation.R
 
 @Composable
 fun WiseSayingComponent(
@@ -30,17 +27,12 @@ fun WiseSayingComponent(
                 .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.img_main_three_stars),
-            contentDescription = null,
-        )
-
         Text(
             text = quote,
             style = HY2Typography().body06,
             color = Gray100,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp),
+            modifier = Modifier.padding(bottom = 12.dp),
         )
 
         Text(

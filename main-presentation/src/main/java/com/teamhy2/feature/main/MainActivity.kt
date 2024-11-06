@@ -39,6 +39,7 @@ import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.ShowSnackBar
+import com.teamhy2.feature.home.navigation.Home
 import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,8 +94,11 @@ class MainActivity : AppCompatActivity() {
                                 currentTab = MainTab.fromRoute(currentDestination),
                                 onTabSelected = { tab ->
                                     navController.navigate(tab.route) {
-                                        popUpTo(navController.graph.startDestinationId)
+                                        popUpTo(Home.ROUTE) {
+                                            saveState = true
+                                        }
                                         launchSingleTop = true
+                                        restoreState = true
                                     }
                                 },
                             )
