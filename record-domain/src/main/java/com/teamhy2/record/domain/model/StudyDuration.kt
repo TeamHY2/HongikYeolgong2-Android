@@ -9,4 +9,18 @@ data class StudyDuration(
     val dayMinutes: Int,
     val semesterHours: Int,
     val semesterMinutes: Int,
-)
+) {
+    companion object {
+        val DEFAULT =
+            StudyDuration(
+                yearHours = 0,
+                yearMinutes = 0,
+                monthHours = 0,
+                monthMinutes = 0,
+                dayHours = 0,
+                dayMinutes = 0,
+                semesterHours = 0,
+                semesterMinutes = 0,
+            )
+    }
+}
