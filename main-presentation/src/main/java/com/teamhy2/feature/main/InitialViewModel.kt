@@ -46,18 +46,6 @@ class InitialViewModel
         }
 
         private fun fetchStartDestination() {
-            fun setStartDestination(startDestination: String) {
-                if (_initialUiState.value is InitialUiState.Loading) {
-                    _initialUiState.update { InitialUiState.Success(startDestination = startDestination) }
-                    return
-                }
-                if (_initialUiState.value is InitialUiState.Success) {
-                    _initialUiState.update {
-                        (it as InitialUiState.Success).copy(startDestination = startDestination)
-                    }
-                }
-            }
-
             viewModelScope.launch {
                 val accessToken: String? = jwtManager.getAccessJwt()
 
@@ -69,23 +57,37 @@ class InitialViewModel
                 tokenValidator.validate()
                     .onSuccess { tokenInformation ->
                         if (tokenInformation.isValidToken) {
-                            if (tokenInformation.role == TokenRole.USER) {
-                                setStartDestination(Main.ROUTE)
-                            }
-                            if (tokenInformation.role == TokenRole.GUEST) {
-                                setStartDestination(SignUp.ROUTE)
+                            when (tokenInformation.role) {
+                                TokenRole.USER -> setStartDestination(Main.ROUTE)
+                                TokenRole.GUEST -> setStartDestination(SignUp.ROUTE)
+                                TokenRole.ADMIN -> resetToken()
                             }
                             return@launch
                         }
-                        jwtManager.clearAllTokens()
-                        setStartDestination(Onboarding.ROUTE)
+                        resetToken()
                     }
                     .onFailure {
                         _errorFlow.emit(it)
-                        jwtManager.clearAllTokens()
-                        setStartDestination(Onboarding.ROUTE)
+                        resetToken()
                     }
             }
+        }
+
+        private fun setStartDestination(startDestination: String) {
+            if (_initialUiState.value is InitialUiState.Loading) {
+                _initialUiState.update { InitialUiState.Success(startDestination = startDestination) }
+                return
+            }
+            if (_initialUiState.value is InitialUiState.Success) {
+                _initialUiState.update {
+                    (it as InitialUiState.Success).copy(startDestination = startDestination)
+                }
+            }
+        }
+
+        private suspend fun resetToken() {
+            jwtManager.clearAllTokens()
+            setStartDestination(Onboarding.ROUTE)
         }
 
         private fun fetchFirebaseUrls() {
