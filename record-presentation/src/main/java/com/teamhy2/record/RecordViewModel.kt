@@ -3,14 +3,11 @@ package com.teamhy2.record
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hongikyeolgong2.calendar.model.Calendar
-import com.hongikyeolgong2.calendar.model.StudyDay
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.domain.repository.CalendarStudyDayRepository
 import com.teamhy2.record.domain.repository.StudyDurationRepository
 import com.teamhy2.record.model.RecordUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -41,33 +38,40 @@ class RecordViewModel
 
         private fun loadRecordData() {
             viewModelScope.launch {
-                runCatching {
-                    val results =
-                        listOf(
-                            async { studyDurationRepository.fetchStudyDuration().getOrThrow() },
-                            async { calendarStudyDayRepository.updateCalendarStudyDay().getOrThrow() },
-                        ).awaitAll()
+                val studyDurationResult: Result<StudyDuration> =
+                    studyDurationRepository.fetchStudyDuration()
+                val updateCalendarResult: Result<Unit> =
+                    calendarStudyDayRepository.updateCalendarStudyDay()
 
-                    val now: LocalDate = LocalDate.now()
-                    val calendarStudyDays: List<StudyDay> =
-                        async { calendarStudyDayRepository.fetchStudyDaysForYearMonth(now) }.await()
+                if (updateCalendarResult.isSuccess) {
+                    calendarStudyDayRepository.fetchStudyDaysForYearMonth(LocalDate.now())
+                        .onSuccess { calendarStudyDays ->
+                            val studyDuration: StudyDuration =
+                                studyDurationResult.getOrNull() ?: StudyDuration.DEFAULT
 
-                    _recordUiState.update {
-                        RecordUiState.Success(
-                            studyDuration = results[0] as StudyDuration,
-                            calendar = Calendar(studyDays = calendarStudyDays),
-                        )
-                    }
-                }.onFailure { exception ->
-                    _errorFlow.emit(exception)
+                            _recordUiState.update {
+                                RecordUiState.Success(
+                                    studyDuration = studyDuration,
+                                    calendar = Calendar(studyDays = calendarStudyDays),
+                                )
+                            }
+                        }.onFailure { exception ->
+                            _errorFlow.emit(exception)
+                        }
+                } else {
+                    updateCalendarResult.exceptionOrNull()?.let { _errorFlow.emit(it) }
+                }
+
+                if (studyDurationResult.isFailure) {
+                    studyDurationResult.exceptionOrNull()?.let { _errorFlow.emit(it) }
                 }
             }
         }
 
         fun updateCalendarMonth(isNextMonth: Boolean) {
-            val currentState = _recordUiState.value
+            val currentState: RecordUiState = _recordUiState.value
             if (currentState is RecordUiState.Success) {
-                val updatedCalendar =
+                val updatedCalendar: Calendar =
                     currentState.calendar.apply {
                         if (isNextMonth) {
                             moveToNextMonth()
@@ -77,18 +81,17 @@ class RecordViewModel
                     }
 
                 viewModelScope.launch {
-                    runCatching {
-                        calendarStudyDayRepository.fetchStudyDaysForYearMonth(updatedCalendar.date)
-                    }.onSuccess { studyDays ->
-                        _recordUiState.update {
-                            RecordUiState.Success(
-                                studyDuration = currentState.studyDuration,
-                                calendar = updatedCalendar.copy(studyDays = studyDays),
-                            )
+                    calendarStudyDayRepository.fetchStudyDaysForYearMonth(updatedCalendar.date)
+                        .onSuccess { studyDays ->
+                            _recordUiState.update {
+                                RecordUiState.Success(
+                                    studyDuration = currentState.studyDuration,
+                                    calendar = updatedCalendar.copy(studyDays = studyDays),
+                                )
+                            }
+                        }.onFailure { exception ->
+                            _errorFlow.emit(exception)
                         }
-                    }.onFailure { exception ->
-                        _errorFlow.emit(exception)
-                    }
                 }
             }
         }
