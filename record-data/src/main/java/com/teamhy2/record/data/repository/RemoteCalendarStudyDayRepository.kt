@@ -32,10 +32,10 @@ class RemoteCalendarStudyDayRepository
             }
         }
 
-        override suspend fun fetchStudyDaysForYearMonth(date: LocalDate): List<StudyDay> {
-            val yearMonth: YearMonth = YearMonth.of(date.year, date.month)
+        override suspend fun fetchStudyDaysForYearMonth(date: LocalDate): Result<List<StudyDay>> {
+            val yearMonth: YearMonth = YearMonth.from(date)
             return cacheMutex.withLock {
-                cachedStudyDays[yearMonth] ?: emptyList()
+                Result.success(cachedStudyDays[yearMonth] ?: emptyList())
             }
         }
     }

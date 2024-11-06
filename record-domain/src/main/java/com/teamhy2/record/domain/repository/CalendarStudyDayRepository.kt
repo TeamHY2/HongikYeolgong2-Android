@@ -6,5 +6,5 @@ import java.time.LocalDate
 interface CalendarStudyDayRepository {
     suspend fun updateCalendarStudyDay(): Result<Unit>
 
-    suspend fun fetchStudyDaysForYearMonth(date: LocalDate): List<StudyDay>
+    suspend fun fetchStudyDaysForYearMonth(date: LocalDate): Result<List<StudyDay>>
 }
