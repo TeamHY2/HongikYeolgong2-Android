@@ -1,15 +1,8 @@
 package com.teamhy2.feature.main.mapper
 
-import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
-import com.teamhy2.main.domain.model.StudyDayResponse
 
 object StudyDayMapper {
-    fun mapToStudyDay(studyDayResponse: StudyDayResponse): StudyDay {
-        val studyRoomUsage = mapToStudyRoomUsage(studyDayResponse.studyStartTimes.size)
-        return StudyDay(date = studyDayResponse.date, studyRoomUsage = studyRoomUsage)
-    }
-
     private fun mapToStudyRoomUsage(studyStartTimesCount: Int): StudyRoomUsage {
         return when (studyStartTimesCount) {
             0 -> StudyRoomUsage.NEVER_USED
