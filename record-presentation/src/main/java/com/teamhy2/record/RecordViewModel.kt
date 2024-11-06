@@ -32,11 +32,7 @@ class RecordViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
-        init {
-            loadRecordData()
-        }
-
-        private fun loadRecordData() {
+        fun loadRecordData() {
             viewModelScope.launch {
                 val studyDurationResult: Result<StudyDuration> =
                     studyDurationRepository.fetchStudyDuration()
