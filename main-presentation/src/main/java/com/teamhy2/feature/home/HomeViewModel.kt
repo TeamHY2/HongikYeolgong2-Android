@@ -57,7 +57,7 @@ class HomeViewModel
                         )
                     }
                 }.onFailure { exception ->
-                    _errorFlow.tryEmit(exception)
+                    _errorFlow.emit(exception)
                     _homeUiState.value = HomeUiState.Error(exception.message)
                 }
             }

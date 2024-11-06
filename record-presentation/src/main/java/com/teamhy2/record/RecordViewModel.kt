@@ -59,7 +59,7 @@ class RecordViewModel
                         )
                     }
                 }.onFailure { exception ->
-                    _errorFlow.tryEmit(exception)
+                    _errorFlow.emit(exception)
                 }
             }
         }
@@ -87,7 +87,7 @@ class RecordViewModel
                             )
                         }
                     }.onFailure { exception ->
-                        _errorFlow.tryEmit(exception)
+                        _errorFlow.emit(exception)
                     }
                 }
             }
