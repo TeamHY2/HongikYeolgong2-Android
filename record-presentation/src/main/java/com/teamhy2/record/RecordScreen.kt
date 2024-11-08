@@ -42,7 +42,7 @@ fun RecordRoute(
     }
 
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(lifecycle) {
+    LaunchedEffect(Unit) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             recordViewModel.loadRecordData()
         }
@@ -52,7 +52,7 @@ fun RecordRoute(
         recordUiState = recordUiState,
         onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
         onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
-        modifier = Modifier,
+        modifier = modifier,
     )
 }
 
