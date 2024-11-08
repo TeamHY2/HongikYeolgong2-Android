@@ -14,14 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
-import com.teamhy2.record.components.StudySummaryCard
+import com.teamhy2.record.components.StudyDurationCard
+import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.model.RecordUiState
-import com.teamhy2.record.model.StudySummary
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -38,11 +41,18 @@ fun RecordRoute(
         }
     }
 
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(Unit) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            recordViewModel.loadRecordData()
+        }
+    }
+
     RecordScreen(
         recordUiState = recordUiState,
         onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
         onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
-        modifier = Modifier,
+        modifier = modifier,
     )
 }
 
@@ -92,33 +102,33 @@ fun RecordBody(
         Spacer(modifier = Modifier.weight(1f))
         Column {
             Row {
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "연간",
-                    studyHours = recordUiState.studySummary.yearHours,
-                    studyMinutes = recordUiState.studySummary.yearMinutes,
+                    studyHours = recordUiState.studyDuration.yearHours,
+                    studyMinutes = recordUiState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                StudySummaryCard(
+                Spacer(modifier = Modifier.width(13.dp))
+                StudyDurationCard(
                     title = "이번학기",
-                    studyHours = recordUiState.studySummary.semesterHours,
-                    studyMinutes = recordUiState.studySummary.semesterMinutes,
+                    studyHours = recordUiState.studyDuration.semesterHours,
+                    studyMinutes = recordUiState.studyDuration.semesterMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(14.dp))
             Row {
-                StudySummaryCard(
+                StudyDurationCard(
                     title = "월간",
-                    studyHours = recordUiState.studySummary.monthHours,
-                    studyMinutes = recordUiState.studySummary.monthMinutes,
+                    studyHours = recordUiState.studyDuration.monthHours,
+                    studyMinutes = recordUiState.studyDuration.monthMinutes,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                StudySummaryCard(
+                Spacer(modifier = Modifier.width(13.dp))
+                StudyDurationCard(
                     title = "투데이",
-                    studyHours = recordUiState.studySummary.dayHours,
-                    studyMinutes = recordUiState.studySummary.dayMinutes,
+                    studyHours = recordUiState.studyDuration.dayHours,
+                    studyMinutes = recordUiState.studyDuration.dayMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -130,7 +140,7 @@ fun RecordBody(
 @Composable
 fun RecordScreenPreview() {
     val sampleStudySummary =
-        StudySummary(
+        StudyDuration(
             yearHours = 200,
             yearMinutes = 4,
             monthHours = 50,
@@ -145,7 +155,7 @@ fun RecordScreenPreview() {
 
     val sampleRecordUiState =
         RecordUiState.Success(
-            studySummary = sampleStudySummary,
+            studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
 

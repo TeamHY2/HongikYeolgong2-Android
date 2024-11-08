@@ -12,6 +12,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -72,9 +73,11 @@ fun HY2Theme(
             val window = (view.context as Activity).window
             val insetsController = WindowCompat.getInsetsController(window, view)
             window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Black.toArgb()
 
-            // 항상 다크테마이기 때문에 상태바 아이콘들을 밝은 톤으로 표시
+            // 항상 다크테마이기 때문에 상태바, 바텀네비게이션바 아이콘들을 밝은 톤으로 표시
             insetsController.isAppearanceLightStatusBars = false
+            insetsController.isAppearanceLightNavigationBars = false
         }
     }
 

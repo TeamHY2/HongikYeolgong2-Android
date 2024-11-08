@@ -1,6 +1,9 @@
-package com.teamhy2.record.model
+package com.benenfeldt.remote.dto
 
-data class StudySummary(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class StudyDurationResponse(
     val yearHours: Int,
     val yearMinutes: Int,
     val monthHours: Int,
