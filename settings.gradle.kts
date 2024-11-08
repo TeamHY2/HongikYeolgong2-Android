@@ -52,6 +52,7 @@ include(":ranking-data")
 include(":ranking-domain")
 
 include(":record-presentation")
+include(":record-data")
 include(":record-domain")
 
 include(":user-data")
