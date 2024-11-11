@@ -32,9 +32,9 @@ fun StudyDurationCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .background(Gray800, shape = RoundedCornerShape(8.dp))
-                .border(1.dp, Gray600, shape = RoundedCornerShape(8.dp))
-                .padding(start = 28.dp, top = 18.dp, bottom = 18.dp),
+                .background(Gray800, shape = RoundedCornerShape(4.dp))
+                .border(1.dp, Gray600, shape = RoundedCornerShape(4.dp))
+                .padding(start = 28.dp, top = 23.dp, bottom = 18.dp),
     ) {
         Text(
             text = title,
