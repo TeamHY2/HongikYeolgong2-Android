@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Gray100
+import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
@@ -48,7 +49,7 @@ enum class RankItemStyle(
     FIRST(img_ranking_background_first, Gray600),
     SECOND(img_ranking_background_second, White),
     THIRD(img_ranking_background_third, Gray100),
-    OTHER(null, Gray100),
+    OTHER(null, Gray200),
 }
 
 @Composable
@@ -118,7 +119,7 @@ fun RankingItem(
         )
         Text(
             text = "${hours}H",
-            style = HY2Typography().body05,
+            style = HY2Typography().caption,
             color = rankItemStyle.textColor,
         )
         Row(
@@ -128,7 +129,7 @@ fun RankingItem(
         ) {
             Text(
                 text = rankChangeText,
-                style = HY2Typography().body05,
+                style = HY2Typography().caption,
                 color = rankItemStyle.textColor,
             )
             Spacer(modifier = Modifier.width(7.dp))
