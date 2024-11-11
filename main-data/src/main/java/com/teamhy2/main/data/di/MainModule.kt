@@ -15,9 +15,9 @@ import javax.inject.Singleton
 abstract class MainModule {
     @Binds
     @Singleton
-    abstract fun bindWiseSayingRepository(impl: RemoteWiseSayingRepository): WiseSayingRepository
+    abstract fun bindWiseSayingRepository(remoteWiseSayingRepository: RemoteWiseSayingRepository): WiseSayingRepository
 
     @Binds
     @Singleton
-    abstract fun bindStudyDayRepository(impl: RemoteStudyDayRepository): StudyDayRepository
+    abstract fun bindStudyDayRepository(remoteStudyDayRepository: RemoteStudyDayRepository): StudyDayRepository
 }
