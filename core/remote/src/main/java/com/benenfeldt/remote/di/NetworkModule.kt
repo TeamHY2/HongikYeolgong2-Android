@@ -3,7 +3,7 @@ package com.benenfeldt.remote.di
 import android.util.Log
 import com.benenfeldt.remote.BuildConfig
 import com.benenfeldt.remote.token.AccessTokenInterceptor
-import com.benenfeldt.remote.token.DefaultAuthenticator
+import com.benenfeldt.remote.token.HY2Authenticator
 import com.benenfeldt.remote.token.NeedAuthClient
 import com.benenfeldt.remote.token.NeedAuthRetrofit
 import com.benenfeldt.remote.token.PublicClient
@@ -71,12 +71,12 @@ object NetworkModule {
     fun provideAuthOkHttpClient(
         accessTokenInterceptor: AccessTokenInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        defaultAuthenticator: DefaultAuthenticator,
+        hY2Authenticator: HY2Authenticator,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(accessTokenInterceptor)
             .addInterceptor(httpLoggingInterceptor)
-            .authenticator(defaultAuthenticator)
+            .authenticator(hY2Authenticator)
             .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)

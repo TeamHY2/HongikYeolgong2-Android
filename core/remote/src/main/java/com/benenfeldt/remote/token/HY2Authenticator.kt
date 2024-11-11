@@ -7,7 +7,7 @@ import okhttp3.Response
 import okhttp3.Route
 import javax.inject.Inject
 
-class DefaultAuthenticator
+class HY2Authenticator
     @Inject
     constructor(
         private val authCallback: AuthCallback,
