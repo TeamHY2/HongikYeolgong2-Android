@@ -7,7 +7,7 @@ import com.benenfeldt.remote.token.JwtManager
 import com.benenfeldt.remote.token.TokenRole
 import com.benenfeldt.remote.token.TokenValidator
 import com.google.firebase.firestore.FirebaseFirestore
-import com.teamhy2.feature.main.navigation.Main
+import com.teamhy2.feature.home.navigation.Home
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
@@ -58,7 +58,7 @@ class InitialViewModel
                     .onSuccess { tokenInformation ->
                         if (tokenInformation.isValidToken) {
                             when (tokenInformation.role) {
-                                TokenRole.USER -> setStartDestination(Main.ROUTE)
+                                TokenRole.USER -> setStartDestination(Home.ROUTE)
                                 TokenRole.GUEST -> setStartDestination(SignUp.ROUTE)
                                 TokenRole.ADMIN -> resetToken()
                             }
