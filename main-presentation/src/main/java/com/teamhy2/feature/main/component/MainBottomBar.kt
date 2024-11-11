@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
@@ -42,16 +43,24 @@ fun MainBottomBar(
             BottomNavigationItem(
                 icon = {
                     Icon(
-                        painter = painterResource(id = tab.iconResId),
+                        painter =
+                            if (tab == currentTab) {
+                                painterResource(id = tab.selectedIconResId)
+                            } else {
+                                painterResource(
+                                    id = tab.iconResId,
+                                )
+                            },
                         contentDescription = tab.contentDescription,
                         modifier = Modifier.size(28.dp),
+                        tint = Color.Unspecified,
                     )
                 },
                 label = {
                     Text(text = tab.contentDescription)
                 },
                 selected = tab == currentTab,
-                selectedContentColor = Color.White,
+                selectedContentColor = Gray100,
                 unselectedContentColor = Gray300,
                 onClick = { onTabSelected(tab) },
                 alwaysShowLabel = true,
