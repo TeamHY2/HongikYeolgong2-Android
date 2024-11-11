@@ -24,7 +24,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 
 private const val HEIGHT = 52
 private const val CORNER_RADIUS = 8
-private const val PADDING_START = 16
+private const val PADDING_START = 20
 private const val PADDING_END = 14
 private const val PADDING_VERTICAL = 0
 
