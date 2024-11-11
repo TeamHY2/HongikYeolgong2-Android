@@ -13,6 +13,8 @@ import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.SignUp
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -41,66 +43,42 @@ class InitialViewModel
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
-            fetchStartDestination()
-            fetchFirebaseUrls()
+            initInitialState()
         }
 
-        private fun fetchStartDestination() {
+        private fun initInitialState() {
             viewModelScope.launch {
-                val accessToken: String? = jwtManager.getAccessJwt()
+                val startDestination: Deferred<String> = async { getStartDestination() }
+                val urls: Deferred<Map<String, String>> = async { webViewRepository.fetchFirebaseUrls() }
 
-                if (accessToken == null) {
-                    setStartDestination(Onboarding.ROUTE)
-                    return@launch
-                }
-
-                tokenValidator.validate()
-                    .onSuccess { tokenInformation ->
-                        if (tokenInformation.isValidToken) {
-                            when (tokenInformation.role) {
-                                TokenRole.USER -> setStartDestination(Home.ROUTE)
-                                TokenRole.GUEST -> setStartDestination(SignUp.ROUTE)
-                                TokenRole.ADMIN -> resetToken()
-                            }
-                            return@launch
-                        }
-                        resetToken()
-                    }
-                    .onFailure {
-                        _errorFlow.emit(it)
-                        resetToken()
-                    }
-            }
-        }
-
-        private fun setStartDestination(startDestination: String) {
-            if (_initialUiState.value is InitialUiState.Loading) {
-                _initialUiState.update { InitialUiState.Success(startDestination = startDestination) }
-                return
-            }
-            if (_initialUiState.value is InitialUiState.Success) {
                 _initialUiState.update {
-                    (it as InitialUiState.Success).copy(startDestination = startDestination)
+                    InitialUiState.Success(
+                        startDestination = startDestination.await(),
+                        urls = urls.await(),
+                    )
                 }
             }
         }
 
-        private suspend fun resetToken() {
+        private suspend fun getStartDestination(): String {
+            jwtManager.getAccessJwt() ?: return resetToken()
+
+            val isValidToken = tokenValidator.validate().getOrNull()
+            if (isValidToken == null) {
+                _errorFlow.emit(Throwable("서버 연결에 이상이 있습니다."))
+                return resetToken()
+            }
+
+            return when (isValidToken.role) {
+                TokenRole.USER -> Home.ROUTE
+                TokenRole.GUEST -> SignUp.ROUTE
+                TokenRole.ADMIN -> resetToken()
+            }
+        }
+
+        private suspend fun resetToken(): String {
             jwtManager.clearAllTokens()
-            setStartDestination(Onboarding.ROUTE)
-        }
-
-        private fun fetchFirebaseUrls() {
-            viewModelScope.launch {
-                val urls = webViewRepository.fetchFirebaseUrls()
-                if (_initialUiState.value is InitialUiState.Loading) {
-                    _initialUiState.update { InitialUiState.Success(urls = urls) }
-                    return@launch
-                }
-                if (_initialUiState.value is InitialUiState.Success) {
-                    _initialUiState.update { (it as InitialUiState.Success).copy(urls = urls) }
-                }
-            }
+            return Onboarding.ROUTE
         }
 
         fun getMinVersion(currentVersion: Long) {
