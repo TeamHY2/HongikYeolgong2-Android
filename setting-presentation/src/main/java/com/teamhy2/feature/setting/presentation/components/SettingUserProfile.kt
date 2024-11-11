@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.teamhy2.designsystem.ui.theme.Gray200
+import com.teamhy2.designsystem.ui.theme.Gray400
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.hongikyeolgong2.setting.presentation.R.drawable.img_settting_profile
 import com.teamhy2.user.domain.model.UserInfo
@@ -55,7 +56,7 @@ fun SettingUserProfile(
             Text(
                 text = "|",
                 style = HY2Typography().body05,
-                color = Gray200,
+                color = Gray400,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
