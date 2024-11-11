@@ -18,7 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
+import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.feature.home.component.InitTimerComponent
@@ -79,6 +83,8 @@ fun HomeRoute(
             localShowSnackBar.showSnackBar(throwable.message)
         }
     }
+
+    SetNavigationBarColor(Gray800)
 
     when (homeUiState) {
         is HomeUiState.Loading -> {
@@ -183,6 +189,17 @@ fun HomeRoute(
             localShowSnackBar.showSnackBar(
                 (homeUiState as HomeUiState.Error).message,
             )
+        }
+    }
+}
+
+@Composable
+fun SetNavigationBarColor(color: Color) {
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        LaunchedEffect(Unit) {
+            val window = (view.context as Activity).window
+            window.navigationBarColor = color.toArgb()
         }
     }
 }
