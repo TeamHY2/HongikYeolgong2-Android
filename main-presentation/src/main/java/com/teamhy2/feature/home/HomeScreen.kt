@@ -171,12 +171,6 @@ fun HomeRoute(
                 },
                 onStudyRoomExtendClick = {
                     homeViewModel.updateStudyRoomExtendDialogVisibility(true)
-                    startTimer(
-                        LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                        homeViewModel,
-                        timerViewModel,
-                        onSendNotification,
-                    )
                 },
                 onStudyRoomEndClick = {
                     homeViewModel.updateStudyRoomEndDialogVisibility(true)
