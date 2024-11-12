@@ -122,7 +122,12 @@ fun HomeRoute(
                         homeViewModel.updateStudyRoomExtendDialogVisibility(false)
                     },
                     onRightButtonClick = {
-                        homeViewModel.updateStudyRoomExtendDialogVisibility(false)
+                        homeViewModel.run {
+                            updateStudyRoomExtendDialogVisibility(false)
+                            saveStudyDay(true)
+                            updateTimerRunning(true)
+                            updateSelectedTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
+                        }
                         startTimer(
                             LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                             homeViewModel,
@@ -147,7 +152,7 @@ fun HomeRoute(
                     onRightButtonClick = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
                         homeViewModel.updateTimerRunning(false)
-                        homeViewModel.saveStudyDay()
+                        homeViewModel.saveStudyDay(false)
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
@@ -171,12 +176,6 @@ fun HomeRoute(
                 },
                 onStudyRoomExtendClick = {
                     homeViewModel.updateStudyRoomExtendDialogVisibility(true)
-                    startTimer(
-                        LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                        homeViewModel,
-                        timerViewModel,
-                        onSendNotification,
-                    )
                 },
                 onStudyRoomEndClick = {
                     homeViewModel.updateStudyRoomEndDialogVisibility(true)
@@ -221,7 +220,7 @@ private fun startTimer(
                 },
                 Timer.TIME_OVER_SECONDS to {
                     homeViewModel.updateTimerRunning(false)
-                    homeViewModel.saveStudyDay()
+                    homeViewModel.saveStudyDay(false)
                 },
             ),
     )
