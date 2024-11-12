@@ -63,7 +63,7 @@ class HomeViewModel
             }
         }
 
-        fun saveStudyDay() {
+        fun saveStudyDay(isExtend: Boolean) {
             val currentState = _homeUiState.value
             if (currentState is HomeUiState.Success) {
                 val startDateTime =
@@ -76,7 +76,7 @@ class HomeViewModel
                 viewModelScope.launch {
                     studyDayRepository.saveStudyDay(startDateTime, endDateTime)
                         .onSuccess {
-                            loadHomeData()
+                            if (!isExtend) loadHomeData()
                         }.onFailure { throwable ->
                             _errorFlow.emit(throwable)
                         }
