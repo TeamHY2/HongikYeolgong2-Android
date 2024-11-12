@@ -5,9 +5,5 @@ interface JwtManager {
 
     suspend fun getAccessJwt(): String?
 
-    suspend fun saveGoogleIdToken(token: String)
-
-    suspend fun getGoogleIdToken(): String?
-
     suspend fun clearAllTokens()
 }

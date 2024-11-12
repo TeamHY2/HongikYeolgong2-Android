@@ -26,8 +26,8 @@ import com.teamhy2.hongikyeolgong2.setting.presentation.R
 
 private const val CORNER_RADIUS = 8
 private const val BUTTON_HEIGHT = 52
-private const val PADDING_START = 16
-private const val PADDING_END = 11
+private const val PADDING_START = 20
+private const val PADDING_END = 13
 private const val ARROW_SIZE = 24
 
 @Composable

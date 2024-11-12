@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -105,17 +104,17 @@ fun RankingHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(top = 34.dp),
+                .padding(top = 27.dp),
     ) {
         Text(text = currentWeek, style = HY2Typography().title01, color = Gray100)
         Spacer(modifier = Modifier.weight(1F))
-        IconButton(onClick = onLastWeekClick, modifier = Modifier.size(34.dp)) {
+        IconButton(onClick = onLastWeekClick) {
             Image(
                 painter = painterResource(id = R.drawable.ic_ranking_last_week),
                 contentDescription = null,
             )
         }
-        IconButton(onClick = onNextWeekClick, modifier = Modifier.size(34.dp)) {
+        IconButton(onClick = onNextWeekClick) {
             Image(
                 painter = painterResource(id = R.drawable.ic_ranking_next_week),
                 contentDescription = null,

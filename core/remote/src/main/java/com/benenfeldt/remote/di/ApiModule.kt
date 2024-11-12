@@ -1,6 +1,7 @@
 package com.benenfeldt.remote.di
 
 import com.benenfeldt.remote.api.StudyService
+import com.benenfeldt.remote.api.TokenService
 import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
 import com.benenfeldt.remote.api.WeeklyService
@@ -55,5 +56,13 @@ object ApiModule {
         @NeedAuthRetrofit retrofit: Retrofit,
     ): WeeklyService {
         return retrofit.create(WeeklyService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTokenService(
+        @NeedAuthRetrofit retrofit: Retrofit,
+    ): TokenService {
+        return retrofit.create(TokenService::class.java)
     }
 }
