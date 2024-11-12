@@ -30,7 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
-import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.feature.home.component.InitTimerComponent
@@ -84,7 +83,7 @@ fun HomeRoute(
         }
     }
 
-    SetNavigationBarColor(Gray800)
+    SetNavigationBarColor(Color.Black)
 
     when (homeUiState) {
         is HomeUiState.Loading -> {

@@ -30,22 +30,6 @@ class DefaultJwtManager
             }.firstOrNull()
         }
 
-        override suspend fun saveGoogleIdToken(token: String) {
-            dataStore.edit { preferences ->
-                preferences[googleIdTokenKey] = token
-            }
-
-            dataStore.data.map { preferences ->
-                preferences[googleIdTokenKey]
-            }.firstOrNull()
-        }
-
-        override suspend fun getGoogleIdToken(): String? {
-            return dataStore.data.map { preferences ->
-                preferences[googleIdTokenKey]
-            }.firstOrNull()
-        }
-
         override suspend fun clearAllTokens() {
             dataStore.edit { preferences ->
                 preferences.remove(accessJwtKey)
@@ -56,6 +40,5 @@ class DefaultJwtManager
             private const val ACCESS_JWT_KEY_NAME = "access_jwt"
             private const val GOOGLE_ID_TOKEN_KEY_NAME = "google_id_token"
             val accessJwtKey = stringPreferencesKey(ACCESS_JWT_KEY_NAME)
-            val googleIdTokenKey = stringPreferencesKey(GOOGLE_ID_TOKEN_KEY_NAME)
         }
     }

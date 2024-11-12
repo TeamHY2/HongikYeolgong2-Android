@@ -57,6 +57,7 @@ fun RunningTimerComponent(
             HY2Button(
                 text = stringResource(R.string.main_extend_study_room),
                 onClick = onStudyRoomExtendClick,
+                modifier = Modifier.height(52.dp),
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -66,6 +67,7 @@ fun RunningTimerComponent(
             backgroundColor = Gray600,
             textColor = Gray100,
             onClick = onStudyRoomEndClick,
+            modifier = Modifier.height(52.dp),
         )
     }
 }

@@ -9,7 +9,7 @@ interface InitialUiState {
     data object NeedUpdate : InitialUiState
 
     data class Success(
-        val startDestination: String = "",
+        val startDestination: String,
         val urls: Map<UrlName, UrlValue> = emptyMap(),
     ) : InitialUiState
 }

@@ -2,7 +2,6 @@ package com.teamhy2.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.benenfeldt.remote.token.JwtManager
 import com.teamhy2.core.auth.GoogleSignIn
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +20,6 @@ class OnboardingViewModel
     @Inject
     constructor(
         private val userRepository: UserRepository,
-        private val jwtManager: JwtManager,
     ) : ViewModel() {
         private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
         val signInState: StateFlow<SignInState> = _signInState.asStateFlow()
@@ -34,7 +32,6 @@ class OnboardingViewModel
                 googleSignIn.requestSignInWithIdToken()
                     .onSuccess { idToken: String ->
                         requestSignInToServerWithIdToken(idToken)
-                        jwtManager.saveGoogleIdToken(idToken)
                     }
                     .onFailure { throwable ->
                         _signInState.update { SignInState.Failure }

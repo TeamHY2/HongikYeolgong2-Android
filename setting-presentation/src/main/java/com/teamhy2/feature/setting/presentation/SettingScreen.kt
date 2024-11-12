@@ -29,14 +29,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
-import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
@@ -173,7 +172,7 @@ fun SettingBody(
     Column(
         modifier =
             modifier
-                .padding(start = 24.dp, end = 24.dp, top = 34.dp, bottom = 36.dp)
+                .padding(start = 24.dp, end = 24.dp, top = 34.dp)
                 .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -208,8 +207,8 @@ fun SettingBody(
             Spacer(modifier = Modifier.width(6.dp))
             Text(
                 text = stringResource(R.string.setting_notification_reminder_description),
-                color = Gray200,
-                fontSize = 12.sp,
+                color = Gray300,
+                style = HY2Typography().caption,
                 modifier = Modifier.align(Alignment.CenterVertically),
             )
         }
@@ -228,7 +227,7 @@ fun SettingBottom(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(bottom = 40.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {

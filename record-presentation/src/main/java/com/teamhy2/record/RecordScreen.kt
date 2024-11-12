@@ -91,7 +91,7 @@ fun RecordBody(
     val calendar = (recordUiState as RecordUiState.Success).calendar
 
     Column(
-        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 34.dp, bottom = 36.dp),
+        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 27.dp, bottom = 36.dp),
     ) {
         Hy2Calendar(
             title = calendar.now,
