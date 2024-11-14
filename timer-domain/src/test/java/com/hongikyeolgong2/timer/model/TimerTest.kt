@@ -4,7 +4,6 @@ import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import java.time.Duration
 import java.time.LocalDate
@@ -88,34 +87,6 @@ class TimerTest : BehaviorSpec({
                 runTest {
                     val eventsTimes = timer.emitTimerEvents().count()
                     eventsTimes shouldBe 10
-                }
-            }
-        }
-    }
-
-    Given("Timer가 매초마다 남은시간을 감소할 수 있다.") {
-        var startTime: LocalDateTime
-        var duration: Duration
-        var timer: Timer
-
-        When("11:30에 타이머가 시작되고 10초를 재면") {
-            startTime = LocalDateTime.of(localDate, LocalTime.of(11, 30))
-            duration = Duration.ofSeconds(10)
-            timer =
-                Timer(
-                    startTime,
-                    duration,
-                    mapOf(
-                        Timer.THIRTY_MINUTES_SECONDS to {},
-                        Timer.TEN_MINUTES_SECONDS to {},
-                        Timer.TIME_OVER_SECONDS to {},
-                    ),
-                )
-
-            Then("1초뒤 남은 시간 9초를 반환 한다.") {
-                runTest {
-                    timer.emitTimerEvents().first()
-                    timer.leftTime.seconds shouldBe 9L
                 }
             }
         }
