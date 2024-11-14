@@ -14,9 +14,6 @@ class Timer(
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
-    var leftTime: Duration = calculateLeftTime()
-        private set
-
     private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
 
     init {
@@ -46,13 +43,13 @@ class Timer(
     val formattedEndTimeMeridiem: String
         get() = if (endTime.hour >= 12) "PM" else "AM"
 
-    private val leftSeconds: Long
-        get() = leftTime.seconds
+    private val leftTime: Duration
+        get() = calculateLeftTime()
 
     fun emitTimerEvents(): Flow<Long> =
         flow {
             while (!isTimeOver()) {
-                tick()
+                val leftSeconds = leftTime.seconds
                 events[leftSeconds]?.invoke()
                 emit(leftSeconds)
                 delay(DELAY_MILLIS)
@@ -63,19 +60,12 @@ class Timer(
         return leftTime <= Duration.ZERO
     }
 
-    private fun tick() {
-        if (leftTime > Duration.ZERO) {
-            leftTime = leftTime.minusSeconds(1)
-        }
-    }
-
     private fun calculateLeftTime(): Duration {
         val now = LocalDateTime.now()
-        val elapsed = Duration.between(startTime, now)
-        return if (elapsed.isNegative || elapsed > duration) {
-            duration
+        return if (now.isAfter(endTime)) {
+            Duration.ZERO
         } else {
-            duration.minus(elapsed)
+            Duration.between(now, endTime)
         }
     }
 
