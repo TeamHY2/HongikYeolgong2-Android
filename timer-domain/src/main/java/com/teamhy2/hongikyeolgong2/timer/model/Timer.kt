@@ -14,7 +14,8 @@ class Timer(
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
-    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
+    private val timeFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
 
     init {
         require(events.keys.containsAll(EVENT_TIMES)) {
@@ -49,7 +50,7 @@ class Timer(
     fun emitTimerEvents(): Flow<Long> =
         flow {
             while (!isTimeOver()) {
-                val leftSeconds = leftTime.seconds
+                val leftSeconds: Long = leftTime.seconds
                 events[leftSeconds]?.invoke()
                 emit(leftSeconds)
                 delay(DELAY_MILLIS)
@@ -61,12 +62,11 @@ class Timer(
     }
 
     private fun calculateLeftTime(): Duration {
-        val now = LocalDateTime.now()
-        return if (now.isAfter(endTime)) {
-            Duration.ZERO
-        } else {
-            Duration.between(now, endTime)
+        val now: LocalDateTime = LocalDateTime.now()
+        if (now.isAfter(endTime)) {
+            return Duration.ZERO
         }
+        return Duration.between(now, endTime)
     }
 
     companion object {
