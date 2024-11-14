@@ -14,10 +14,8 @@ class Timer(
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
-    var leftTime: Duration = calculateLeftTime()
-        private set
-
-    private val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
+    private val timeFormatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
 
     init {
         require(events.keys.containsAll(EVENT_TIMES)) {
@@ -46,13 +44,13 @@ class Timer(
     val formattedEndTimeMeridiem: String
         get() = if (endTime.hour >= 12) "PM" else "AM"
 
-    private val leftSeconds: Long
-        get() = leftTime.seconds
+    private val leftTime: Duration
+        get() = calculateLeftTime()
 
     fun emitTimerEvents(): Flow<Long> =
         flow {
             while (!isTimeOver()) {
-                tick()
+                val leftSeconds: Long = leftTime.seconds
                 events[leftSeconds]?.invoke()
                 emit(leftSeconds)
                 delay(DELAY_MILLIS)
@@ -63,20 +61,12 @@ class Timer(
         return leftTime <= Duration.ZERO
     }
 
-    private fun tick() {
-        if (leftTime > Duration.ZERO) {
-            leftTime = leftTime.minusSeconds(1)
-        }
-    }
-
     private fun calculateLeftTime(): Duration {
-        val now = LocalDateTime.now()
-        val elapsed = Duration.between(startTime, now)
-        return if (elapsed.isNegative || elapsed > duration) {
-            duration
-        } else {
-            duration.minus(elapsed)
+        val now: LocalDateTime = LocalDateTime.now()
+        if (now.isAfter(endTime)) {
+            return Duration.ZERO
         }
+        return Duration.between(now, endTime)
     }
 
     companion object {
