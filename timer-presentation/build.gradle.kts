@@ -8,4 +8,5 @@ android {
 
 dependencies {
     implementation(projects.timerDomain)
+    implementation(projects.app.notification)
 }

@@ -1,5 +1,6 @@
 package com.teamhy2.hongikyeolgong2.notification
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
 import androidx.annotation.StringRes
@@ -24,11 +25,12 @@ class NotificationHandler
         private val notificationManager = context.getSystemService(NotificationManager::class.java)
 
         private val notificationChannel: StateFlow<Boolean> =
-            settingsRepository.notificationSwitchState.stateIn(
-                scope = coroutineScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = false,
-            )
+            settingsRepository.notificationSwitchState
+                .stateIn(
+                    scope = coroutineScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = false,
+                )
 
         init {
             coroutineScope.launch {
@@ -36,15 +38,28 @@ class NotificationHandler
             }
         }
 
+        fun buildServiceNotification(): Notification {
+            return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("홍익열공이 열공중")
+                .setContentText("열람실을 이용중이에요!")
+                .setSmallIcon(R.drawable.ic_status_bar_logo)
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
+        }
+
+        fun buildGeneralNotification(contentText: String): Notification {
+            return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("홍익열공이 알림")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.ic_status_bar_logo)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
+        }
+
         fun showSimpleNotification(pushText: PushText) {
-            val notification =
-                NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-                    .setContentTitle(context.getString(R.string.notification_title))
-                    .setContentText(context.getString(pushText.id))
-                    .setSmallIcon(R.drawable.ic_status_bar_logo)
-                    .setPriority(NotificationManager.IMPORTANCE_HIGH)
-                    .setAutoCancel(true)
-                    .build()
+            val notification = buildGeneralNotification(context.getString(pushText.id))
 
             if (notificationChannel.value) {
                 notificationManager.notify(Random.nextInt(), notification)
@@ -61,4 +76,5 @@ enum class PushText(
 ) {
     THIRTY_MINUTES(R.string.notification_content_thirty_minutes_remain),
     TEN_MINUTES(R.string.notification_content_ten_minutes_remain),
+    ZERO_MINUTES(R.string.notification_content_zero_minutes_remain),
 }
