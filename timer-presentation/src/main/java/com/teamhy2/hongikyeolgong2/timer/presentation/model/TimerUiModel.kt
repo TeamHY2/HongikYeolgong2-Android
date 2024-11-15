@@ -1,4 +1,4 @@
-package com.teamhy2.hongikyeolgong2.timer.prsentation.model
+package com.teamhy2.hongikyeolgong2.timer.presentation.model
 
 data class TimerUiModel(
     val startTime: String = "",
