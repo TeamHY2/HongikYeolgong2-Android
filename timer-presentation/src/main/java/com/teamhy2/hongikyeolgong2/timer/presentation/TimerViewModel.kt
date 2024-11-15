@@ -1,10 +1,10 @@
-package com.teamhy2.hongikyeolgong2.timer.prsentation
+package com.teamhy2.hongikyeolgong2.timer.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
