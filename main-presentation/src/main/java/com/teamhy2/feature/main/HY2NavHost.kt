@@ -11,7 +11,6 @@ import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
-import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.onboardingScreen
 import com.teamhy2.onboarding.navigation.popUpToOnboarding
@@ -24,7 +23,6 @@ import com.teamhy2.record.navigation.recordScreen
 fun HY2NavHost(
     navController: NavHostController,
     urls: Map<String, String>,
-    onSendNotification: (PushText) -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = Onboarding.ROUTE,
@@ -50,7 +48,6 @@ fun HY2NavHost(
 
             homeScreen(
                 seatingChartUrl = urls["seatingChart"] ?: "",
-                onSendNotification = onSendNotification,
             )
 
             rankingScreen()

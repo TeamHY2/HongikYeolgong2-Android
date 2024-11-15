@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.teamhy2.feature.home.HomeRoute
 import com.teamhy2.feature.home.navigation.Home.ROUTE
-import com.teamhy2.hongikyeolgong2.notification.PushText
 
 fun NavController.navigateToHome() {
     navigate(ROUTE)
@@ -20,14 +19,10 @@ fun NavController.popUpToHome() {
     }
 }
 
-fun NavGraphBuilder.homeScreen(
-    seatingChartUrl: String,
-    onSendNotification: (PushText) -> Unit,
-) {
+fun NavGraphBuilder.homeScreen(seatingChartUrl: String) {
     composable(route = ROUTE) {
         HomeRoute(
             seatingChartUrl = seatingChartUrl,
-            onSendNotification = onSendNotification,
         )
     }
 }
