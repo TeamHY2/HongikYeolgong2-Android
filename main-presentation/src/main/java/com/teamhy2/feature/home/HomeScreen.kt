@@ -1,6 +1,7 @@
 package com.teamhy2.feature.home
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -37,10 +38,10 @@ import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
-import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
-import com.teamhy2.hongikyeolgong2.timer.prsentation.TimerViewModel
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.TimerForegroundService
+import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
@@ -50,7 +51,6 @@ import java.time.temporal.ChronoUnit
 @Composable
 fun HomeRoute(
     seatingChartUrl: String,
-    onSendNotification: (PushText) -> Unit,
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -92,7 +92,6 @@ fun HomeRoute(
 
         is HomeUiState.Success -> {
             val uiState = homeUiState as HomeUiState.Success
-
             if (uiState.isTimePickerVisible) {
                 HY2TimePicker(
                     title = stringResource(R.string.main_study_room_use_start_time),
@@ -102,7 +101,12 @@ fun HomeRoute(
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
                         }
-                        startTimer(selectedTime, homeViewModel, timerViewModel, onSendNotification)
+                        startTimer(selectedTime, homeViewModel, timerViewModel, context)
+                        TimerForegroundService.startService(
+                            context,
+                            selectedTime,
+                            timerViewModel.durationHour.value,
+                        )
                     },
                     onCancelled = {
                         homeViewModel.updateTimePickerVisibility(false)
@@ -132,7 +136,13 @@ fun HomeRoute(
                             LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                             homeViewModel,
                             timerViewModel,
-                            onSendNotification,
+                            context,
+                        )
+                        TimerForegroundService.stopService(context)
+                        TimerForegroundService.startService(
+                            context,
+                            LocalDateTime.now(),
+                            timerViewModel.durationHour.value,
                         )
                     },
                     onDismiss = {
@@ -153,6 +163,7 @@ fun HomeRoute(
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
                         homeViewModel.updateTimerRunning(false)
                         homeViewModel.saveStudyDay(false)
+                        TimerForegroundService.stopService(context)
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
@@ -206,21 +217,20 @@ private fun startTimer(
     startTime: LocalDateTime,
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
-    onSendNotification: (PushText) -> Unit,
+    context: Context,
 ) {
     timerViewModel.setTimer(
         startTime = startTime,
         events =
             mapOf(
                 Timer.THIRTY_MINUTES_SECONDS to {
-                    onSendNotification(PushText.THIRTY_MINUTES)
                 },
                 Timer.TEN_MINUTES_SECONDS to {
-                    onSendNotification(PushText.TEN_MINUTES)
                 },
                 Timer.TIME_OVER_SECONDS to {
                     homeViewModel.updateTimerRunning(false)
                     homeViewModel.saveStudyDay(false)
+                    TimerForegroundService.stopService(context)
                 },
             ),
     )
