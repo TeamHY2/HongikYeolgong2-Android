@@ -117,19 +117,21 @@ class TimerForegroundService : Service() {
             startTime: LocalDateTime,
             duration: Duration,
         ) {
+            val appContext: Context = context.applicationContext
             val startTimeMillis: Long = startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
             val startIntent: Intent =
-                Intent(context, TimerForegroundService::class.java).apply {
+                Intent(appContext, TimerForegroundService::class.java).apply {
                     putExtra(EXTRA_START_TIME, startTimeMillis)
                     putExtra(EXTRA_TIME, duration.toMillis())
                 }
-            context.startForegroundService(startIntent)
+            appContext.startForegroundService(startIntent)
         }
 
         fun stopService(context: Context) {
-            val stopIntent: Intent = Intent(context, TimerForegroundService::class.java)
-            context.stopService(stopIntent)
+            val appContext: Context = context.applicationContext
+            val stopIntent: Intent = Intent(appContext, TimerForegroundService::class.java)
+            appContext.stopService(stopIntent)
         }
     }
 }
