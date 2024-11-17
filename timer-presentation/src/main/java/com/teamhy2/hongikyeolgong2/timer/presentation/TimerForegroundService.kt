@@ -70,32 +70,35 @@ class TimerForegroundService : Service() {
     ) {
         timerJob?.cancel()
 
-        val startTimeInMillis: Long = startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val startTimeInMillis: Long =
+            startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         endTime = startTimeInMillis + duration.toMillis()
 
         hasNotified30Min = false
         hasNotified10Min = false
-        hasNotified0Min = false
 
         timerJob =
             serviceScope.launch {
                 while (true) {
                     val remainingTime: Long = endTime - System.currentTimeMillis()
 
-                    if (remainingTime <= 0L) {
+                    if (remainingTime <= 0 && hasNotified0Min.not()) {
                         notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
+                        hasNotified0Min = true
                         stopSelf()
                         break
                     }
 
                     when {
-                        remainingTime <= TimeUnit.MINUTES.toMillis(10L) -> {
+                        remainingTime <= TimeUnit.MINUTES.toMillis(10L) && hasNotified10Min.not() -> {
                             notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
+                            hasNotified10Min = true
                             continue
                         }
 
-                        remainingTime <= TimeUnit.MINUTES.toMillis(30L) -> {
+                        remainingTime <= TimeUnit.MINUTES.toMillis(30L) && hasNotified30Min.not() -> {
                             notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
+                            hasNotified30Min = true
                             continue
                         }
                     }
@@ -116,7 +119,8 @@ class TimerForegroundService : Service() {
             duration: Duration,
         ) {
             val appContext: Context = context.applicationContext
-            val startTimeMillis: Long = startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val startTimeMillis: Long =
+                startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
             val startIntent: Intent =
                 Intent(appContext, TimerForegroundService::class.java).apply {

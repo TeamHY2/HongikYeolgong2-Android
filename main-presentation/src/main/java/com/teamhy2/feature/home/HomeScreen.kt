@@ -1,7 +1,6 @@
 package com.teamhy2.feature.home
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -104,7 +103,7 @@ fun HomeRoute(
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
                         }
-                        startTimer(updatedSelectedTime, homeViewModel, timerViewModel, context)
+                        startTimer(updatedSelectedTime, homeViewModel, timerViewModel)
                         TimerForegroundService.startService(
                             context,
                             updatedSelectedTime,
@@ -139,7 +138,6 @@ fun HomeRoute(
                             LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                             homeViewModel,
                             timerViewModel,
-                            context,
                         )
                         TimerForegroundService.stopService(context)
                         TimerForegroundService.startService(
@@ -220,20 +218,14 @@ private fun startTimer(
     startTime: LocalDateTime,
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
-    context: Context,
 ) {
     timerViewModel.setTimer(
         startTime = startTime,
         events =
             mapOf(
-                Timer.THIRTY_MINUTES_SECONDS to {
-                },
-                Timer.TEN_MINUTES_SECONDS to {
-                },
-                Timer.TIME_OVER_SECONDS to {
+                Timer.TIME_OVER to {
                     homeViewModel.updateTimerRunning(false)
                     homeViewModel.saveStudyDay(false)
-                    TimerForegroundService.stopService(context)
                 },
             ),
     )
