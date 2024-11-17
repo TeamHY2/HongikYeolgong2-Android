@@ -83,23 +83,21 @@ class TimerForegroundService : Service() {
                     val remainingTime: Long = endTime - System.currentTimeMillis()
 
                     if (remainingTime <= 0L) {
+                        notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
                         stopSelf()
                         break
                     }
 
-                    if (remainingTime <= TimeUnit.MINUTES.toMillis(30L) && !hasNotified30Min) {
-                        notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
-                        hasNotified30Min = true
-                    }
+                    when {
+                        remainingTime <= TimeUnit.MINUTES.toMillis(10L) -> {
+                            notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
+                            continue
+                        }
 
-                    if (remainingTime <= TimeUnit.MINUTES.toMillis(10L) && !hasNotified10Min) {
-                        notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
-                        hasNotified10Min = true
-                    }
-
-                    if (remainingTime <= 0L && !hasNotified0Min) {
-                        notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
-                        hasNotified0Min = true
+                        remainingTime <= TimeUnit.MINUTES.toMillis(30L) -> {
+                            notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
+                            continue
+                        }
                     }
 
                     delay(1000L)
