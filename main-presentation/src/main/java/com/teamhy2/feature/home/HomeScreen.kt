@@ -96,15 +96,18 @@ fun HomeRoute(
                 HY2TimePicker(
                     title = stringResource(R.string.main_study_room_use_start_time),
                     onSelected = { selectedTime ->
+                        val updatedSelectedTime =
+                            selectedTime.plusSeconds(LocalDateTime.now().second.toLong())
+
                         homeViewModel.run {
-                            updateSelectedTime(selectedTime)
+                            updateSelectedTime(updatedSelectedTime)
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
                         }
-                        startTimer(selectedTime, homeViewModel, timerViewModel, context)
+                        startTimer(updatedSelectedTime, homeViewModel, timerViewModel, context)
                         TimerForegroundService.startService(
                             context,
-                            selectedTime,
+                            updatedSelectedTime,
                             timerViewModel.durationHour.value,
                         )
                     },
