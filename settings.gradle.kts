@@ -22,11 +22,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "HongikYeolgong2"
 include(":app")
-include(":app:notification")
 
 include(":core:designsystem")
 include(":core:remote")
 include(":core:auth")
+include(":core:notification")
 
 include(":calendar-domain")
 include(":calendar-presentation")

@@ -3,6 +3,7 @@ package com.teamhy2.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
+import com.teamhy2.hongikyeolgong2.timer.model.TimerService
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class HomeViewModel
     constructor(
         private val wiseSayingRepository: WiseSayingRepository,
         private val studyDayRepository: StudyDayRepository,
+        private val timerService: TimerService,
     ) : ViewModel() {
         private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
         val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -61,6 +64,17 @@ class HomeViewModel
                     _homeUiState.value = HomeUiState.Error(exception.message)
                 }
             }
+        }
+
+        fun startTimerService(
+            startTime: LocalDateTime,
+            duration: Duration,
+        ) {
+            timerService.startService(startTime, duration)
+        }
+
+        fun stopTimerService() {
+            timerService.stopService()
         }
 
         fun saveStudyDay(isExtend: Boolean) {

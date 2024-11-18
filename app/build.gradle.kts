@@ -22,8 +22,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.app.notification)
-
+    implementation(projects.core.notification)
     implementation(projects.core.designsystem)
     implementation(projects.core.remote)
     implementation(projects.core.auth)

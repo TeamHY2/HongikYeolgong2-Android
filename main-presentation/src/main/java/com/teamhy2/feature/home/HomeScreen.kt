@@ -38,7 +38,6 @@ import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
-import com.teamhy2.hongikyeolgong2.timer.presentation.TimerForegroundService
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import com.teamhy2.main.domain.model.WeeklyStudyDay
@@ -104,10 +103,9 @@ fun HomeRoute(
                             updateTimerRunning(true)
                         }
                         startTimer(updatedSelectedTime, homeViewModel, timerViewModel)
-                        TimerForegroundService.startService(
-                            context,
-                            updatedSelectedTime,
-                            timerViewModel.durationHour.value,
+                        homeViewModel.startTimerService(
+                            startTime = updatedSelectedTime,
+                            duration = timerViewModel.durationHour.value,
                         )
                     },
                     onCancelled = {
@@ -139,11 +137,10 @@ fun HomeRoute(
                             homeViewModel,
                             timerViewModel,
                         )
-                        TimerForegroundService.stopService(context)
-                        TimerForegroundService.startService(
-                            context,
-                            LocalDateTime.now(),
-                            timerViewModel.durationHour.value,
+                        homeViewModel.stopTimerService()
+                        homeViewModel.startTimerService(
+                            startTime = LocalDateTime.now(),
+                            duration = timerViewModel.durationHour.value,
                         )
                     },
                     onDismiss = {
@@ -164,7 +161,7 @@ fun HomeRoute(
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
                         homeViewModel.updateTimerRunning(false)
                         homeViewModel.saveStudyDay(false)
-                        TimerForegroundService.stopService(context)
+                        homeViewModel.stopTimerService()
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
