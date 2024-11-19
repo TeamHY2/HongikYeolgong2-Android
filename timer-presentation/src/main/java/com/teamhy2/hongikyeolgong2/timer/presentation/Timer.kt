@@ -1,4 +1,4 @@
-package com.teamhy2.hongikyeolgong2.timer.prsentation
+package com.teamhy2.hongikyeolgong2.timer.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -28,7 +28,6 @@ import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.Yellow100
-import com.teamhy2.hongikyeolgong2.timer.presentation.R
 
 private const val LEFT_TIME_TEXT_COLOR_CHANGE_SECONDS = 30 * 60L
 

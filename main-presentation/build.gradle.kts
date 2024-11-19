@@ -7,10 +7,10 @@ android {
 }
 
 dependencies {
-    implementation(projects.app.notification)
 
     implementation(projects.mainDomain)
 
+    implementation(projects.core.notification)
     implementation(projects.core.remote)
 
     implementation(projects.calendarPresentation)

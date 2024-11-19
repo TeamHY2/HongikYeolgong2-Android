@@ -1,6 +1,6 @@
 package com.teamhy2.feature.home.model
 
-import com.teamhy2.hongikyeolgong2.timer.prsentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import java.time.LocalDateTime

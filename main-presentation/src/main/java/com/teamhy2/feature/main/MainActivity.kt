@@ -144,11 +144,6 @@ class MainActivity : AppCompatActivity() {
                                         navController = navController,
                                         urls = (initialUiState as InitialUiState.Success).urls,
                                         startDestination = (initialUiState as InitialUiState.Success).startDestination,
-                                        onSendNotification = { pushText ->
-                                            initialViewModel.notificationHandler.showSimpleNotification(
-                                                pushText,
-                                            )
-                                        },
                                         onLogoutOrWithdrawComplete = {
                                             restartMainActivity()
                                         },
