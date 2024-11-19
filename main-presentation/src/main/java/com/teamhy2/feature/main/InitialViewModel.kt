@@ -8,7 +8,6 @@ import com.benenfeldt.remote.token.TokenRole
 import com.benenfeldt.remote.token.TokenValidator
 import com.google.firebase.firestore.FirebaseFirestore
 import com.teamhy2.feature.home.navigation.Home
-import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.SignUp
@@ -33,7 +32,6 @@ class InitialViewModel
         private val webViewRepository: WebViewRepository,
         private val jwtManager: JwtManager,
         private val tokenValidator: TokenValidator,
-        val notificationHandler: NotificationHandler,
     ) : ViewModel() {
         private val _initialUiState: MutableStateFlow<InitialUiState> =
             MutableStateFlow(InitialUiState.Loading)

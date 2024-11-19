@@ -14,6 +14,4 @@ dependencies {
     implementation(projects.userDomain)
 
     implementation(libs.accompanist.permissions)
-
-    implementation(projects.app.notification)
 }

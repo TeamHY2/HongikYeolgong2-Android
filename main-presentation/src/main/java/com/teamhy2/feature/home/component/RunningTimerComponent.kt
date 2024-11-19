@@ -17,7 +17,7 @@ import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.hongikyeolgong2.main.presentation.R
-import com.teamhy2.hongikyeolgong2.timer.prsentation.HY2Timer
+import com.teamhy2.hongikyeolgong2.timer.presentation.HY2Timer
 
 @Composable
 fun RunningTimerComponent(
