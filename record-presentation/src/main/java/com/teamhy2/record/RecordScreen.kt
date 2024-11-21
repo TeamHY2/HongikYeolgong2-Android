@@ -22,6 +22,7 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.record.components.StudyDurationCard
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.model.RecordUiState
@@ -35,7 +36,10 @@ fun RecordRoute(
     val recordUiState by recordViewModel.recordUiState.collectAsStateWithLifecycle()
 
     val localShowSnackBar = LocalShowSnackBar.current
+    val tracker = LocalTracker.current
+
     LaunchedEffect(true) {
+        tracker.trackEvent("Record")
         recordViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }

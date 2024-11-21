@@ -28,6 +28,7 @@ import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R
 import com.teamhy2.ranking.components.RankingItem
 import com.teamhy2.ranking.model.DepartmentRanking
@@ -42,7 +43,10 @@ fun RankingRoute(
     val rankingUiState by rankingViewModel.rankingUiState.collectAsStateWithLifecycle()
 
     val localShowSnackBar = LocalShowSnackBar.current
+    val tracker = LocalTracker.current
+
     LaunchedEffect(true) {
+        tracker.trackEvent("Ranking")
         rankingViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
