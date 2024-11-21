@@ -37,7 +37,7 @@ class TimerViewModel
         private fun getStudyRoomDuration() {
             viewModelScope.launch {
                 val hours = timerRepository.getStudyRoomHourDuration()
-                _durationHour.value = Duration.ofMinutes(hours)
+                _durationHour.value = Duration.ofHours(hours)
             }
         }
 
