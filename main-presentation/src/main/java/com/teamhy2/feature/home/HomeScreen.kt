@@ -79,6 +79,9 @@ fun HomeRoute(
         homeViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
+        timerViewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
+        }
     }
 
     SetNavigationBarColor(Color.Black)
