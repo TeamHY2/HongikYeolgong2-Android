@@ -59,7 +59,7 @@ class MainNotificationHandler
         override fun buildServiceNotification(): Notification {
             return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("홍익열공이 열공중")
-                .setContentText("열람실을 이용중이에요!")
+                .setContentText("지금 열람실을 이용중이에요!")
                 .setSmallIcon(R.drawable.ic_status_bar_logo)
                 .setOngoing(true)
                 .setContentIntent(pendingIntent)
