@@ -12,6 +12,7 @@ dependencies {
 
     implementation(projects.core.notification)
     implementation(projects.core.remote)
+    implementation(projects.core.tracker)
 
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)

@@ -13,4 +13,5 @@ dependencies {
 
     implementation(projects.calendarPresentation)
     implementation(projects.calendarDomain)
+    implementation(projects.core.tracker)
 }

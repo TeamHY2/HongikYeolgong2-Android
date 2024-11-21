@@ -11,4 +11,5 @@ dependencies {
     implementation(projects.settingDomain)
     implementation(projects.userDomain)
     implementation(libs.coil)
+    implementation(projects.core.tracker)
 }

@@ -10,4 +10,5 @@ dependencies {
 
     implementation(projects.core.designsystem)
     implementation(projects.rankingDomain)
+    implementation(projects.core.tracker)
 }
