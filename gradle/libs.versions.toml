@@ -35,6 +35,7 @@ googleFirebaseCrashlytics = "3.0.2"
 datastore = "1.0.0"
 firebaseFirestoreKtx = "25.0.0"
 coil = "2.3.0"
+amplitude = "1.+"
 
 # HTTP
 okhttp = "4.11.0"
@@ -135,6 +136,9 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+
+# Amplitude
+amplitude = { module = "com.amplitude:analytics-android", version.ref = "amplitude" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
