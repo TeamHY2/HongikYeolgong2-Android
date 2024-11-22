@@ -1,5 +1,6 @@
 package com.benenfeldt.remote.di
 
+import com.benenfeldt.remote.api.LibraryService
 import com.benenfeldt.remote.api.StudyService
 import com.benenfeldt.remote.api.TokenService
 import com.benenfeldt.remote.api.UserPublicService
@@ -64,5 +65,13 @@ object ApiModule {
         @NeedAuthRetrofit retrofit: Retrofit,
     ): TokenService {
         return retrofit.create(TokenService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLibraryService(
+        @NeedAuthRetrofit retrofit: Retrofit,
+    ): LibraryService {
+        return retrofit.create(LibraryService::class.java)
     }
 }
