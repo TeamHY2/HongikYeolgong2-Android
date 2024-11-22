@@ -37,6 +37,7 @@ import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
@@ -55,9 +56,11 @@ fun SettingRoute(
 ) {
     val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val tracker = LocalTracker.current
 
     val localShowSnackBar = LocalShowSnackBar.current
     LaunchedEffect(true) {
+        tracker.trackEvent("Setting")
         viewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
@@ -65,8 +68,14 @@ fun SettingRoute(
 
     SettingScreen(
         settingUiState = settingUiState,
-        onLogoutClick = viewModel::signOut,
-        onWithdrawClick = viewModel::withdraw,
+        onLogoutClick = {
+            viewModel.signOut()
+            tracker.trackEvent("LogoutButton")
+        },
+        onWithdrawClick = {
+            viewModel.withdraw()
+            tracker.trackEvent("WithdrawButton")
+        },
         onNotificationSwitchClick = { isChecked ->
             viewModel.updateNotificationSwitchState(isChecked)
         },
