@@ -32,6 +32,7 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.home.component.InitTimerComponent
 import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
@@ -59,6 +60,7 @@ fun HomeRoute(
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
     val duration by timerViewModel.durationHour.collectAsStateWithLifecycle()
     val localShowSnackBar = LocalShowSnackBar.current
+    val tracker = LocalTracker.current
 
     homeViewModel.updateTimerStateFromTimerViewModel(timerState)
 
@@ -76,6 +78,7 @@ fun HomeRoute(
     }
 
     LaunchedEffect(true) {
+        tracker.trackEvent("Home")
         homeViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
@@ -110,6 +113,7 @@ fun HomeRoute(
                             startTime = updatedSelectedTime,
                             duration = timerViewModel.durationHour.value,
                         )
+                        tracker.trackEvent("StudyStartButton")
                     },
                     onCancelled = {
                         homeViewModel.updateTimePickerVisibility(false)
@@ -145,6 +149,7 @@ fun HomeRoute(
                             startTime = LocalDateTime.now(),
                             duration = timerViewModel.durationHour.value,
                         )
+                        tracker.trackEvent("StudyExtendButton")
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomExtendDialogVisibility(false)
@@ -165,6 +170,7 @@ fun HomeRoute(
                         homeViewModel.updateTimerRunning(false)
                         homeViewModel.saveStudyDay(false)
                         homeViewModel.stopTimerService()
+                        tracker.trackEvent("StudyEndButton")
                     },
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)

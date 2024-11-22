@@ -38,18 +38,24 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.designsystem.util.compositionlocal.ShowSnackBar
 import com.teamhy2.feature.home.navigation.Home
 import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
+import com.teamhy2.tracker.Tracker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var tracker: Tracker
+
     private val initialViewModel: InitialViewModel by viewModels()
 
     @OptIn(ExperimentalPermissionsApi::class)
@@ -132,6 +138,7 @@ class MainActivity : AppCompatActivity() {
 
                             is InitialUiState.Success -> {
                                 CompositionLocalProvider(
+                                    LocalTracker provides tracker,
                                     LocalShowSnackBar provides showSnackBar,
                                 ) {
                                     LaunchedEffect(true) {
