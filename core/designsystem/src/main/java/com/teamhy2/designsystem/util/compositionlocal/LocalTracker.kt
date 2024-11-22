@@ -5,5 +5,11 @@ import com.teamhy2.tracker.Tracker
 
 val LocalTracker =
     compositionLocalOf<Tracker> {
-        error("No Tracker provided")
+        object : Tracker {
+            override fun trackEvent(
+                eventName: String,
+                properties: Map<String, Any?>,
+            ) {
+            }
+        }
     }
