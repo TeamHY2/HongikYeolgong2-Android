@@ -7,8 +7,11 @@ import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -30,14 +33,22 @@ class TimerViewModel
         private val _durationHour: MutableStateFlow<Duration> = MutableStateFlow(Duration.ZERO)
         val durationHour: StateFlow<Duration> = _durationHour.asStateFlow()
 
+        private val _errorFlow = MutableSharedFlow<Throwable>()
+        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
+
         init {
             getStudyRoomDuration()
         }
 
         private fun getStudyRoomDuration() {
             viewModelScope.launch {
-                val hours = timerRepository.getStudyRoomHourDuration()
-                _durationHour.value = Duration.ofMinutes(hours)
+                timerRepository.getStudyRoomHourDuration()
+                    .onSuccess { studyRoomHourDuration ->
+                        _durationHour.value = Duration.ofHours(studyRoomHourDuration.toLong())
+                    }
+                    .onFailure { throwable ->
+                        _errorFlow.emit(throwable)
+                    }
             }
         }
 

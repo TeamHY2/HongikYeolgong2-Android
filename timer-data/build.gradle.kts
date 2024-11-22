@@ -8,6 +8,5 @@ android {
 
 dependencies {
     implementation(projects.timerDomain)
-
-    implementation(libs.firebase.firestore.ktx)
+    implementation(projects.core.remote)
 }
