@@ -21,8 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -114,6 +116,29 @@ class HomeViewModel
 
             val startTimeLocalTime = LocalTime.of(hour, minute)
             return LocalDateTime.of(LocalDateTime.now().toLocalDate(), startTimeLocalTime)
+        }
+
+        fun incrementTodayStudyCount() {
+            _homeUiState.update { currentState ->
+                when (currentState) {
+                    is HomeUiState.Success -> {
+                        val updatedWeeklyStudyDays: List<WeeklyStudyDay> =
+                            currentState.weeklyStudyDays.map { studyDay ->
+                                if (studyDay.date ==
+                                    LocalDate.now()
+                                        .format(DateTimeFormatter.ofPattern("M/dd"))
+                                ) {
+                                    studyDay.copy(studyCount = studyDay.studyCount + 1)
+                                } else {
+                                    studyDay
+                                }
+                            }
+                        currentState.copy(weeklyStudyDays = updatedWeeklyStudyDays)
+                    }
+
+                    else -> currentState
+                }
+            }
         }
 
         fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
