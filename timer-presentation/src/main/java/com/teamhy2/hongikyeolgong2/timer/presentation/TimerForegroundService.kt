@@ -117,12 +117,12 @@ class TimerForegroundService
         }
 
         override fun startService(
-            startTime: LocalDateTime,
+            startDateTime: LocalDateTime,
             duration: Duration,
         ) {
             val appContext: Context = context.applicationContext
             val startTimeMillis: Long =
-                startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
             val startIntent: Intent =
                 Intent(appContext, TimerForegroundService::class.java).apply {
