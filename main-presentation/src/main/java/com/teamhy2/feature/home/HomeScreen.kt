@@ -99,18 +99,15 @@ fun HomeRoute(
             if (uiState.isTimePickerVisible) {
                 HY2TimePicker(
                     title = stringResource(R.string.main_study_room_use_start_time),
-                    onSelected = { selectedTime ->
-                        val updatedSelectedTime =
-                            selectedTime.plusSeconds(LocalDateTime.now().second.toLong())
-
+                    onSelected = { selectedDateTime ->
                         homeViewModel.run {
-                            updateSelectedTime(updatedSelectedTime)
+                            updateSelectedTime(selectedDateTime)
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
                         }
-                        startTimer(updatedSelectedTime, homeViewModel, timerViewModel)
+                        startTimer(selectedDateTime, homeViewModel, timerViewModel)
                         homeViewModel.startTimerService(
-                            startTime = updatedSelectedTime,
+                            startDateTime = selectedDateTime,
                             duration = timerViewModel.durationHour.value,
                         )
                         tracker.trackEvent("StudyStartButton")
@@ -146,7 +143,7 @@ fun HomeRoute(
                         )
                         homeViewModel.stopTimerService()
                         homeViewModel.startTimerService(
-                            startTime = LocalDateTime.now(),
+                            startDateTime = LocalDateTime.now(),
                             duration = timerViewModel.durationHour.value,
                         )
                         tracker.trackEvent("StudyExtendButton")
@@ -221,12 +218,12 @@ fun SetNavigationBarColor(color: Color) {
 }
 
 private fun startTimer(
-    startTime: LocalDateTime,
+    startDateTime: LocalDateTime,
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
 ) {
     timerViewModel.setTimer(
-        startTime = startTime,
+        startDateTime = startDateTime,
         events =
             mapOf(
                 Timer.TIME_OVER to {
