@@ -53,14 +53,15 @@ class TimerViewModel
         }
 
         fun setTimer(
-            startTime: LocalDateTime,
+            startDateTime: LocalDateTime,
             duration: Duration = durationHour.value,
             events: Map<Long, () -> Unit>,
         ) {
             timerJob?.cancel()
-            timer = Timer(startTime, duration, events)
+            timer = Timer(startDateTime, duration, events)
             _timerState.value =
                 TimerUiModel(
+                    startDateTime = startDateTime,
                     startTime = timer.formattedStartTime,
                     startTimeMeridiem = timer.formattedStartTimeMeridiem,
                     endTime = timer.formattedEndTime,
