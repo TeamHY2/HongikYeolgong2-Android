@@ -53,6 +53,7 @@ import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.util.pixelsToDp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Locale
@@ -62,7 +63,7 @@ private const val DIALOG_CORNER_RADIUS = 8
 private const val DIALOG_BACKGROUND_DIM_AMOUNT = 0.75f
 private const val TIME_PICKER_NUMBER_FORMAT = "%02d"
 private const val PICKER_DEFAULT_VISIBLE_ITEMS_COUNT = 3
-private const val MAXIMUM_PREVIOUS_TIME = 3
+private const val MAXIMUM_PREVIOUS_TIME = 3L
 
 @Composable
 fun HY2TimePicker(
@@ -99,7 +100,7 @@ fun HY2TimePicker(
                             String.format(
                                 Locale.KOREA,
                                 TIME_PICKER_NUMBER_FORMAT,
-                                localDateTime.minusHours((MAXIMUM_PREVIOUS_TIME - index).toLong()).hour,
+                                localDateTime.minusHours(MAXIMUM_PREVIOUS_TIME - index).hour,
                             )
                         } + listOf("")
                 }
@@ -107,7 +108,14 @@ fun HY2TimePicker(
 
             val minutes: List<String> =
                 remember {
-                    listOf("") + (0..59).map { String.format(Locale.KOREA, TIME_PICKER_NUMBER_FORMAT, it) } + listOf("")
+                    listOf("") +
+                        (0..59).map {
+                            String.format(
+                                Locale.KOREA,
+                                TIME_PICKER_NUMBER_FORMAT,
+                                it,
+                            )
+                        } + listOf("")
                 }
             val minuteState: PickerState = rememberPickerState()
 
@@ -172,12 +180,22 @@ fun HY2TimePicker(
                 HY2DialogButton(
                     text = stringResource(R.string.time_picker_confirm),
                     onClick = {
-                        onSelected(
+                        val selectedDateTime: LocalDateTime =
                             LocalDateTime
                                 .now()
                                 .withHour(hourState.selectedItem.toInt())
-                                .withMinute(minuteState.selectedItem.toInt()),
-                        )
+                                .withMinute(minuteState.selectedItem.toInt())
+
+                        val finalDateTime: LocalDateTime =
+                            if (Duration.between(selectedDateTime, LocalDateTime.now())
+                                    .abs() > Duration.ofHours(MAXIMUM_PREVIOUS_TIME)
+                            ) {
+                                selectedDateTime.minusDays(1)
+                            } else {
+                                selectedDateTime
+                            }
+
+                        onSelected(finalDateTime)
                     },
                     buttonColor = Blue100,
                     textColor = White,
