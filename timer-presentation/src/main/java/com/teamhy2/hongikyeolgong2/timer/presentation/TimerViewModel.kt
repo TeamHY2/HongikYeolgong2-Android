@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,8 +27,8 @@ class TimerViewModel
         private lateinit var timer: Timer
         private var timerJob: Job? = null
 
-        private val _timerState = MutableStateFlow(TimerUiModel())
-        val timerState: StateFlow<TimerUiModel> = _timerState.asStateFlow()
+        private val _timerState = MutableStateFlow(TimerUiState())
+        val timerState: StateFlow<TimerUiState> = _timerState.asStateFlow()
 
         private val _durationHour: MutableStateFlow<Duration> = MutableStateFlow(Duration.ZERO)
         val durationHour: StateFlow<Duration> = _durationHour.asStateFlow()
@@ -60,7 +60,7 @@ class TimerViewModel
             timerJob?.cancel()
             timer = Timer(startDateTime, duration, events)
             _timerState.value =
-                TimerUiModel(
+                TimerUiState(
                     startDateTime = startDateTime,
                     startTime = timer.formattedStartTime,
                     startTimeMeridiem = timer.formattedStartTimeMeridiem,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import com.teamhy2.main.domain.repository.StudyDayRepository
@@ -81,7 +81,7 @@ class HomeViewModel
             if (currentState is HomeUiState.Success) {
                 viewModelScope.launch {
                     studyDayRepository.saveStudyDay(
-                        currentState.timerUiModel.startDateTime,
+                        currentState.timerUiState.startDateTime,
                         LocalDateTime.now(),
                     ).onSuccess {
                         if (!isExtend) loadHomeData()
@@ -92,12 +92,12 @@ class HomeViewModel
             }
         }
 
-        fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
+        fun updateTimerStateFromTimerViewModel(timerState: TimerUiState) {
             _homeUiState.update { currentState ->
                 when (currentState) {
                     is HomeUiState.Success -> {
                         currentState.copy(
-                            timerUiModel = timerState,
+                            timerUiState = timerState,
                         )
                     }
 
