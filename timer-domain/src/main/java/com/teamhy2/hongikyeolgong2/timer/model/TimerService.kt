@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 interface TimerService {
     fun startService(
-        startTime: LocalDateTime,
+        startDateTime: LocalDateTime,
         duration: Duration,
     )
 
