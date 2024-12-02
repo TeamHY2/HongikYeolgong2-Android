@@ -23,13 +23,13 @@ class RemoteStudyDayRepository
         }
 
         override suspend fun saveStudyDay(
-            startTime: LocalDateTime,
-            endTime: LocalDateTime,
+            startDateTime: LocalDateTime,
+            endDateTime: LocalDateTime,
         ): Result<StudyDayRecord> {
             val studyDayRequest =
                 StudyDayRequest(
-                    startTime = startTime.format(studyDayFormatter),
-                    endTime = endTime.format(studyDayFormatter),
+                    startTime = startDateTime.format(studyDayFormatter),
+                    endTime = endDateTime.format(studyDayFormatter),
                 )
 
             return studyService.postStudyDay(studyDayRequest).toResult { baseResponse ->

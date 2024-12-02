@@ -81,8 +81,8 @@ class HomeViewModel
             if (currentState is HomeUiState.Success) {
                 viewModelScope.launch {
                     studyDayRepository.saveStudyDay(
-                        currentState.timerUiState.startDateTime,
-                        LocalDateTime.now(),
+                        startDateTime = currentState.timerUiState.startDateTime,
+                        endDateTime = LocalDateTime.now(),
                     ).onSuccess {
                         if (!isExtend) loadHomeData()
                     }.onFailure { throwable ->
