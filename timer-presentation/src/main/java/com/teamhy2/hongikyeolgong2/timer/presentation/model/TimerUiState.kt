@@ -2,7 +2,7 @@ package com.teamhy2.hongikyeolgong2.timer.presentation.model
 
 import java.time.LocalDateTime
 
-data class TimerUiModel(
+data class TimerUiState(
     val startDateTime: LocalDateTime = LocalDateTime.now(),
     val startTime: String = "",
     val startTimeMeridiem: String = "",

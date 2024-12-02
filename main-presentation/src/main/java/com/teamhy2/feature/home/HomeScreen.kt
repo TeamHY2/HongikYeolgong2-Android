@@ -40,7 +40,7 @@ import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
@@ -180,7 +180,7 @@ fun HomeRoute(
                 wiseSaying = uiState.wiseSaying,
                 durationAsSecond = duration.seconds,
                 isTimerRunning = uiState.isTimerRunning,
-                timerUiModel = uiState.timerUiModel,
+                timerUiState = uiState.timerUiState,
                 modifier = modifier,
                 onSeatingChartClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
@@ -240,7 +240,7 @@ fun HomeScreen(
     wiseSaying: WiseSaying,
     durationAsSecond: Long,
     isTimerRunning: Boolean,
-    timerUiModel: TimerUiModel,
+    timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -263,7 +263,7 @@ fun HomeScreen(
             durationAsSecond = durationAsSecond,
             wiseSaying = wiseSaying,
             isTimerRunning = isTimerRunning,
-            timerUiModel = timerUiModel,
+            timerUiState = timerUiState,
             onSeatingChartClick = onSeatingChartClick,
             onStudyRoomStartClick = onStudyRoomStartClick,
             onStudyRoomExtendClick = onStudyRoomExtendClick,
@@ -292,7 +292,7 @@ private fun HomeBody(
     durationAsSecond: Long,
     wiseSaying: WiseSaying,
     isTimerRunning: Boolean,
-    timerUiModel: TimerUiModel,
+    timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -309,11 +309,11 @@ private fun HomeBody(
             true -> {
                 RunningTimerComponent(
                     durationAsSecond = durationAsSecond,
-                    startTime = timerUiModel.startTime,
-                    endTime = timerUiModel.endTime,
-                    startTimeMeridiem = timerUiModel.startTimeMeridiem,
-                    endTimeMeridiem = timerUiModel.endTimeMeridiem,
-                    leftTime = timerUiModel.leftTime,
+                    startTime = timerUiState.startTime,
+                    endTime = timerUiState.endTime,
+                    startTimeMeridiem = timerUiState.startTimeMeridiem,
+                    endTimeMeridiem = timerUiState.endTimeMeridiem,
+                    leftTime = timerUiState.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                 )
@@ -345,7 +345,7 @@ private fun HomeScreenPreview() {
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             isTimerRunning = false,
-            timerUiModel = TimerUiModel(),
+            timerUiState = TimerUiState(),
         )
     }
 }
