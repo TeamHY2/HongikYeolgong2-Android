@@ -40,7 +40,7 @@ import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
@@ -99,18 +99,15 @@ fun HomeRoute(
             if (uiState.isTimePickerVisible) {
                 HY2TimePicker(
                     title = stringResource(R.string.main_study_room_use_start_time),
-                    onSelected = { selectedTime ->
-                        val updatedSelectedTime =
-                            selectedTime.plusSeconds(LocalDateTime.now().second.toLong())
-
+                    onSelected = { selectedDateTime ->
                         homeViewModel.run {
-                            updateSelectedTime(updatedSelectedTime)
+                            updateSelectedTime(selectedDateTime)
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
                         }
-                        startTimer(updatedSelectedTime, homeViewModel, timerViewModel)
+                        startTimer(selectedDateTime, homeViewModel, timerViewModel)
                         homeViewModel.startTimerService(
-                            startTime = updatedSelectedTime,
+                            startDateTime = selectedDateTime,
                             duration = timerViewModel.durationHour.value,
                         )
                         tracker.trackEvent("StudyStartButton")
@@ -146,7 +143,7 @@ fun HomeRoute(
                         )
                         homeViewModel.stopTimerService()
                         homeViewModel.startTimerService(
-                            startTime = LocalDateTime.now(),
+                            startDateTime = LocalDateTime.now(),
                             duration = timerViewModel.durationHour.value,
                         )
                         tracker.trackEvent("StudyExtendButton")
@@ -183,7 +180,7 @@ fun HomeRoute(
                 wiseSaying = uiState.wiseSaying,
                 durationAsSecond = duration.seconds,
                 isTimerRunning = uiState.isTimerRunning,
-                timerUiModel = uiState.timerUiModel,
+                timerUiState = uiState.timerUiState,
                 modifier = modifier,
                 onSeatingChartClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
@@ -221,12 +218,12 @@ fun SetNavigationBarColor(color: Color) {
 }
 
 private fun startTimer(
-    startTime: LocalDateTime,
+    startDateTime: LocalDateTime,
     homeViewModel: HomeViewModel,
     timerViewModel: TimerViewModel,
 ) {
     timerViewModel.setTimer(
-        startTime = startTime,
+        startDateTime = startDateTime,
         events =
             mapOf(
                 Timer.TIME_OVER to {
@@ -243,7 +240,7 @@ fun HomeScreen(
     wiseSaying: WiseSaying,
     durationAsSecond: Long,
     isTimerRunning: Boolean,
-    timerUiModel: TimerUiModel,
+    timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -266,7 +263,7 @@ fun HomeScreen(
             durationAsSecond = durationAsSecond,
             wiseSaying = wiseSaying,
             isTimerRunning = isTimerRunning,
-            timerUiModel = timerUiModel,
+            timerUiState = timerUiState,
             onSeatingChartClick = onSeatingChartClick,
             onStudyRoomStartClick = onStudyRoomStartClick,
             onStudyRoomExtendClick = onStudyRoomExtendClick,
@@ -295,7 +292,7 @@ private fun HomeBody(
     durationAsSecond: Long,
     wiseSaying: WiseSaying,
     isTimerRunning: Boolean,
-    timerUiModel: TimerUiModel,
+    timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -312,11 +309,11 @@ private fun HomeBody(
             true -> {
                 RunningTimerComponent(
                     durationAsSecond = durationAsSecond,
-                    startTime = timerUiModel.startTime,
-                    endTime = timerUiModel.endTime,
-                    startTimeMeridiem = timerUiModel.startTimeMeridiem,
-                    endTimeMeridiem = timerUiModel.endTimeMeridiem,
-                    leftTime = timerUiModel.leftTime,
+                    startTime = timerUiState.startTime,
+                    endTime = timerUiState.endTime,
+                    startTimeMeridiem = timerUiState.startTimeMeridiem,
+                    endTimeMeridiem = timerUiState.endTimeMeridiem,
+                    leftTime = timerUiState.leftTime,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                 )
@@ -348,7 +345,7 @@ private fun HomeScreenPreview() {
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             isTimerRunning = false,
-            timerUiModel = TimerUiModel(),
+            timerUiState = TimerUiState(),
         )
     }
 }

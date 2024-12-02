@@ -1,6 +1,6 @@
 package com.teamhy2.feature.home.model
 
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import java.time.LocalDateTime
@@ -16,7 +16,7 @@ sealed interface HomeUiState {
         val isStudyRoomEndDialog: Boolean = false,
         val selectedTime: LocalDateTime = LocalDateTime.now(),
         val isTimerRunning: Boolean = false,
-        val timerUiModel: TimerUiModel = TimerUiModel(),
+        val timerUiState: TimerUiState = TimerUiState(),
     ) : HomeUiState
 
     data class Error(val message: String?) : HomeUiState
