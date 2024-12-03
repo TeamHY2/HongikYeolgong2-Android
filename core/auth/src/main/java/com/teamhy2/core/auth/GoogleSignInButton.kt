@@ -21,7 +21,6 @@ import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
-import com.teamhy2.designsystem.util.modifier.throttleClick
 
 @Composable
 fun GoogleSignInButton(
@@ -30,11 +29,7 @@ fun GoogleSignInButton(
 ) {
     ThrottledButton(
         onClick = onGoogleSignInClick,
-        modifier = modifier
-            .height(50.dp)
-            .throttleClick {
-                onGoogleSignInClick()
-            },
+        modifier = modifier.height(50.dp),
         shape = RoundedCornerShape(8.dp),
         contentPadding = PaddingValues(horizontal = 20.dp),
         colors = ButtonDefaults.buttonColors().copy(containerColor = White),
