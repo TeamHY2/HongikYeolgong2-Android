@@ -9,6 +9,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -29,17 +30,15 @@ fun ThrottleButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit,
 ) {
-    val throttledClick =
-        remember(throttleTime) {
-            var lastClickTime: Long = 0L
-            {
-                val currentTime: Long = System.currentTimeMillis()
-                if (currentTime - lastClickTime >= throttleTime) {
-                    onClick()
-                    lastClickTime = currentTime
-                }
-            }
+    val lastClickTime = remember { mutableLongStateOf(0L) }
+
+    val throttledClick: () -> Unit = {
+        val currentTime: Long = System.currentTimeMillis()
+        if (currentTime - lastClickTime.longValue >= throttleTime) {
+            onClick()
+            lastClickTime.longValue = currentTime
         }
+    }
 
     Button(
         onClick = throttledClick,
