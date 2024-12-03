@@ -27,7 +27,7 @@ fun HY2Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ThrottledButton(
+    ThrottleButton(
         onClick = onClick,
         colors =
             ButtonDefaults.buttonColors(

@@ -33,7 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.common.HY2TextField
-import com.teamhy2.designsystem.common.ThrottledButton
+import com.teamhy2.designsystem.common.ThrottleButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
@@ -142,7 +142,7 @@ fun SignUpScreen(
                 isInvalid = isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED,
             )
             Spacer(modifier = Modifier.width(12.dp))
-            ThrottledButton(
+            ThrottleButton(
                 colors =
                     ButtonDefaults.buttonColors(
                         containerColor = Blue100,
