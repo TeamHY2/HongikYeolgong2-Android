@@ -104,7 +104,7 @@ fun HomeRoute(
                             updateSelectedTime(selectedDateTime)
                             updateTimePickerVisibility(false)
                             updateTimerRunning(true)
-                            incrementTodayStudyCount()
+                            increaseTodayStudyCount()
                         }
                         startTimer(selectedDateTime, homeViewModel, timerViewModel)
                         homeViewModel.startTimerService(
@@ -136,7 +136,7 @@ fun HomeRoute(
                             saveStudyDay(true)
                             updateTimerRunning(true)
                             updateSelectedTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
-                            incrementTodayStudyCount()
+                            increaseTodayStudyCount()
                         }
                         startTimer(
                             LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),

@@ -94,7 +94,7 @@ class HomeViewModel
             }
         }
 
-        fun incrementTodayStudyCount() {
+        fun increaseTodayStudyCount() {
             _homeUiState.update { currentState ->
                 when (currentState) {
                     is HomeUiState.Success -> {
