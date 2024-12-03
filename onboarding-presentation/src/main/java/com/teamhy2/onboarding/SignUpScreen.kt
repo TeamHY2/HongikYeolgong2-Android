@@ -46,7 +46,7 @@ import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.modifier.addFocusCleaner
-import com.teamhy2.designsystem.util.modifier.throttleClick
+import com.teamhy2.designsystem.util.modifier.throttleClickable
 import com.teamhy2.onboarding.presentation.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -240,7 +240,7 @@ private fun HY2GradientMainButton(
                         ),
                     contentScale = ContentScale.Fit,
                 )
-                .throttleClick(
+                .throttleClickable(
                     enabled = enabled,
                     onClick = onClick,
                 ),

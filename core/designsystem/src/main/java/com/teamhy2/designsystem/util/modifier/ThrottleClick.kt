@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 const val DEFAULT_THROTTLE_TIME = 1000L
 
 @Composable
-fun Modifier.throttleClick(
+fun Modifier.throttleClickable(
     throttleTime: Long = DEFAULT_THROTTLE_TIME,
     enabled: Boolean = true,
     onClick: () -> Unit,
