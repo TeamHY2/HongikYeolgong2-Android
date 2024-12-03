@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 
-const val DEFAULT_THROTTLE_TIME = 1000L
+private const val DEFAULT_THROTTLE_TIME = 1000L
 
 @Composable
 fun ThrottleButton(

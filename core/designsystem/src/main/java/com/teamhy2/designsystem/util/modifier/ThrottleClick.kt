@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
-const val DEFAULT_THROTTLE_TIME = 1000L
+private const val DEFAULT_THROTTLE_TIME = 1000L
 
 @Composable
 fun Modifier.throttleClickable(
