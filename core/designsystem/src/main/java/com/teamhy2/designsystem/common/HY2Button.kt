@@ -3,7 +3,6 @@ package com.teamhy2.designsystem.common
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,18 +27,18 @@ fun HY2Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Button(
+    ThrottledButton(
         onClick = onClick,
         colors =
-            ButtonDefaults.buttonColors(
-                containerColor = backgroundColor,
-                contentColor = textColor,
-            ),
+        ButtonDefaults.buttonColors(
+            containerColor = backgroundColor,
+            contentColor = textColor,
+        ),
         shape = RoundedCornerShape(BUTTON_ROUNDED_CORNER_SIZE),
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(BUTTON_HEIGHT.dp),
+        modifier
+            .fillMaxWidth()
+            .height(BUTTON_HEIGHT.dp),
     ) {
         Text(
             text = text,

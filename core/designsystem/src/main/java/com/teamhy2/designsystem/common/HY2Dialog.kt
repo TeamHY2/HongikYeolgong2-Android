@@ -119,7 +119,7 @@ internal fun HY2DialogButton(
     textColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    Button(
+    ThrottledButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         shape = RoundedCornerShape(BUTTON_CORNER_RADIUS.dp),
