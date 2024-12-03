@@ -108,16 +108,16 @@ fun SignUpScreen(
 
     Column(
         modifier =
-        modifier
-            .background(BackgroundBlack)
-            .addFocusCleaner(focusManager)
-            .padding(horizontal = 32.dp),
+            modifier
+                .background(BackgroundBlack)
+                .addFocusCleaner(focusManager)
+                .padding(horizontal = 32.dp),
     ) {
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .height(52.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             Text(
@@ -144,10 +144,10 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.width(12.dp))
             ThrottledButton(
                 colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = Blue100,
-                    disabledContainerColor = Blue400,
-                ),
+                    ButtonDefaults.buttonColors(
+                        containerColor = Blue100,
+                        disabledContainerColor = Blue400,
+                    ),
                 shape = RoundedCornerShape(8.dp),
                 onClick = onNicknameDuplicateCheckClicked,
                 enabled = isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED,
@@ -157,42 +157,42 @@ fun SignUpScreen(
                     text = stringResource(R.string.sign_up_duplication_check),
                     style = HY2Typography().body05,
                     color =
-                    if (nicknameState == NicknameState.DUPLICATED ||
-                        nicknameState == NicknameState.NOT_DUPLICATED ||
-                        isNicknameValidate.not()
-                    ) {
-                        White.copy(
-                            alpha = 0.4f,
-                        )
-                    } else {
-                        White
-                    },
+                        if (nicknameState == NicknameState.DUPLICATED ||
+                            nicknameState == NicknameState.NOT_DUPLICATED ||
+                            isNicknameValidate.not()
+                        ) {
+                            White.copy(
+                                alpha = 0.4f,
+                            )
+                        } else {
+                            White
+                        },
                 )
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text =
-            when {
-                nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
-                nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
-                isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
-                    stringResource(
-                        id = R.string.sign_up_nickname_hint_text,
-                    )
+                when {
+                    nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                    nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
+                    isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
+                        stringResource(
+                            id = R.string.sign_up_nickname_hint_text,
+                        )
 
-                isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
-                else -> stringResource(R.string.sign_up_nickname_error_text)
-            },
+                    isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
+                    else -> stringResource(R.string.sign_up_nickname_error_text)
+                },
             style = HY2Typography().caption,
             color =
-            if (nickname.isBlank()) {
-                Gray400
-            } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
-                Yellow300
-            } else {
-                Blue100
-            },
+                if (nickname.isBlank()) {
+                    Gray400
+                } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
+                    Yellow300
+                } else {
+                    Blue100
+                },
         )
         Spacer(modifier = Modifier.height(32.dp))
         Text(
@@ -231,19 +231,19 @@ private fun HY2GradientMainButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier =
-        modifier
-            .fillMaxWidth()
-            .paint(
-                painter =
-                painterResource(
-                    id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
+            modifier
+                .fillMaxWidth()
+                .paint(
+                    painter =
+                        painterResource(
+                            id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
+                        ),
+                    contentScale = ContentScale.Fit,
+                )
+                .throttleClick(
+                    enabled = enabled,
+                    onClick = onClick,
                 ),
-                contentScale = ContentScale.Fit,
-            )
-            .throttleClick(
-                enabled = enabled,
-                onClick = onClick,
-            ),
     ) {
         Text(
             text = text,

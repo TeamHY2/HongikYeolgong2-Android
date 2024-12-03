@@ -30,15 +30,15 @@ fun HY2Button(
     ThrottledButton(
         onClick = onClick,
         colors =
-        ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = textColor,
-        ),
+            ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = textColor,
+            ),
         shape = RoundedCornerShape(BUTTON_ROUNDED_CORNER_SIZE),
         modifier =
-        modifier
-            .fillMaxWidth()
-            .height(BUTTON_HEIGHT.dp),
+            modifier
+                .fillMaxWidth()
+                .height(BUTTON_HEIGHT.dp),
     ) {
         Text(
             text = text,
