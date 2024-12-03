@@ -8,7 +8,7 @@ interface StudyDayRepository {
     suspend fun fetchWeeklyStudyDay(): Result<List<WeeklyStudyDay>>
 
     suspend fun saveStudyDay(
-        startTime: LocalDateTime,
-        endTime: LocalDateTime,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
     ): Result<StudyDayRecord>
 }
