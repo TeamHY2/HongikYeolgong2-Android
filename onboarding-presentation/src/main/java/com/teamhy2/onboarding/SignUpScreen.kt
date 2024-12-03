@@ -1,7 +1,6 @@
 package com.teamhy2.onboarding
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.common.HY2TextField
+import com.teamhy2.designsystem.common.ThrottleButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
@@ -47,6 +46,7 @@ import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.modifier.addFocusCleaner
+import com.teamhy2.designsystem.util.modifier.throttleClickable
 import com.teamhy2.onboarding.presentation.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -142,7 +142,7 @@ fun SignUpScreen(
                 isInvalid = isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED,
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Button(
+            ThrottleButton(
                 colors =
                     ButtonDefaults.buttonColors(
                         containerColor = Blue100,
@@ -240,7 +240,7 @@ private fun HY2GradientMainButton(
                         ),
                     contentScale = ContentScale.Fit,
                 )
-                .clickable(
+                .throttleClickable(
                     enabled = enabled,
                     onClick = onClick,
                 ),
