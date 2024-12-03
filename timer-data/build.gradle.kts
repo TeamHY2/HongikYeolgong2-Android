@@ -9,4 +9,5 @@ android {
 dependencies {
     implementation(projects.timerDomain)
     implementation(projects.core.remote)
+    implementation(libs.datastore.preferences)
 }
