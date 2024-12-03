@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.teamhy2.designsystem.common.ThrottledButton
+import com.teamhy2.designsystem.common.ThrottleButton
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
@@ -27,7 +27,7 @@ fun GoogleSignInButton(
     onGoogleSignInClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ThrottledButton(
+    ThrottleButton(
         onClick = onGoogleSignInClick,
         modifier = modifier.height(50.dp),
         shape = RoundedCornerShape(8.dp),

@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Shape
 const val DEFAULT_THROTTLE_TIME = 1000L
 
 @Composable
-fun ThrottledButton(
+fun ThrottleButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     throttleTime: Long = DEFAULT_THROTTLE_TIME,
