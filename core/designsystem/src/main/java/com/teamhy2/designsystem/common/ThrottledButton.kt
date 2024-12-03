@@ -29,16 +29,17 @@ fun ThrottledButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable RowScope.() -> Unit,
 ) {
-    val throttledClick = remember(throttleTime) {
-        var lastClickTime: Long = 0L
-        {
-            val currentTime: Long = System.currentTimeMillis()
-            if (currentTime - lastClickTime >= throttleTime) {
-                onClick()
-                lastClickTime = currentTime
+    val throttledClick =
+        remember(throttleTime) {
+            var lastClickTime: Long = 0L
+            {
+                val currentTime: Long = System.currentTimeMillis()
+                if (currentTime - lastClickTime >= throttleTime) {
+                    onClick()
+                    lastClickTime = currentTime
+                }
             }
         }
-    }
 
     Button(
         onClick = throttledClick,
@@ -53,4 +54,3 @@ fun ThrottledButton(
         content = content,
     )
 }
-

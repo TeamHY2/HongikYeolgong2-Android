@@ -38,7 +38,7 @@ fun GoogleSignInButton(
             Image(
                 painter = painterResource(id = R.drawable.logo_google),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
             )
         }
         Text(
