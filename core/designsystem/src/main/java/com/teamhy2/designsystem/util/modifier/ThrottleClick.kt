@@ -15,17 +15,14 @@ fun Modifier.throttleClickable(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ): Modifier {
+    if (!enabled) return this
+
     val lastClickTime: MutableLongState = remember { mutableLongStateOf(0L) }
 
-    return if (enabled) {
-        this.clickable {
-            val currentTime: Long = System.currentTimeMillis()
-            if (currentTime - lastClickTime.longValue >= throttleTime) {
-                onClick()
-                lastClickTime.longValue = currentTime
-            }
-        }
-    } else {
-        this
+    return this.clickable {
+        val currentTime: Long = System.currentTimeMillis()
+        if (currentTime - lastClickTime.longValue < throttleTime) return@clickable
+        onClick()
+        lastClickTime.longValue = currentTime
     }
 }
