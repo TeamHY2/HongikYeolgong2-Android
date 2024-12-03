@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiModel
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import com.teamhy2.main.domain.repository.StudyDayRepository
@@ -21,10 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,10 +66,10 @@ class HomeViewModel
         }
 
         fun startTimerService(
-            startTime: LocalDateTime,
+            startDateTime: LocalDateTime,
             duration: Duration,
         ) {
-            timerService.startService(startTime, duration)
+            timerService.startService(startDateTime, duration)
         }
 
         fun stopTimerService() {
@@ -82,71 +79,25 @@ class HomeViewModel
         fun saveStudyDay(isExtend: Boolean) {
             val currentState = _homeUiState.value
             if (currentState is HomeUiState.Success) {
-                val startDateTime =
-                    parseStartTimeToLocalDateTime(
-                        currentState.timerUiModel.startTime,
-                        currentState.timerUiModel.startTimeMeridiem,
-                    )
-                val endDateTime = LocalDateTime.now()
-
                 viewModelScope.launch {
-                    studyDayRepository.saveStudyDay(startDateTime, endDateTime)
-                        .onSuccess {
-                            if (!isExtend) loadHomeData()
-                        }.onFailure { throwable ->
-                            _errorFlow.emit(throwable)
-                        }
-                }
-            }
-        }
-
-        private fun parseStartTimeToLocalDateTime(
-            startTime: String,
-            startTimeMeridiem: String,
-        ): LocalDateTime {
-            val timeParts = startTime.split(":").map { it.toInt() }
-            var hour = timeParts[0]
-            val minute = timeParts[1]
-
-            if (startTimeMeridiem == "PM" && hour < 12) {
-                hour += 12
-            } else if (startTimeMeridiem == "AM" && hour == 12) {
-                hour = 0
-            }
-
-            val startTimeLocalTime = LocalTime.of(hour, minute)
-            return LocalDateTime.of(LocalDateTime.now().toLocalDate(), startTimeLocalTime)
-        }
-
-        fun incrementTodayStudyCount() {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> {
-                        val updatedWeeklyStudyDays: List<WeeklyStudyDay> =
-                            currentState.weeklyStudyDays.map { studyDay ->
-                                if (studyDay.date ==
-                                    LocalDate.now()
-                                        .format(DateTimeFormatter.ofPattern("M/dd"))
-                                ) {
-                                    studyDay.copy(studyCount = studyDay.studyCount + 1)
-                                } else {
-                                    studyDay
-                                }
-                            }
-                        currentState.copy(weeklyStudyDays = updatedWeeklyStudyDays)
+                    studyDayRepository.saveStudyDay(
+                        startDateTime = currentState.timerUiState.startDateTime,
+                        endDateTime = LocalDateTime.now(),
+                    ).onSuccess {
+                        if (!isExtend) loadHomeData()
+                    }.onFailure { throwable ->
+                        _errorFlow.emit(throwable)
                     }
-
-                    else -> currentState
                 }
             }
         }
 
-        fun updateTimerStateFromTimerViewModel(timerState: TimerUiModel) {
+        fun updateTimerStateFromTimerViewModel(timerState: TimerUiState) {
             _homeUiState.update { currentState ->
                 when (currentState) {
                     is HomeUiState.Success -> {
                         currentState.copy(
-                            timerUiModel = timerState,
+                            timerUiState = timerState,
                         )
                     }
 
