@@ -1,7 +1,6 @@
 package com.teamhy2.onboarding
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2DropdownTextField
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.common.HY2TextField
+import com.teamhy2.designsystem.common.ThrottledButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Blue400
@@ -47,6 +46,7 @@ import com.teamhy2.designsystem.ui.theme.White
 import com.teamhy2.designsystem.ui.theme.Yellow300
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.modifier.addFocusCleaner
+import com.teamhy2.designsystem.util.modifier.throttleClick
 import com.teamhy2.onboarding.presentation.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -108,16 +108,16 @@ fun SignUpScreen(
 
     Column(
         modifier =
-            modifier
-                .background(BackgroundBlack)
-                .addFocusCleaner(focusManager)
-                .padding(horizontal = 32.dp),
+        modifier
+            .background(BackgroundBlack)
+            .addFocusCleaner(focusManager)
+            .padding(horizontal = 32.dp),
     ) {
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
+            Modifier
+                .fillMaxWidth()
+                .height(52.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             Text(
@@ -142,12 +142,12 @@ fun SignUpScreen(
                 isInvalid = isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED,
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Button(
+            ThrottledButton(
                 colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = Blue100,
-                        disabledContainerColor = Blue400,
-                    ),
+                ButtonDefaults.buttonColors(
+                    containerColor = Blue100,
+                    disabledContainerColor = Blue400,
+                ),
                 shape = RoundedCornerShape(8.dp),
                 onClick = onNicknameDuplicateCheckClicked,
                 enabled = isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED,
@@ -157,42 +157,42 @@ fun SignUpScreen(
                     text = stringResource(R.string.sign_up_duplication_check),
                     style = HY2Typography().body05,
                     color =
-                        if (nicknameState == NicknameState.DUPLICATED ||
-                            nicknameState == NicknameState.NOT_DUPLICATED ||
-                            isNicknameValidate.not()
-                        ) {
-                            White.copy(
-                                alpha = 0.4f,
-                            )
-                        } else {
-                            White
-                        },
+                    if (nicknameState == NicknameState.DUPLICATED ||
+                        nicknameState == NicknameState.NOT_DUPLICATED ||
+                        isNicknameValidate.not()
+                    ) {
+                        White.copy(
+                            alpha = 0.4f,
+                        )
+                    } else {
+                        White
+                    },
                 )
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text =
-                when {
-                    nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
-                    nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
-                    isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
-                        stringResource(
-                            id = R.string.sign_up_nickname_hint_text,
-                        )
+            when {
+                nickname.isEmpty() -> stringResource(id = R.string.sign_up_nickname_hint_text)
+                nicknameState == NicknameState.DUPLICATED -> stringResource(id = R.string.sign_up_nickname_duplicated)
+                isNicknameValidate && nicknameState == NicknameState.NOT_CHECKED ->
+                    stringResource(
+                        id = R.string.sign_up_nickname_hint_text,
+                    )
 
-                    isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
-                    else -> stringResource(R.string.sign_up_nickname_error_text)
-                },
+                isNicknameValidate -> stringResource(id = R.string.sign_up_nickname_can_use_text)
+                else -> stringResource(R.string.sign_up_nickname_error_text)
+            },
             style = HY2Typography().caption,
             color =
-                if (nickname.isBlank()) {
-                    Gray400
-                } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
-                    Yellow300
-                } else {
-                    Blue100
-                },
+            if (nickname.isBlank()) {
+                Gray400
+            } else if (isNicknameValidate.not() || nicknameState == NicknameState.DUPLICATED) {
+                Yellow300
+            } else {
+                Blue100
+            },
         )
         Spacer(modifier = Modifier.height(32.dp))
         Text(
@@ -231,19 +231,19 @@ private fun HY2GradientMainButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .paint(
-                    painter =
-                        painterResource(
-                            id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
-                        ),
-                    contentScale = ContentScale.Fit,
-                )
-                .clickable(
-                    enabled = enabled,
-                    onClick = onClick,
+        modifier
+            .fillMaxWidth()
+            .paint(
+                painter =
+                painterResource(
+                    id = if (enabled) R.drawable.img_gradient_main_button_enabled else R.drawable.img_gradient_main_button_disabled,
                 ),
+                contentScale = ContentScale.Fit,
+            )
+            .throttleClick(
+                enabled = enabled,
+                onClick = onClick,
+            ),
     ) {
         Text(
             text = text,
