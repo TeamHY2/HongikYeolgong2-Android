@@ -1,5 +1,6 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation.model
 
+import java.time.Duration
 import java.time.LocalDateTime
 
 data class TimerUiState(
@@ -9,5 +10,6 @@ data class TimerUiState(
     val endTime: String = "",
     val endTimeMeridiem: String = "",
     val leftTime: String = "",
+    val duration: Duration = Duration.ZERO,
     val isRunning: Boolean = false,
 )
