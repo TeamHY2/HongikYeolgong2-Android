@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
@@ -14,10 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.Duration
+import java.time.Instant.ofEpochMilli
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,7 +33,6 @@ class TimerForegroundService
 
         private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
         private var timerJob: Job? = null
-        private var endTime: Long = 0L
 
         private var hasNotified30Min: Boolean = false
         private var hasNotified10Min: Boolean = false
@@ -46,23 +45,33 @@ class TimerForegroundService
             flags: Int,
             startId: Int,
         ): Int {
+            if (intent == null) return START_STICKY
+
             val startTimeMillis: Long =
-                intent?.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
-                    ?: System.currentTimeMillis()
-            val durationMillis: Long = intent?.getLongExtra(EXTRA_TIME, 0L) ?: 0L
+                intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
+            val endTimeMillis: Long =
+                intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + 1000 * 60 * 60 * 4)
 
             val startTime: LocalDateTime =
                 LocalDateTime.ofInstant(
-                    java.time.Instant.ofEpochMilli(startTimeMillis),
+                    ofEpochMilli(startTimeMillis),
                     ZoneId.systemDefault(),
                 )
-            val duration: Duration = Duration.ofMillis(durationMillis)
+
+            val endTime: LocalDateTime =
+                LocalDateTime.ofInstant(
+                    ofEpochMilli(endTimeMillis),
+                    ZoneId.systemDefault(),
+                )
+
+            Log.d("bandal", "startTime: $startTime")
+            Log.d("bandal", "endTime: $endTime")
 
             startForeground(
                 TIMER_NOTIFICATION_ID,
                 notificationHandler.buildServiceNotification(),
             )
-            startTimer(startTime, duration)
+            startTimer(endTime) // TODO: 이게 문제임
 
             return START_NOT_STICKY
         }
@@ -72,15 +81,8 @@ class TimerForegroundService
             super.onDestroy()
         }
 
-        private fun startTimer(
-            startTime: LocalDateTime,
-            duration: Duration,
-        ) {
+        private fun startTimer(endTime: LocalDateTime) {
             timerJob?.cancel()
-
-            val startTimeInMillis: Long =
-                startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            endTime = startTimeInMillis + duration.toMillis()
 
             hasNotified30Min = false
             hasNotified10Min = false
@@ -88,9 +90,13 @@ class TimerForegroundService
             timerJob =
                 serviceScope.launch {
                     while (true) {
-                        val remainingTime: Long = endTime - System.currentTimeMillis()
+                        val remainingTime: Long =
+                            endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
+                                LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                        Log.d("bandal", "remainingTime: $remainingTime")
 
                         if (remainingTime <= 0 && hasNotified0Min.not()) {
+                            Log.d("bandal", "hasNotified0Min: $hasNotified0Min")
                             notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
                             hasNotified0Min = true
                             stopSelf()
@@ -98,13 +104,15 @@ class TimerForegroundService
                         }
 
                         when {
-                            remainingTime <= TimeUnit.MINUTES.toMillis(10L) && hasNotified10Min.not() -> {
+                            remainingTime <= 600000 && hasNotified10Min.not() -> {
+                                Log.d("bandal", "hasNotified10Min: $hasNotified10Min")
                                 notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
                                 hasNotified10Min = true
                                 continue
                             }
 
-                            remainingTime <= TimeUnit.MINUTES.toMillis(30L) && hasNotified30Min.not() -> {
+                            remainingTime <= 1800000 && hasNotified30Min.not() -> {
+                                Log.d("bandal", "hasNotified30Min: $hasNotified30Min")
                                 notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
                                 hasNotified30Min = true
                                 continue
@@ -118,17 +126,21 @@ class TimerForegroundService
 
         override fun startService(
             startDateTime: LocalDateTime,
-            duration: Duration,
+            endDateTime: LocalDateTime,
         ) {
             val appContext: Context = context.applicationContext
+
             val startTimeMillis: Long =
                 startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val endTimeMillis: Long =
+                endDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
             val startIntent: Intent =
                 Intent(appContext, TimerForegroundService::class.java).apply {
                     putExtra(EXTRA_START_TIME, startTimeMillis)
-                    putExtra(EXTRA_TIME, duration.toMillis())
+                    putExtra(EXTRA_END_TIME, endTimeMillis)
                 }
+
             appContext.startForegroundService(startIntent)
         }
 
@@ -139,7 +151,7 @@ class TimerForegroundService
 
         companion object {
             const val TIMER_NOTIFICATION_ID: Int = 1
-            const val EXTRA_TIME: String = "extra_time"
             const val EXTRA_START_TIME: String = "extra_start_time"
+            const val EXTRA_END_TIME: String = "extra_end_time"
         }
     }

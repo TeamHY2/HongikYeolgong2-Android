@@ -6,10 +6,11 @@ import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class Timer(
     private val startTime: LocalDateTime,
-    private val duration: Duration,
+    duration: Duration,
     private val events: Map<Long, () -> Unit>,
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
@@ -26,6 +27,7 @@ class Timer(
     val formattedLeftTime: String
         get() =
             String.format(
+                Locale.KOREA,
                 LEFT_TIME_FORMAT,
                 leftTime.toHours(),
                 leftTime.toMinutes() % 60,
@@ -49,11 +51,11 @@ class Timer(
 
     fun emitTimerEvents(): Flow<Long> =
         flow {
-            while (!isTimeOver()) {
+            while (isTimeOver().not()) {
                 val leftSeconds: Long = leftTime.seconds
                 events[leftSeconds]?.invoke()
                 emit(leftSeconds)
-                delay(DELAY_MILLIS)
+                delay(ONE_SECOND)
             }
         }
 
@@ -73,9 +75,16 @@ class Timer(
         private const val START_END_TIME_FORMAT: String = "hh:mm"
         private const val LEFT_TIME_FORMAT: String = "%02d:%02d:%02d"
         const val TIME_OVER: Long = 0L
-        private const val DELAY_MILLIS: Long = 1000L
+        private const val ONE_SECOND: Long = 1000L
 
         private val EVENT_TIMES: List<Long> =
             listOf(TIME_OVER)
+
+        val IDLE: Timer =
+            Timer(
+                startTime = LocalDateTime.MAX,
+                duration = Duration.ZERO,
+                events = mapOf(TIME_OVER to {}),
+            )
     }
 }
