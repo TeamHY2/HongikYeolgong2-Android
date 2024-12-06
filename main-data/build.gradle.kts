@@ -1,5 +1,6 @@
 plugins {
     id("hongikyeolgong2.android.library")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -13,4 +14,6 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.config.ktx)
     implementation(libs.datastore.preferences)
+    implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.kotlinx.serialization.json)
 }
