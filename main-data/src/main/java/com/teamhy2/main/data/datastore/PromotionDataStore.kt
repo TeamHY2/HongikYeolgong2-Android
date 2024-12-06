@@ -25,8 +25,8 @@ class PromotionDataStore
                 if (startDateString == null || endDateString == null) return@map false
 
                 try {
-                    val startDate = LocalDate.parse(startDateString, formatter)
-                    val endDate = LocalDate.parse(endDateString, formatter)
+                    val startDate: LocalDate = LocalDate.parse(startDateString, formatter)
+                    val endDate: LocalDate = LocalDate.parse(endDateString, formatter)
                     isWithinDateRange(startDate, endDate)
                 } catch (e: Exception) {
                     false
