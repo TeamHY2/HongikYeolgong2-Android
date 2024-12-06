@@ -1,6 +1,7 @@
 package com.teamhy2.feature.home.model
 
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
+import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import java.time.LocalDateTime
@@ -14,8 +15,10 @@ sealed interface HomeUiState {
         val isTimePickerVisible: Boolean = false,
         val isStudyRoomExtendDialog: Boolean = false,
         val isStudyRoomEndDialog: Boolean = false,
+        val isPromotionDialog: Boolean = false,
         val selectedTime: LocalDateTime = LocalDateTime.now(),
         val isTimerRunning: Boolean = false,
+        val promotion: Promotion = Promotion.DEFAULT,
         val timerUiState: TimerUiState = TimerUiState(),
     ) : HomeUiState
 
