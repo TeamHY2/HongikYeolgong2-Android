@@ -11,4 +11,6 @@ dependencies {
     implementation(projects.core.remote)
 
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.config.ktx)
+    implementation(libs.datastore.preferences)
 }
