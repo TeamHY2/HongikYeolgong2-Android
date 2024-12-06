@@ -11,6 +11,6 @@ sealed interface TimerUiState {
         val startTime: Time,
         val endTime: Time,
         val leftTime: LeftTime,
-        val duration: Duration = Duration.ZERO,
+        val duration: Duration,
     ) : TimerUiState
 }

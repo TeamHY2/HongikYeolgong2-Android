@@ -1,6 +1,5 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
@@ -15,13 +14,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -44,19 +39,13 @@ class TimerViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
-        private val studyRoomDuration: StateFlow<Int> =
-            flow { emit(timerRepository.getStudyRoomHourDuration()) }
-                .catch { throwable ->
-                    _errorFlow.emit(throwable)
-                }
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000),
-                    initialValue = 1,
-                )
+        private val studyRoomDuration: MutableStateFlow<Int> = MutableStateFlow(4)
 
         init {
-//            initTimer()
+            viewModelScope.launch {
+                studyRoomDuration.value = 1
+                // FIXME: studyRoomDuration.value = timerRepository.getStudyRoomHourDuration()
+            }
         }
 
         private fun initTimer() {
@@ -93,8 +82,6 @@ class TimerViewModel
             startDateTime: LocalDateTime,
             events: Map<Long, () -> Unit>,
         ) {
-            Log.d("bandal", "setTimer: 호출")
-
             val duration = Duration.ofHours(studyRoomDuration.value.toLong())
             timer = Timer(startDateTime, duration, events)
             timerJob?.cancel()

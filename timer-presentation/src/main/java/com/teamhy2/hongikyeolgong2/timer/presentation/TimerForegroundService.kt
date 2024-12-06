@@ -71,7 +71,7 @@ class TimerForegroundService
                 TIMER_NOTIFICATION_ID,
                 notificationHandler.buildServiceNotification(),
             )
-            startTimer(endTime) // TODO: 이게 문제임
+            startTimer(endTime)
 
             return START_NOT_STICKY
         }
@@ -84,19 +84,16 @@ class TimerForegroundService
         private fun startTimer(endTime: LocalDateTime) {
             timerJob?.cancel()
 
-            hasNotified30Min = false
-            hasNotified10Min = false
-
             timerJob =
                 serviceScope.launch {
                     while (true) {
-                        val remainingTime: Long =
+                        val leftTime =
                             endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
                                 LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                        Log.d("bandal", "remainingTime: $remainingTime")
 
-                        if (remainingTime <= 0 && hasNotified0Min.not()) {
-                            Log.d("bandal", "hasNotified0Min: $hasNotified0Min")
+                        Log.d("bandal", "remainingTime: $leftTime")
+
+                        if (leftTime <= 0 && hasNotified0Min.not()) {
                             notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
                             hasNotified0Min = true
                             stopSelf()
@@ -104,15 +101,13 @@ class TimerForegroundService
                         }
 
                         when {
-                            remainingTime <= 600000 && hasNotified10Min.not() -> {
-                                Log.d("bandal", "hasNotified10Min: $hasNotified10Min")
+                            leftTime <= 600000 && hasNotified10Min.not() -> {
                                 notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
                                 hasNotified10Min = true
                                 continue
                             }
 
-                            remainingTime <= 1800000 && hasNotified30Min.not() -> {
-                                Log.d("bandal", "hasNotified30Min: $hasNotified30Min")
+                            leftTime <= 1800000 && hasNotified30Min.not() -> {
                                 notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
                                 hasNotified30Min = true
                                 continue
