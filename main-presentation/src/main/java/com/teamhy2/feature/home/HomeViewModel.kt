@@ -5,13 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
+import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
+import com.teamhy2.main.domain.repository.PromotionRepository
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -32,6 +35,7 @@ class HomeViewModel
     constructor(
         private val wiseSayingRepository: WiseSayingRepository,
         private val studyDayRepository: StudyDayRepository,
+        private val promotionRepository: PromotionRepository,
         private val timerService: TimerService,
     ) : ViewModel() {
         private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -42,6 +46,7 @@ class HomeViewModel
 
         init {
             loadHomeData()
+            loadPromotionData()
         }
 
         private fun loadHomeData() {
@@ -63,6 +68,30 @@ class HomeViewModel
                 }.onFailure { exception ->
                     _errorFlow.emit(exception)
                     _homeUiState.value = HomeUiState.Error(exception.message)
+                }
+            }
+        }
+
+        private fun loadPromotionData() {
+            viewModelScope.launch {
+                runCatching {
+                    val promotion: Promotion = promotionRepository.fetchPromotionData().getOrThrow()
+                    val isDismissedFlow: Flow<Boolean> = promotionRepository.isPromotionDismissed
+
+                    isDismissedFlow.collect { isDismissed ->
+                        _homeUiState.update { currentState ->
+                            if (currentState is HomeUiState.Success) {
+                                currentState.copy(
+                                    promotion = promotion,
+                                    isPromotionDialog = !isDismissed && promotion.isActive,
+                                )
+                            } else {
+                                currentState
+                            }
+                        }
+                    }
+                }.onFailure { exception ->
+                    _errorFlow.emit(exception)
                 }
             }
         }
@@ -171,6 +200,28 @@ class HomeViewModel
             _homeUiState.update { currentState ->
                 when (currentState) {
                     is HomeUiState.Success -> currentState.copy(isStudyRoomEndDialog = isVisible)
+                    else -> currentState
+                }
+            }
+        }
+
+        fun updatePromotionDismissPeriod(
+            startDate: LocalDate,
+            endDate: LocalDate,
+        ) {
+            viewModelScope.launch {
+                runCatching {
+                    promotionRepository.savePromotionDismissPeriod(startDate, endDate)
+                }.onFailure { exception ->
+                    _errorFlow.emit(exception)
+                }
+            }
+        }
+
+        fun updatePromotionDialogVisibility(isVisible: Boolean) {
+            _homeUiState.update { currentState ->
+                when (currentState) {
+                    is HomeUiState.Success -> currentState.copy(isPromotionDialog = isVisible)
                     else -> currentState
                 }
             }
