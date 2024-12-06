@@ -3,13 +3,14 @@ package com.teamhy2.hongikyeolgong2.timer.presentation.model
 import java.time.Duration
 import java.time.LocalDateTime
 
-data class TimerUiState(
-    val startDateTime: LocalDateTime = LocalDateTime.now(),
-    val startTime: String = "",
-    val startTimeMeridiem: String = "",
-    val endTime: String = "",
-    val endTimeMeridiem: String = "",
-    val leftTime: String = "",
-    val duration: Duration = Duration.ZERO,
-    val isRunning: Boolean = false,
-)
+sealed interface TimerUiState {
+    data object Idle : TimerUiState
+
+    data class Running(
+        val startDateTime: LocalDateTime,
+        val startTime: Time,
+        val endTime: Time,
+        val leftTime: LeftTime,
+        val duration: Duration = Duration.ZERO,
+    ) : TimerUiState
+}

@@ -128,7 +128,7 @@ fun HomeRoute(
                     onRightButtonClick = {
                         isStudyRoomExtendDialog = false
                         homeViewModel.run {
-                            saveStudyDay(timerState.startDateTime, true)
+                            saveStudyDay((timerState as TimerUiState.Running).startDateTime, true)
                             increaseTodayStudyCount()
                         }
                         startTimer(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), homeViewModel, timerViewModel)
@@ -151,7 +151,7 @@ fun HomeRoute(
                     },
                     onRightButtonClick = {
                         isStudyRoomEndDialog = false
-                        homeViewModel.saveStudyDay(timerState.startDateTime, false)
+                        homeViewModel.saveStudyDay((timerState as TimerUiState.Running).startDateTime, false)
                         timerViewModel.stopTimer()
 
                         tracker.trackEvent("StudyEndButton")
@@ -165,9 +165,7 @@ fun HomeRoute(
             HomeScreen(
                 weeklyStudyDays = uiState.weeklyStudyDays,
                 wiseSaying = uiState.wiseSaying,
-                durationAsSecond = timerState.duration.seconds,
                 timerUiState = timerState,
-                modifier = modifier,
                 onSeatingChartClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(seatingChartUrl))
                     context.startActivity(intent)
@@ -181,6 +179,7 @@ fun HomeRoute(
                 onStudyRoomEndClick = {
                     isStudyRoomEndDialog = true
                 },
+                modifier = modifier,
             )
         }
 
@@ -226,7 +225,6 @@ private fun startTimer(
 fun HomeScreen(
     weeklyStudyDays: List<WeeklyStudyDay>,
     wiseSaying: WiseSaying,
-    durationAsSecond: Long,
     timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
@@ -247,9 +245,7 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(36.dp))
         HomeBody(
-            durationAsSecond = durationAsSecond,
             wiseSaying = wiseSaying,
-            isTimerRunning = timerUiState.isRunning,
             timerUiState = timerUiState,
             onSeatingChartClick = onSeatingChartClick,
             onStudyRoomStartClick = onStudyRoomStartClick,
@@ -276,9 +272,7 @@ private fun HomeHeader(
 
 @Composable
 private fun HomeBody(
-    durationAsSecond: Long,
     wiseSaying: WiseSaying,
-    isTimerRunning: Boolean,
     timerUiState: TimerUiState,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
@@ -292,22 +286,17 @@ private fun HomeBody(
                 .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        when (isTimerRunning) {
-            true -> {
+        when (timerUiState) {
+            is TimerUiState.Running -> {
                 RunningTimerComponent(
-                    durationAsSecond = durationAsSecond,
-                    startTime = timerUiState.startTime,
-                    endTime = timerUiState.endTime,
-                    startTimeMeridiem = timerUiState.startTimeMeridiem,
-                    endTimeMeridiem = timerUiState.endTimeMeridiem,
-                    leftTime = timerUiState.leftTime,
+                    timerUiState = timerUiState,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            false -> {
+            is TimerUiState.Idle -> {
                 InitTimerComponent(
                     wiseSaying = wiseSaying,
                     onSeatingChartClick = onSeatingChartClick,
@@ -326,12 +315,11 @@ private fun HomeScreenPreview() {
         HomeScreen(
             weeklyStudyDays = WeeklyStudyDay.defaultWeek(),
             wiseSaying = WiseSaying.DEFAULT,
-            durationAsSecond = 0,
+            timerUiState = TimerUiState.Idle,
             onSeatingChartClick = { },
             onStudyRoomStartClick = { },
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
-            timerUiState = TimerUiState(),
         )
     }
 }
