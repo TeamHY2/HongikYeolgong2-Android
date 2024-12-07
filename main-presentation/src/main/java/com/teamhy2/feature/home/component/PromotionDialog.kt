@@ -131,14 +131,14 @@ fun PromotionDialog(
 
 @Composable
 @Preview(showBackground = true)
-fun HY2DialogPreview() {
+fun PromotionDialogPreview() {
     HY2Theme {
         PromotionDialog(
             promotionImageUrl = "https://github.com/user-attachments/assets/e268f0b3-df44-4498-b23a-5325c1d6ef85",
-            onDetailClick = { /* TODO */ },
-            onCloseClick = { /* TODO */ },
-            onCloseTodayClick = { /* TODO */ },
-            onDismiss = { /* TODO */ },
+            onDetailClick = {},
+            onCloseClick = {},
+            onCloseTodayClick = {},
+            onDismiss = {},
         )
     }
 }
