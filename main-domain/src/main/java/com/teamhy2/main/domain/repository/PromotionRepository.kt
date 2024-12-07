@@ -12,5 +12,5 @@ interface PromotionRepository {
     suspend fun savePromotionDismissPeriod(
         startDate: LocalDate,
         endDate: LocalDate,
-    )
+    ): Result<Unit>
 }

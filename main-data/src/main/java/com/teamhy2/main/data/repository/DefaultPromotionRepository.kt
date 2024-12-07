@@ -24,7 +24,8 @@ class DefaultPromotionRepository
         override suspend fun savePromotionDismissPeriod(
             startDate: LocalDate,
             endDate: LocalDate,
-        ) {
-            dataStore.savePromotionDismissPeriod(startDate, endDate)
-        }
+        ): Result<Unit> =
+            runCatching {
+                dataStore.savePromotionDismissPeriod(startDate, endDate)
+            }
     }
