@@ -81,7 +81,7 @@ fun PromotionDialog(
                         },
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Row(
                     modifier =
                         Modifier
