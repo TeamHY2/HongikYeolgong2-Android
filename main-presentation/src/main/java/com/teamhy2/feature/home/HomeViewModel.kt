@@ -210,11 +210,10 @@ class HomeViewModel
             endDate: LocalDate,
         ) {
             viewModelScope.launch {
-                runCatching {
-                    promotionRepository.savePromotionDismissPeriod(startDate, endDate)
-                }.onFailure { exception ->
-                    _errorFlow.emit(exception)
-                }
+                promotionRepository.savePromotionDismissPeriod(startDate, endDate)
+                    .onFailure { exception ->
+                        _errorFlow.emit(exception)
+                    }
             }
         }
 
