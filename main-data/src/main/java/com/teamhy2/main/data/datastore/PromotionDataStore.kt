@@ -53,9 +53,12 @@ class PromotionDataStore
         }
 
         companion object Keys {
+            private const val PROMOTION_START_DATE_KEY = "promotion_start_date"
+            private const val PROMOTION_END_DATE_KEY = "promotion_end_date"
+
             val START_DATE: Preferences.Key<String> =
-                stringPreferencesKey("promotion_start_date")
+                stringPreferencesKey(PROMOTION_START_DATE_KEY)
             val END_DATE: Preferences.Key<String> =
-                stringPreferencesKey("promotion_end_date")
+                stringPreferencesKey(PROMOTION_END_DATE_KEY)
         }
     }
