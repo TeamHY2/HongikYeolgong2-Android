@@ -8,6 +8,7 @@ import android.util.Log
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.notification.PushText
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
+import com.teamhy2.main.domain.repository.StudyDayRepository
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,9 @@ class TimerForegroundService
         @Inject
         @ApplicationContext
         lateinit var context: Context
+
+        @Inject
+        lateinit var studyDayRepository: StudyDayRepository
 
         private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
         private var timerJob: Job? = null
@@ -71,7 +75,10 @@ class TimerForegroundService
                 TIMER_NOTIFICATION_ID,
                 notificationHandler.buildServiceNotification(),
             )
-            startTimer(endTime)
+            startTimer(
+                startTime = startTime,
+                endTime = endTime,
+            )
 
             return START_NOT_STICKY
         }
@@ -81,7 +88,10 @@ class TimerForegroundService
             super.onDestroy()
         }
 
-        private fun startTimer(endTime: LocalDateTime) {
+        private fun startTimer(
+            startTime: LocalDateTime,
+            endTime: LocalDateTime,
+        ) {
             timerJob?.cancel()
 
             timerJob =
@@ -94,6 +104,10 @@ class TimerForegroundService
                         Log.d("bandal", "remainingTime: $leftTime")
 
                         if (leftTime <= 0 && hasNotified0Min.not()) {
+                            studyDayRepository.saveStudyDay(
+                                startDateTime = startTime,
+                                endDateTime = endTime,
+                            )
                             notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
                             hasNotified0Min = true
                             stopSelf()

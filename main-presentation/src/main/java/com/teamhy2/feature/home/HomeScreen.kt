@@ -40,7 +40,6 @@ import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
-import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
@@ -107,7 +106,9 @@ fun HomeRoute(
                             isTimePickerVisible = false
                             increaseTodayStudyCount()
                         }
-                        startTimer(selectedDateTime, homeViewModel, timerViewModel)
+                        timerViewModel.setTimer(
+                            startDateTime = selectedDateTime,
+                        )
                         tracker.trackEvent("StudyStartButton")
                     },
                     onCancelled = {
@@ -131,7 +132,10 @@ fun HomeRoute(
                             saveStudyDay((timerState as TimerUiState.Running).startDateTime, true)
                             increaseTodayStudyCount()
                         }
-                        startTimer(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), homeViewModel, timerViewModel)
+                        timerViewModel
+                            .setTimer(
+                                startDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                            )
                         timerViewModel.stopTimer()
                         tracker.trackEvent("StudyExtendButton")
                     },
@@ -200,25 +204,6 @@ fun SetNavigationBarColor(color: Color) {
             window.navigationBarColor = color.toArgb()
         }
     }
-}
-
-private fun startTimer(
-    startDateTime: LocalDateTime,
-    homeViewModel: HomeViewModel,
-    timerViewModel: TimerViewModel,
-) {
-    timerViewModel.setTimer(
-        startDateTime = startDateTime,
-        events =
-            mapOf(
-                Timer.TIME_OVER to {
-                    homeViewModel.saveStudyDay(
-                        startDateTime = startDateTime,
-                        isExtend = false,
-                    )
-                },
-            ),
-    )
 }
 
 @Composable
