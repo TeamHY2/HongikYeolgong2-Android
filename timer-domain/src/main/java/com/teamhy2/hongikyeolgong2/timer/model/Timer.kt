@@ -8,13 +8,21 @@ import java.time.LocalDateTime
 
 class Timer(
     val startTime: LocalDateTime,
-    duration: Duration,
+    private val duration: Duration,
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
 
     private val leftTime: Duration
         get() = calculateLeftTime()
+
+    constructor(
+        startTime: LocalDateTime,
+        duration: Duration,
+        endTime: LocalDateTime,
+    ) : this(startTime, duration) {
+        this.endTime = endTime
+    }
 
     fun emitTimerEvents(): Flow<Long> =
         flow {
@@ -35,6 +43,10 @@ class Timer(
             return Duration.ZERO
         }
         return Duration.between(now, endTime)
+    }
+
+    fun extend() {
+        endTime = endTime.plus(duration)
     }
 
     companion object {

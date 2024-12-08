@@ -65,6 +65,7 @@ class TimerViewModel
                 setTimer(
                     isAlreadyRunning = true,
                     startDateTime = timerDuration.startTime,
+                    endDateTime = timerDuration.endTime,
                 )
             }
         }
@@ -72,9 +73,15 @@ class TimerViewModel
         fun setTimer(
             isAlreadyRunning: Boolean = false,
             startDateTime: LocalDateTime,
+            endDateTime: LocalDateTime? = null,
         ) {
             val duration: Duration = Duration.ofHours(studyRoomDuration.value.toLong())
-            timer = Timer(startTime = startDateTime, duration = duration)
+            timer =
+                if (isAlreadyRunning) {
+                    Timer(startTime = startDateTime, duration = duration, endTime = endDateTime ?: return)
+                } else {
+                    Timer(startTime = startDateTime, duration = duration)
+                }
             timerJob?.cancel()
             val startTime: Time = Time.create(timer.startTime)
             val endTime: Time = Time.create(timer.endTime)
@@ -86,7 +93,7 @@ class TimerViewModel
                     startTime = startTime,
                     endTime = endTime,
                     leftTime = leftTime,
-                    duration = duration,
+                    duration = Duration.between(startDateTime, timer.endTime),
                 )
             }
 
@@ -159,5 +166,34 @@ class TimerViewModel
             viewModelScope.launch {
                 timerRepository.clearCurrentTimerDuration()
             }
+        }
+
+        fun extendTime() {
+            timer.extend()
+
+            val endTime: Time = Time.create(timer.endTime)
+
+            _timerState.update { currentState ->
+                (currentState as TimerUiState.Running).copy(
+                    endTime = endTime,
+                    duration = Duration.between(timer.startTime, timer.endTime),
+                )
+            }
+
+            viewModelScope.launch {
+                timerRepository.clearCurrentTimerDuration()
+                timerRepository.setCurrentTimerDuration(
+                    TimerDuration(
+                        startTime = timer.startTime,
+                        endTime = timer.endTime,
+                    ),
+                )
+            }
+
+            timerService.stopService()
+            timerService.startService(
+                startDateTime = timer.startTime,
+                endDateTime = timer.endTime,
+            )
         }
     }
