@@ -1,5 +1,6 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
@@ -46,48 +47,38 @@ class TimerViewModel
                 studyRoomDuration.value = 1
                 // FIXME: studyRoomDuration.value = timerRepository.getStudyRoomHourDuration()
             }
+            initTimer()
         }
 
         private fun initTimer() {
-//            viewModelScope.launch {
-//                val timerDurationDeferred: Deferred<TimerDuration?> =
-//                    async { timerRepository.getCurrentTimerDuration() }
-//
-//                // FIXME: val studyRoomDuration: Long = studyRoomDurationDeferred.await()
-//                val studyRoomDuration: Long = 1L
-//                val timerDuration: TimerDuration? = timerDurationDeferred.await()
-//
-//                Log.d("bandal", "studyRoomDuration: $studyRoomDuration")
-//                Log.d("bandal", "timerDuration: $timerDuration")
-//
-//                _timerState.update { state ->
-//                    when
-//                    state.copy(duration = Duration.ofHours(studyRoomDuration))
-//                }
-//
-//                if (timerDuration == null) {
-//                    timerRepository.clearCurrentTimerDuration()
-//                    return@launch
-//                }
+            viewModelScope.launch {
+                val studyRoomDuration: Long = 1L
+                val timerDuration: TimerDuration? = timerRepository.getCurrentTimerDuration()
 
-//                setTimer(
-//                    startDateTime = timerDuration.startTime,
-//                    duration = Duration.ofHours(studyRoomDuration),
-//                    events = mapOf(Timer.TIME_OVER to {}),
-//                )
-//            }
+                Log.d("bandal", "timerDuration: $timerDuration")
+
+                if (timerDuration == null) {
+                    timerRepository.clearCurrentTimerDuration()
+                    return@launch
+                }
+
+                setTimer(
+                    isAlreadyRunning = true,
+                    startDateTime = timerDuration.startTime,
+                )
+            }
         }
 
         fun setTimer(
+            isAlreadyRunning: Boolean = false,
             startDateTime: LocalDateTime,
-            events: Map<Long, () -> Unit>,
         ) {
-            val duration = Duration.ofHours(studyRoomDuration.value.toLong())
-            timer = Timer(startDateTime, duration, events)
+            val duration: Duration = Duration.ofHours(studyRoomDuration.value.toLong())
+            timer = Timer(startTime = startDateTime, duration = duration)
             timerJob?.cancel()
-            val startTime = Time.create(timer.startTime)
-            val endTime = Time.create(timer.endTime)
-            val leftTime = LeftTime.create(timer.endTime)
+            val startTime: Time = Time.create(timer.startTime)
+            val endTime: Time = Time.create(timer.endTime)
+            val leftTime: LeftTime = LeftTime.create(timer.endTime)
 
             _timerState.update {
                 TimerUiState.Running(
@@ -101,26 +92,16 @@ class TimerViewModel
 
             startTimer()
 
-            timerService.startService(startDateTime, startDateTime.plus(duration))
-
-            viewModelScope.launch {
-                if (timerRepository.getCurrentTimerDuration() == null) {
-                    saveCurrentTimerDuration(startDateTime, duration)
-                }
-            }
-        }
-
-        private fun saveCurrentTimerDuration(
-            startTime: LocalDateTime,
-            duration: Duration,
-        ) {
-            viewModelScope.launch {
-                timerRepository.setCurrentTimerDuration(
-                    TimerDuration(
-                        startTime = startTime,
-                        endTime = startTime.plus(duration),
-                    ),
+            if (isAlreadyRunning.not()) {
+                timerService.startService(
+                    startDateTime = startDateTime,
+                    endDateTime = startDateTime.plus(duration),
                 )
+                viewModelScope.launch {
+                    if (timerRepository.getCurrentTimerDuration() == null) {
+                        saveCurrentTimerDuration(startDateTime, duration)
+                    }
+                }
             }
         }
 
@@ -151,6 +132,20 @@ class TimerViewModel
                         }
                     }
                 }
+        }
+
+        private fun saveCurrentTimerDuration(
+            startTime: LocalDateTime,
+            duration: Duration,
+        ) {
+            viewModelScope.launch {
+                timerRepository.setCurrentTimerDuration(
+                    TimerDuration(
+                        startTime = startTime,
+                        endTime = startTime.plus(duration),
+                    ),
+                )
+            }
         }
 
         fun stopTimer() {
