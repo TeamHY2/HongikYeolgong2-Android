@@ -24,7 +24,6 @@ object DateUtil {
             runCatching {
                 LocalDate.parse(endDateString, formatter)
             }.getOrNull() ?: return false
-
         val todayDate: LocalDate = LocalDate.now()
 
         return todayDate.isEqual(startDate) || todayDate.isEqual(endDate) ||
