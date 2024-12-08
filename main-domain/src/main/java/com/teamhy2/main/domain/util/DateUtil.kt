@@ -16,23 +16,15 @@ object DateUtil {
         endDateString: String,
     ): Boolean {
         val formatter = DateTimeFormatter.ofPattern("[yyyy-MM-dd][yyyy-M-d]")
-
-        val startDateResult =
+        val startDate =
             runCatching {
                 LocalDate.parse(startDateString, formatter)
-            }
-
-        val endDateResult =
+            }.getOrNull() ?: return false
+        val endDate =
             runCatching {
                 LocalDate.parse(endDateString, formatter)
-            }
+            }.getOrNull() ?: return false
 
-        if (startDateResult.isFailure || endDateResult.isFailure) {
-            return false
-        }
-
-        val startDate = startDateResult.getOrNull()
-        val endDate = endDateResult.getOrNull()
         val todayDate: LocalDate = LocalDate.now()
 
         return todayDate.isEqual(startDate) || todayDate.isEqual(endDate) ||
