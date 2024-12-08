@@ -14,6 +14,5 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.config.ktx)
     implementation(libs.datastore.preferences)
-    implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
 }
