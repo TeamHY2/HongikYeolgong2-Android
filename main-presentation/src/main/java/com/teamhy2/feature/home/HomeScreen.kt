@@ -45,8 +45,6 @@ import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 @Composable
 fun HomeRoute(
@@ -132,11 +130,7 @@ fun HomeRoute(
                             saveStudyDay((timerState as TimerUiState.Running).startDateTime, true)
                             increaseTodayStudyCount()
                         }
-                        timerViewModel
-                            .setTimer(
-                                startDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
-                            )
-                        timerViewModel.stopTimer()
+                        timerViewModel.extendTime()
                         tracker.trackEvent("StudyExtendButton")
                     },
                     onDismiss = {
