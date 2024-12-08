@@ -29,7 +29,7 @@ class PromotionDataStore
                 val startDate: LocalDate = LocalDate.parse(startDateString, formatter)
                 val endDate: LocalDate = LocalDate.parse(endDateString, formatter)
 
-                DateUtil.isWithinDateRange(startDate = startDate, endDate = endDate)
+                DateUtil.isTodayWithinDateRange(startDate = startDate, endDate = endDate)
             }
 
         suspend fun savePromotionDismissPeriod(

@@ -10,7 +10,7 @@ object DateUtil {
      * @param endDate The end date of the range.
      * @return True if the current date is within the range, false otherwise.
      */
-    fun isWithinDateRange(
+    fun isTodayWithinDateRange(
         startDate: LocalDate,
         endDate: LocalDate,
     ): Boolean {

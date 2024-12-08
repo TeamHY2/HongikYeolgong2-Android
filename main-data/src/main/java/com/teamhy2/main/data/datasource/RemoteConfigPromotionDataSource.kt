@@ -47,7 +47,7 @@ class RemoteConfigPromotionDataSource
                 val startDate: LocalDate = LocalDate.parse(startDate, formatter)
                 val endDate: LocalDate = LocalDate.parse(endDate, formatter)
 
-                DateUtil.isWithinDateRange(startDate = startDate, endDate = endDate)
+                DateUtil.isTodayWithinDateRange(startDate = startDate, endDate = endDate)
             }.getOrDefault(false)
         }
 
