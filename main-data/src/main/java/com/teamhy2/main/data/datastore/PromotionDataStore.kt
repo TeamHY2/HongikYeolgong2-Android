@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.teamhy2.main.domain.util.DateUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
@@ -22,15 +23,13 @@ class PromotionDataStore
             dataStore.data.map { preferences ->
                 val startDateString: String? = preferences[START_DATE]
                 val endDateString: String? = preferences[END_DATE]
-                if (startDateString == null || endDateString == null) return@map false
+                requireNotNull(startDateString) { ERROR_START_DATE_MISSING }
+                requireNotNull(endDateString) { ERROR_END_DATE_MISSING }
 
-                try {
-                    val startDate: LocalDate = LocalDate.parse(startDateString, formatter)
-                    val endDate: LocalDate = LocalDate.parse(endDateString, formatter)
-                    isWithinDateRange(startDate, endDate)
-                } catch (e: Exception) {
-                    false
-                }
+                val startDate: LocalDate = LocalDate.parse(startDateString, formatter)
+                val endDate: LocalDate = LocalDate.parse(endDateString, formatter)
+
+                DateUtil.isWithinDateRange(startDate = startDate, endDate = endDate)
             }
 
         suspend fun savePromotionDismissPeriod(
@@ -43,18 +42,12 @@ class PromotionDataStore
             }
         }
 
-        private fun isWithinDateRange(
-            startDate: LocalDate,
-            endDate: LocalDate,
-        ): Boolean {
-            val today: LocalDate = LocalDate.now()
-            return today.isEqual(startDate) || today.isEqual(endDate) ||
-                (today.isAfter(startDate) && today.isBefore(endDate))
-        }
-
         companion object Keys {
             private const val PROMOTION_START_DATE_KEY = "promotion_start_date"
             private const val PROMOTION_END_DATE_KEY = "promotion_end_date"
+
+            const val ERROR_START_DATE_MISSING = "DataStore에 시작 날짜가 없습니다."
+            const val ERROR_END_DATE_MISSING = "DataStore에 종료 날짜가 없습니다."
 
             val START_DATE: Preferences.Key<String> =
                 stringPreferencesKey(PROMOTION_START_DATE_KEY)
