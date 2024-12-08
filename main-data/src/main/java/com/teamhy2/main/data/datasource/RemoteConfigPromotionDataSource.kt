@@ -7,6 +7,7 @@ import com.teamhy2.main.data.dto.PromotionDto
 import com.teamhy2.main.data.mapper.toDomain
 import com.teamhy2.main.domain.datasource.PromotionDataSource
 import com.teamhy2.main.domain.model.Promotion
+import com.teamhy2.main.domain.util.DateUtil
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
@@ -43,15 +44,10 @@ class RemoteConfigPromotionDataSource
         ): Boolean {
             return runCatching {
                 val formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE
-                val today: LocalDate = LocalDate.now()
-                val start: LocalDate = LocalDate.parse(startDate, formatter)
-                val end: LocalDate = LocalDate.parse(endDate, formatter)
-                today.isEqual(start) || today.isEqual(end) || (
-                    today.isAfter(start) &&
-                        today.isBefore(
-                            end,
-                        )
-                )
+                val startDate: LocalDate = LocalDate.parse(startDate, formatter)
+                val endDate: LocalDate = LocalDate.parse(endDate, formatter)
+
+                DateUtil.isWithinDateRange(startDate = startDate, endDate = endDate)
             }.getOrDefault(false)
         }
 
