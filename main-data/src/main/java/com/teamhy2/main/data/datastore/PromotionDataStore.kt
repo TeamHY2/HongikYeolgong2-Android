@@ -23,13 +23,9 @@ class PromotionDataStore
             dataStore.data.map { preferences ->
                 val startDateString: String? = preferences[START_DATE]
                 val endDateString: String? = preferences[END_DATE]
-                requireNotNull(startDateString) { ERROR_START_DATE_MISSING }
-                requireNotNull(endDateString) { ERROR_END_DATE_MISSING }
+                if (startDateString == null || endDateString == null) return@map false
 
-                val startDate: LocalDate = LocalDate.parse(startDateString, formatter)
-                val endDate: LocalDate = LocalDate.parse(endDateString, formatter)
-
-                DateUtil.isTodayWithinDateRange(startDate = startDate, endDate = endDate)
+                DateUtil.isTodayWithinDateRange(startDateString = startDateString, endDateString = endDateString)
             }
 
         suspend fun savePromotionDismissPeriod(
@@ -45,9 +41,6 @@ class PromotionDataStore
         companion object Keys {
             private const val PROMOTION_START_DATE_KEY = "promotion_start_date"
             private const val PROMOTION_END_DATE_KEY = "promotion_end_date"
-
-            const val ERROR_START_DATE_MISSING = "DataStore에 시작 날짜가 없습니다."
-            const val ERROR_END_DATE_MISSING = "DataStore에 종료 날짜가 없습니다."
 
             val START_DATE: Preferences.Key<String> =
                 stringPreferencesKey(PROMOTION_START_DATE_KEY)
