@@ -45,8 +45,8 @@ class HomeViewModel
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
         init {
-            loadHomeData()
             loadPromotionData()
+            loadHomeData()
         }
 
         private fun loadHomeData() {
