@@ -10,8 +10,6 @@ import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.util.DateUtil
 import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class RemoteConfigPromotionDataSource
@@ -30,25 +28,12 @@ class RemoteConfigPromotionDataSource
                 val promotionDto: PromotionDto = Json.decodeFromString(promotionDataJson)
                 promotionDto.copy(
                     isActive =
-                        calculatePromotionActive(
-                            promotionDto.startDate,
-                            promotionDto.endDate,
+                        DateUtil.isTodayWithinDateRange(
+                            startDateString = promotionDto.startDate,
+                            endDateString = promotionDto.endDate,
                         ),
                 ).toDomain()
             }
-        }
-
-        private fun calculatePromotionActive(
-            startDate: String,
-            endDate: String,
-        ): Boolean {
-            return runCatching {
-                val formatter: DateTimeFormatter = DateTimeFormatter.ISO_DATE
-                val startDate: LocalDate = LocalDate.parse(startDate, formatter)
-                val endDate: LocalDate = LocalDate.parse(endDate, formatter)
-
-                DateUtil.isTodayWithinDateRange(startDate = startDate, endDate = endDate)
-            }.getOrDefault(false)
         }
 
         companion object {
