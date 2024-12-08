@@ -49,4 +49,6 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.navigation)
+
+    implementation(libs.coil)
 }

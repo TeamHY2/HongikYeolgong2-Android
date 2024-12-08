@@ -34,6 +34,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.home.component.InitTimerComponent
+import com.teamhy2.feature.home.component.PromotionDialog
 import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.feature.home.model.HomeUiState
@@ -44,6 +45,7 @@ import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -174,6 +176,27 @@ fun HomeRoute(
                     onDismiss = {
                         homeViewModel.updateStudyRoomEndDialogVisibility(false)
                     },
+                )
+            }
+
+            if (uiState.isPromotionDialog) {
+                PromotionDialog(
+                    promotionImageUrl = uiState.promotion.imageUrl,
+                    onDetailClick = {
+                        homeViewModel.updatePromotionDialogVisibility(false)
+                        val intent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(uiState.promotion.detailUrl))
+                        context.startActivity(intent)
+                    },
+                    onCloseClick = { homeViewModel.updatePromotionDialogVisibility(false) },
+                    onCloseTodayClick = {
+                        homeViewModel.updatePromotionDismissPeriod(
+                            startDate = LocalDate.now(),
+                            endDate = LocalDate.now(),
+                        )
+                        homeViewModel.updatePromotionDialogVisibility(false)
+                    },
+                    onDismiss = { homeViewModel.updatePromotionDialogVisibility(false) },
                 )
             }
 
