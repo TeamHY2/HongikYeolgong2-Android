@@ -1,6 +1,5 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
@@ -40,22 +39,19 @@ class TimerViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
-        private val studyRoomDuration: MutableStateFlow<Int> = MutableStateFlow(4)
+        private val studyRoomDuration: MutableStateFlow<Int> =
+            MutableStateFlow(TimerRepository.MINIMUM_STUDY_ROOM_HOUR_DURATION)
 
         init {
             viewModelScope.launch {
-                studyRoomDuration.value = 1
-                // FIXME: studyRoomDuration.value = timerRepository.getStudyRoomHourDuration()
+                studyRoomDuration.value = timerRepository.getStudyRoomHourDuration()
             }
             initTimer()
         }
 
         private fun initTimer() {
             viewModelScope.launch {
-                val studyRoomDuration: Long = 1L
                 val timerDuration: TimerDuration? = timerRepository.getCurrentTimerDuration()
-
-                Log.d("bandal", "timerDuration: $timerDuration")
 
                 if (timerDuration == null) {
                     timerRepository.clearCurrentTimerDuration()
@@ -78,7 +74,11 @@ class TimerViewModel
             val duration: Duration = Duration.ofHours(studyRoomDuration.value.toLong())
             timer =
                 if (isAlreadyRunning) {
-                    Timer(startTime = startDateTime, duration = duration, endTime = endDateTime ?: return)
+                    Timer(
+                        startTime = startDateTime,
+                        duration = duration,
+                        endTime = endDateTime ?: return,
+                    )
                 } else {
                     Timer(startTime = startDateTime, duration = duration)
                 }
@@ -180,11 +180,13 @@ class TimerViewModel
                 )
             }
 
+            val startTime = LocalDateTime.now()
+
             viewModelScope.launch {
                 timerRepository.clearCurrentTimerDuration()
                 timerRepository.setCurrentTimerDuration(
                     TimerDuration(
-                        startTime = timer.startTime,
+                        startTime = startTime,
                         endTime = timer.endTime,
                     ),
                 )
@@ -192,7 +194,7 @@ class TimerViewModel
 
             timerService.stopService()
             timerService.startService(
-                startDateTime = timer.startTime,
+                startDateTime = startTime,
                 endDateTime = timer.endTime,
             )
         }
