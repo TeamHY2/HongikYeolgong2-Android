@@ -128,10 +128,7 @@ fun HomeRoute(
                     onLeftButtonClick = { isStudyRoomExtendDialog = false },
                     onRightButtonClick = {
                         isStudyRoomExtendDialog = false
-                        homeViewModel.run {
-                            saveStudyDay((timerState as TimerUiState.Running).startDateTime, true)
-                            increaseTodayStudyCount()
-                        }
+                        homeViewModel.increaseTodayStudyCount()
                         timerViewModel.extendTime()
                         tracker.trackEvent("StudyExtendButton")
                     },
@@ -151,7 +148,7 @@ fun HomeRoute(
                     },
                     onRightButtonClick = {
                         isStudyRoomEndDialog = false
-                        homeViewModel.saveStudyDay((timerState as TimerUiState.Running).startDateTime, false)
+//                        homeViewModel.saveStudyDay((timerState as TimerUiState.Running).duration, false)
                         timerViewModel.stopTimer()
 
                         tracker.trackEvent("StudyEndButton")

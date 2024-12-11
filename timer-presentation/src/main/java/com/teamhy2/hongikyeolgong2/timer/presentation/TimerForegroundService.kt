@@ -15,7 +15,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import java.time.Instant.ofEpochMilli
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -37,6 +41,8 @@ class TimerForegroundService
 
         private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
         private var timerJob: Job? = null
+
+        private val startTimeState = MutableStateFlow(LocalDateTime.now())
 
         private var hasNotified30Min: Boolean = false
         private var hasNotified10Min: Boolean = false
@@ -139,6 +145,8 @@ class TimerForegroundService
         ) {
             val appContext: Context = context.applicationContext
 
+            startTimeState.update { startDateTime }
+
             val startTimeMillis: Long =
                 startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
             val endTimeMillis: Long =
@@ -155,6 +163,14 @@ class TimerForegroundService
 
         override fun stopService() {
             val stopIntent = Intent(context, TimerForegroundService::class.java)
+            runBlocking {
+                withTimeout(4000L) {
+                    studyDayRepository.saveStudyDay(startDateTime = startTimeState.value, endDateTime = LocalDateTime.now())
+                }.onFailure {
+                    Log.d("bandal", "stopService: ${it.message}")
+                }
+            }
+            Log.d("bandal", "onDestroy: called ${startTimeState.value} and now ${LocalDateTime.now()}")
             context.stopService(stopIntent)
         }
 

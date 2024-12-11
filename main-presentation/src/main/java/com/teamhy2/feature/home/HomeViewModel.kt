@@ -1,5 +1,6 @@
 package com.teamhy2.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -77,6 +77,7 @@ class HomeViewModel
                     isDismissedFlow.collect { isDismissed ->
                         _homeUiState.update { currentState ->
                             if (currentState is HomeUiState.Success) {
+                                Log.d("bandal", "loadPromotionData: isDismissed = $isDismissed promotion = $promotion")
                                 currentState.copy(
                                     promotion = promotion,
                                     isPromotionDialog = !isDismissed && promotion.isActive,
@@ -88,33 +89,6 @@ class HomeViewModel
                     }
                 }.onFailure { exception ->
                     _errorFlow.emit(exception)
-                }
-            }
-        }
-
-        fun startTimerService(
-            startDateTime: LocalDateTime,
-            duration: Duration,
-        ) {
-            timerService.startService(startDateTime, duration)
-        }
-
-        fun stopTimerService() {
-            timerService.stopService()
-        }
-
-        fun saveStudyDay(isExtend: Boolean) {
-            val currentState = _homeUiState.value
-            if (currentState is HomeUiState.Success) {
-                viewModelScope.launch {
-                    studyDayRepository.saveStudyDay(
-                        startDateTime = currentState.timerUiState.startDateTime,
-                        endDateTime = LocalDateTime.now(),
-                    ).onSuccess {
-                        if (!isExtend) loadHomeData()
-                    }.onFailure { throwable ->
-                        _errorFlow.emit(throwable)
-                    }
                 }
             }
         }
@@ -138,22 +112,6 @@ class HomeViewModel
                     }
 
                     else -> currentState
-                }
-            }
-        }
-
-        fun saveStudyDay(
-            startDateTime: LocalDateTime,
-            isExtend: Boolean,
-        ) {
-            viewModelScope.launch {
-                studyDayRepository.saveStudyDay(
-                    startDateTime = startDateTime,
-                    endDateTime = LocalDateTime.now(),
-                ).onSuccess {
-                    if (isExtend.not()) loadHomeData()
-                }.onFailure { throwable ->
-                    _errorFlow.emit(throwable)
                 }
             }
         }
