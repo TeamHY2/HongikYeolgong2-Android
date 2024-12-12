@@ -32,9 +32,10 @@ class RemoteStudyDayRepository
                     endTime = endDateTime.format(studyDayFormatter),
                 )
 
-            return studyService.postStudyDay(studyDayRequest).toResult { baseResponse ->
-                baseResponse.data.toDomain()
-            }
+            return studyService.postStudyDay(studyDayRequest)
+                .toResult { baseResponse ->
+                    baseResponse.data.toDomain()
+                }
         }
 
         companion object {

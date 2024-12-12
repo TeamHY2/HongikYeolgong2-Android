@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.teamhy2.feature.main.MainActivity
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
@@ -57,6 +58,7 @@ class MainNotificationHandler
         }
 
         override fun buildServiceNotification(): Notification {
+            Log.d("bandal", "buildServiceNotification: 호출")
             return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("홍익열공이 열공중")
                 .setContentText("지금 열람실을 이용중이에요!")
@@ -68,6 +70,8 @@ class MainNotificationHandler
         }
 
         override fun buildGeneralNotification(contentText: String): Notification {
+            Log.d("bandal", "buildGeneralNotification: 호출")
+
             return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("홍익열공이 알림")
                 .setContentText(contentText)
@@ -79,6 +83,8 @@ class MainNotificationHandler
         }
 
         override fun showSimpleNotification(pushText: PushText) {
+            Log.d("bandal", "showSimpleNotification: $pushText")
+
             val notification = buildGeneralNotification(context.getString(pushText.id))
 
             if (notificationChannel.value) {
