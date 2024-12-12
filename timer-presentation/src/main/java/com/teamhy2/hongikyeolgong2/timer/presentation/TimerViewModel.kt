@@ -180,7 +180,7 @@ class TimerViewModel
                 )
             }
 
-            val startTime = LocalDateTime.now()
+            val startTime: LocalDateTime = LocalDateTime.now()
 
             viewModelScope.launch {
                 timerRepository.clearCurrentTimerDuration()
