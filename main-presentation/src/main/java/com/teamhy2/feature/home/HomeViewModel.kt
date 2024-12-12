@@ -1,6 +1,5 @@
 package com.teamhy2.feature.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
@@ -77,7 +76,6 @@ class HomeViewModel
                     isDismissedFlow.collect { isDismissed ->
                         _homeUiState.update { currentState ->
                             if (currentState is HomeUiState.Success) {
-                                Log.d("bandal", "loadPromotionData: isDismissed = $isDismissed promotion = $promotion")
                                 currentState.copy(
                                     promotion = promotion,
                                     isPromotionDialog = !isDismissed && promotion.isActive,
