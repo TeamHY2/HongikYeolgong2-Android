@@ -8,8 +8,8 @@ sealed interface TimerUiState {
 
     data class Running(
         val startDateTime: LocalDateTime,
-        val startTime: Time,
-        val endTime: Time,
+        val startTime: TimerTime,
+        val endTime: TimerTime,
         val leftTime: LeftTime,
         val duration: Duration,
     ) : TimerUiState

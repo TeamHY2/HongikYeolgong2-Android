@@ -20,7 +20,7 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.HY2Timer
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.LeftTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.Meridiem
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.Time
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import java.time.Duration
 import java.time.LocalDateTime
@@ -41,9 +41,9 @@ fun RunningTimerComponent(
             HY2Timer(
                 durationAsSecond = timerUiState.duration.seconds,
                 leftTime = timerUiState.leftTime.value,
-                startTime = timerUiState.startTime.hourAndMinute,
+                startTime = timerUiState.startTime.formattedTime,
                 startTimeMeridiem = timerUiState.startTime.meridiem.label,
-                endTime = timerUiState.endTime.hourAndMinute,
+                endTime = timerUiState.endTime.formattedTime,
                 endTimeMeridiem = timerUiState.endTime.meridiem.label,
             )
         }
@@ -80,13 +80,13 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
         TimerUiState.Running(
             startDateTime = LocalDateTime.now(),
             startTime =
-                Time(
+                TimerTime(
                     meridiem = Meridiem.AM,
                     hour = "11",
                     minute = "30",
                 ),
             endTime =
-                Time(
+                TimerTime(
                     meridiem = Meridiem.PM,
                     hour = "12",
                     minute = "00",
@@ -112,13 +112,13 @@ fun TimerScreenPreview_MoreThanExtendThreshold() {
         TimerUiState.Running(
             startDateTime = LocalDateTime.now(),
             startTime =
-                Time(
+                TimerTime(
                     meridiem = Meridiem.AM,
                     hour = "11",
                     minute = "30",
                 ),
             endTime =
-                Time(
+                TimerTime(
                     meridiem = Meridiem.PM,
                     hour = "12",
                     minute = "00",

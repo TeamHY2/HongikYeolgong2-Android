@@ -7,7 +7,7 @@ import com.teamhy2.hongikyeolgong2.timer.model.TimerDuration
 import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
 import com.teamhy2.hongikyeolgong2.timer.model.TimerService
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.LeftTime
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.Time
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -83,8 +83,8 @@ class TimerViewModel
                     Timer(startTime = startDateTime, duration = duration)
                 }
             timerJob?.cancel()
-            val startTime: Time = Time.create(timer.startTime)
-            val endTime: Time = Time.create(timer.endTime)
+            val startTime: TimerTime = TimerTime.create(timer.startTime)
+            val endTime: TimerTime = TimerTime.create(timer.endTime)
             val leftTime: LeftTime = LeftTime.create(timer.endTime)
 
             _timerState.update {
@@ -171,7 +171,7 @@ class TimerViewModel
         fun extendTime() {
             timer.extend()
 
-            val endTime: Time = Time.create(timer.endTime)
+            val endTime: TimerTime = TimerTime.create(timer.endTime)
 
             _timerState.update { currentState ->
                 (currentState as TimerUiState.Running).copy(
