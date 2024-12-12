@@ -60,7 +60,7 @@ class TimerForegroundService
             val startTimeMillis: Long =
                 intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
             val endTimeMillis: Long =
-                intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + 1000 * 60 * 60 * 4)
+                intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOUR_MILLIS)
 
             val startTime: LocalDateTime =
                 LocalDateTime.ofInstant(
@@ -74,8 +74,7 @@ class TimerForegroundService
                     ZoneId.systemDefault(),
                 )
 
-            Log.d("bandal", "startTime: $startTime")
-            Log.d("bandal", "endTime: $endTime")
+            Log.i("TimerForegroundService", "startTime: $startTime / endTime: $endTime")
 
             startForeground(
                 TIMER_NOTIFICATION_ID,
@@ -103,11 +102,11 @@ class TimerForegroundService
             timerJob =
                 serviceScope.launch {
                     while (true) {
-                        val leftTime =
+                        val leftTime: Long =
                             endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
                                 LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-                        Log.d("bandal", "remainingTime: $leftTime")
+                        Log.i("TimerForegroundService", "remainingTimeMillis: $leftTime")
 
                         if (leftTime <= 0 && hasNotified0Min.not()) {
                             studyDayRepository.saveStudyDay(
@@ -164,17 +163,18 @@ class TimerForegroundService
         override fun stopService() {
             val stopIntent = Intent(context, TimerForegroundService::class.java)
             runBlocking {
-                withTimeout(4000L) {
+                withTimeout(ANR_TIMEOUT) {
                     studyDayRepository.saveStudyDay(startDateTime = startTimeState.value, endDateTime = LocalDateTime.now())
                 }.onFailure {
-                    Log.d("bandal", "stopService: ${it.message}")
+                    Log.d("TimerForegroundService", "stopService: ${it.message}")
                 }
             }
-            Log.d("bandal", "onDestroy: called ${startTimeState.value} and now ${LocalDateTime.now()}")
             context.stopService(stopIntent)
         }
 
         companion object {
+            private const val FOUR_HOUR_MILLIS = 1000 * 60 * 60 * 4
+            private const val ANR_TIMEOUT = 4000L
             const val TIMER_NOTIFICATION_ID: Int = 1
             const val EXTRA_START_TIME: String = "extra_start_time"
             const val EXTRA_END_TIME: String = "extra_end_time"
