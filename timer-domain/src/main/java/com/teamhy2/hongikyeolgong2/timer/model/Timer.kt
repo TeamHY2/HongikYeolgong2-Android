@@ -26,15 +26,15 @@ class Timer(
 
     fun emitTimerEvents(): Flow<Long> =
         flow {
-            while (isTimeOver().not()) {
+            while (isNotTimeOver()) {
                 val leftSeconds: Long = leftTime.seconds
                 emit(leftSeconds)
                 delay(ONE_SECOND)
             }
         }
 
-    private fun isTimeOver(): Boolean {
-        return leftTime <= Duration.ZERO
+    private fun isNotTimeOver(): Boolean {
+        return leftTime > Duration.ZERO
     }
 
     private fun calculateLeftTime(): Duration {
