@@ -11,7 +11,7 @@ value class LeftTime(val value: String) {
         private const val TIME_OVER = "00:00:00"
 
         fun create(endTime: LocalDateTime): LeftTime {
-            val now = LocalDateTime.now()
+            val now: LocalDateTime = LocalDateTime.now()
             if (now.isAfter(endTime)) {
                 return LeftTime(TIME_OVER)
             }
