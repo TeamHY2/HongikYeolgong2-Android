@@ -5,60 +5,36 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class Timer(
-    private val startTime: LocalDateTime,
+    val startTime: LocalDateTime,
     private val duration: Duration,
-    private val events: Map<Long, () -> Unit>,
 ) {
     var endTime: LocalDateTime = startTime.plusSeconds(duration.seconds)
         private set
-    private val timeFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern(START_END_TIME_FORMAT)
-
-    init {
-        require(events.keys.containsAll(EVENT_TIMES)) {
-            "포함되지 않은 시간이 있습니다."
-        }
-    }
-
-    val formattedLeftTime: String
-        get() =
-            String.format(
-                LEFT_TIME_FORMAT,
-                leftTime.toHours(),
-                leftTime.toMinutes() % 60,
-                leftTime.seconds % 60,
-            )
-
-    val formattedStartTime: String
-        get() = startTime.format(timeFormatter)
-
-    val formattedEndTime: String
-        get() = endTime.format(timeFormatter)
-
-    val formattedStartTimeMeridiem: String
-        get() = if (startTime.hour >= 12) "PM" else "AM"
-
-    val formattedEndTimeMeridiem: String
-        get() = if (endTime.hour >= 12) "PM" else "AM"
 
     private val leftTime: Duration
         get() = calculateLeftTime()
 
+    constructor(
+        startTime: LocalDateTime,
+        duration: Duration,
+        endTime: LocalDateTime,
+    ) : this(startTime, duration) {
+        this.endTime = endTime
+    }
+
     fun emitTimerEvents(): Flow<Long> =
         flow {
-            while (!isTimeOver()) {
+            while (isNotTimeOver()) {
                 val leftSeconds: Long = leftTime.seconds
-                events[leftSeconds]?.invoke()
                 emit(leftSeconds)
-                delay(DELAY_MILLIS)
+                delay(ONE_SECOND)
             }
         }
 
-    private fun isTimeOver(): Boolean {
-        return leftTime <= Duration.ZERO
+    private fun isNotTimeOver(): Boolean {
+        return leftTime > Duration.ZERO
     }
 
     private fun calculateLeftTime(): Duration {
@@ -69,13 +45,17 @@ class Timer(
         return Duration.between(now, endTime)
     }
 
-    companion object {
-        private const val START_END_TIME_FORMAT: String = "hh:mm"
-        private const val LEFT_TIME_FORMAT: String = "%02d:%02d:%02d"
-        const val TIME_OVER: Long = 0L
-        private const val DELAY_MILLIS: Long = 1000L
+    fun extend() {
+        endTime = endTime.plus(duration)
+    }
 
-        private val EVENT_TIMES: List<Long> =
-            listOf(TIME_OVER)
+    companion object {
+        private const val ONE_SECOND: Long = 1000L
+
+        val IDLE: Timer =
+            Timer(
+                startTime = LocalDateTime.MAX,
+                duration = Duration.ZERO,
+            )
     }
 }

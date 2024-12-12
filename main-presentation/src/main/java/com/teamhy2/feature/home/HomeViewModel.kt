@@ -3,8 +3,6 @@ package com.teamhy2.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.home.model.HomeUiState
-import com.teamhy2.hongikyeolgong2.timer.model.TimerService
-import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
@@ -23,9 +21,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -36,7 +32,6 @@ class HomeViewModel
         private val wiseSayingRepository: WiseSayingRepository,
         private val studyDayRepository: StudyDayRepository,
         private val promotionRepository: PromotionRepository,
-        private val timerService: TimerService,
     ) : ViewModel() {
         private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
         val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -96,33 +91,6 @@ class HomeViewModel
             }
         }
 
-        fun startTimerService(
-            startDateTime: LocalDateTime,
-            duration: Duration,
-        ) {
-            timerService.startService(startDateTime, duration)
-        }
-
-        fun stopTimerService() {
-            timerService.stopService()
-        }
-
-        fun saveStudyDay(isExtend: Boolean) {
-            val currentState = _homeUiState.value
-            if (currentState is HomeUiState.Success) {
-                viewModelScope.launch {
-                    studyDayRepository.saveStudyDay(
-                        startDateTime = currentState.timerUiState.startDateTime,
-                        endDateTime = LocalDateTime.now(),
-                    ).onSuccess {
-                        if (!isExtend) loadHomeData()
-                    }.onFailure { throwable ->
-                        _errorFlow.emit(throwable)
-                    }
-                }
-            }
-        }
-
         fun increaseTodayStudyCount() {
             _homeUiState.update { currentState ->
                 when (currentState) {
@@ -141,65 +109,6 @@ class HomeViewModel
                         currentState.copy(weeklyStudyDays = updatedWeeklyStudyDays)
                     }
 
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateTimerStateFromTimerViewModel(timerState: TimerUiState) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> {
-                        currentState.copy(
-                            timerUiState = timerState,
-                        )
-                    }
-
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateTimePickerVisibility(isVisible: Boolean) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(isTimePickerVisible = isVisible)
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateTimerRunning(isTimerRunning: Boolean) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(isTimerRunning = isTimerRunning)
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateSelectedTime(selectedTime: LocalDateTime) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(selectedTime = selectedTime)
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateStudyRoomExtendDialogVisibility(isVisible: Boolean) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(isStudyRoomExtendDialog = isVisible)
-                    else -> currentState
-                }
-            }
-        }
-
-        fun updateStudyRoomEndDialogVisibility(isVisible: Boolean) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(isStudyRoomEndDialog = isVisible)
                     else -> currentState
                 }
             }

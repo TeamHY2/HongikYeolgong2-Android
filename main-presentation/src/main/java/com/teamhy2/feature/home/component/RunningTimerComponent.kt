@@ -18,15 +18,16 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.HY2Timer
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.LeftTime
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.Meridiem
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerTime
+import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
+import java.time.Duration
+import java.time.LocalDateTime
 
 @Composable
 fun RunningTimerComponent(
-    durationAsSecond: Long,
-    startTime: String,
-    endTime: String,
-    startTimeMeridiem: String,
-    endTimeMeridiem: String,
-    leftTime: String,
+    timerUiState: TimerUiState.Running,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -38,12 +39,12 @@ fun RunningTimerComponent(
         Spacer(modifier = Modifier.height(20.dp))
         Box {
             HY2Timer(
-                durationAsSecond = durationAsSecond,
-                leftTime = leftTime,
-                startTime = startTime,
-                endTime = endTime,
-                startTimeMeridiem = startTimeMeridiem,
-                endTimeMeridiem = endTimeMeridiem,
+                durationAsSecond = timerUiState.duration.seconds,
+                leftTime = timerUiState.leftTime.value,
+                startTime = timerUiState.startTime.formattedTime,
+                startTimeMeridiem = timerUiState.startTime.meridiem.label,
+                endTime = timerUiState.endTime.formattedTime,
+                endTimeMeridiem = timerUiState.endTime.meridiem.label,
             )
         }
         Spacer(
@@ -53,7 +54,7 @@ fun RunningTimerComponent(
                     .weight(1f),
         )
 
-        if (leftTime <= extendThreshold) {
+        if (timerUiState.leftTime.value <= extendThreshold) {
             HY2Button(
                 text = stringResource(R.string.main_extend_study_room),
                 onClick = onStudyRoomExtendClick,
@@ -75,14 +76,28 @@ fun RunningTimerComponent(
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview_LessThanExtendThreshold() {
+    val timerUiState =
+        TimerUiState.Running(
+            startDateTime = LocalDateTime.now(),
+            startTime =
+                TimerTime(
+                    meridiem = Meridiem.AM,
+                    hour = "11",
+                    minute = "30",
+                ),
+            endTime =
+                TimerTime(
+                    meridiem = Meridiem.PM,
+                    hour = "12",
+                    minute = "00",
+                ),
+            leftTime = LeftTime("00:14:03"),
+            duration = Duration.ofSeconds(14400L),
+        )
+
     HY2Theme {
         RunningTimerComponent(
-            durationAsSecond = 14400L,
-            startTime = "11:30",
-            endTime = "12:00",
-            startTimeMeridiem = "AM",
-            endTimeMeridiem = "PM",
-            leftTime = "00:14:03",
+            timerUiState = timerUiState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
@@ -93,14 +108,28 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
 @Preview(showBackground = true)
 @Composable
 fun TimerScreenPreview_MoreThanExtendThreshold() {
+    val timerUiState =
+        TimerUiState.Running(
+            startDateTime = LocalDateTime.now(),
+            startTime =
+                TimerTime(
+                    meridiem = Meridiem.AM,
+                    hour = "11",
+                    minute = "30",
+                ),
+            endTime =
+                TimerTime(
+                    meridiem = Meridiem.PM,
+                    hour = "12",
+                    minute = "00",
+                ),
+            leftTime = LeftTime("00:45:00"),
+            duration = Duration.ofSeconds(14400L),
+        )
+
     HY2Theme {
         RunningTimerComponent(
-            durationAsSecond = 14400L,
-            startTime = "11:30",
-            endTime = "12:00",
-            startTimeMeridiem = "AM",
-            endTimeMeridiem = "PM",
-            leftTime = "00:45:00",
+            timerUiState = timerUiState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
             modifier = Modifier.background(Black),
