@@ -8,12 +8,12 @@ import java.util.Locale
 value class LeftTime(val value: String) {
     companion object {
         private const val LEFT_TIME_FORMAT: String = "%02d:%02d:%02d"
+        private const val TIME_OVER = "00:00:00"
 
         fun create(endTime: LocalDateTime): LeftTime {
             val now = LocalDateTime.now()
             if (now.isAfter(endTime)) {
-                val timeOver = String.format(Locale.KOREA, LEFT_TIME_FORMAT, 0, 0, 0)
-                return LeftTime(timeOver)
+                return LeftTime(TIME_OVER)
             }
 
             val leftTime: Duration = Duration.between(now, endTime)
