@@ -10,7 +10,6 @@ class InMemoryDepartmentRepository
             return listOf(
                 "건설도시공학부",
                 "건설환경공학과",
-                "건축학부",
                 "경영학부",
                 "경제학부",
                 "공연예술학부",
@@ -24,7 +23,6 @@ class InMemoryDepartmentRepository
                 "도예유리과",
                 "디자인경영융합학부",
                 "디자인·예술경영학부",
-                "디자인학부",
                 "물리교육과",
                 "법학부",
                 "불어불문학과",
@@ -33,7 +31,6 @@ class InMemoryDepartmentRepository
                 "산업·데이터공학과",
                 "섬유미술패션디자인과",
                 "수학교육과",
-                "신소재화공시스템공학부",
                 "영어교육과",
                 "영어영문학과",
                 "역사교육과",
