@@ -10,4 +10,5 @@ android {
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(projects.core.tracker)
+    implementation(libs.androidx.navigation.runtime.ktx)
 }
