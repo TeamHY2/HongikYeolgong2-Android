@@ -78,7 +78,6 @@ fun HY2Dialog(
                     text = description,
                     color = descriptionTextColor,
                     style = HY2Theme.typography.title02,
-                    modifier = Modifier.padding(bottom = 16.dp),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Row(
@@ -143,9 +142,9 @@ private fun HY2DialogPreview() {
             description = "로그아웃 하실 건가요?",
             leftButtonText = "로그아웃하기",
             rightButtonText = "돌아가기",
-            onLeftButtonClick = { /* TODO */ },
-            onRightButtonClick = { /* TODO */ },
-            onDismiss = { /* TODO */ },
+            onLeftButtonClick = {},
+            onRightButtonClick = {},
+            onDismiss = {},
         )
     }
 }
