@@ -12,4 +12,6 @@ dependencies {
     implementation(projects.userDomain)
     implementation(libs.coil)
     implementation(projects.core.tracker)
+    implementation(projects.onboardingPresentation)
+    implementation(projects.onboardingDomain)
 }

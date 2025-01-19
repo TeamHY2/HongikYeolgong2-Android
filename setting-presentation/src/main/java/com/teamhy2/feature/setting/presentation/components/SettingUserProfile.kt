@@ -44,10 +44,7 @@ fun SettingUserProfile(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .throttleClickable(onClick = onProfileClick),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Image(
             painter = profileImagePainter,

@@ -30,11 +30,7 @@ class SettingViewModel
         private val _errorFlow = MutableSharedFlow<Throwable>()
         val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
 
-        init {
-            initSettingUiState()
-        }
-
-        private fun initSettingUiState() {
+        fun initSettingUiState() {
             viewModelScope.launch {
                 val userInfoResult = userRepository.getUserInfo()
                 settingsRepository.notificationSwitchState.collectLatest { isNotificationSwitchChecked ->
