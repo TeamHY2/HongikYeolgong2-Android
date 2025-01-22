@@ -20,4 +20,9 @@ interface UserRepository {
     suspend fun withdraw(): Result<Unit>
 
     suspend fun getUserInfo(): Result<UserInfo>
+
+    suspend fun modifyUserInfo(
+        nickname: String,
+        department: String,
+    ): Result<Unit>
 }

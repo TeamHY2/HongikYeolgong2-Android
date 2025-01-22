@@ -32,6 +32,7 @@ class HY2Typography(
     body04: TextStyle,
     body05: TextStyle,
     body06: TextStyle,
+    body07: TextStyle,
     caption: TextStyle,
 ) {
     var head: TextStyle by mutableStateOf(head)
@@ -54,6 +55,8 @@ class HY2Typography(
         private set
     var body06: TextStyle by mutableStateOf(body06)
         private set
+    var body07: TextStyle by mutableStateOf(body07)
+        private set
     var caption: TextStyle by mutableStateOf(caption)
         private set
 
@@ -68,6 +71,7 @@ class HY2Typography(
         body04: TextStyle = this.body04,
         body05: TextStyle = this.body05,
         body06: TextStyle = this.body06,
+        body07: TextStyle = this.body07,
         caption: TextStyle = this.caption,
     ): HY2Typography =
         HY2Typography(
@@ -81,6 +85,7 @@ class HY2Typography(
             body04,
             body05,
             body06,
+            body07,
             caption,
         )
 
@@ -95,6 +100,7 @@ class HY2Typography(
         body04 = other.body04
         body05 = other.body05
         body06 = other.body06
+        body07 = other.body07
         caption = other.caption
     }
 }
@@ -161,6 +167,12 @@ fun HY2Typography(): HY2Typography {
                 fontFamily = PretendardRegular,
                 fontSize = 18.sp,
                 lineHeight = 26.sp,
+            ),
+        body07 =
+            TextStyle(
+                fontFamily = PretendardRegular,
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
             ),
         caption =
             TextStyle(

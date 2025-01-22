@@ -36,12 +36,14 @@ import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
 import com.teamhy2.feature.setting.presentation.model.SettingUiState
+import com.teamhy2.feature.setting.presentation.navigation.navigateToProfileModification
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 import com.teamhy2.user.domain.model.UserInfo
 import kotlinx.coroutines.flow.collectLatest
@@ -59,8 +61,11 @@ fun SettingRoute(
     val tracker = LocalTracker.current
 
     val localShowSnackBar = LocalShowSnackBar.current
+    val localNavController = LocalNavController.current
+
     LaunchedEffect(true) {
         tracker.trackEvent("Setting")
+        viewModel.initSettingUiState()
         viewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
@@ -85,6 +90,7 @@ fun SettingRoute(
         },
         onInquiryClick = onInquiryClick,
         onSignOutOrWithdrawComplete = onSignOutOrWithdrawComplete,
+        onProfileModifyClick = { localNavController.navigateToProfileModification() },
         modifier = modifier,
     )
 }
@@ -97,6 +103,7 @@ fun SettingScreen(
     onNotificationSwitchClick: (Boolean) -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onProfileModifyClick: () -> Unit,
     onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -150,6 +157,7 @@ fun SettingScreen(
                     onNotificationSwitchClick = onNotificationSwitchClick,
                     onNoticeClick = onNoticeClick,
                     onInquiryClick = onInquiryClick,
+                    onProfileClick = onProfileModifyClick,
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -176,6 +184,7 @@ fun SettingBody(
     onNotificationSwitchClick: (Boolean) -> Unit,
     onNoticeClick: () -> Unit,
     onInquiryClick: () -> Unit,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -185,8 +194,11 @@ fun SettingBody(
                 .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        SettingUserProfile(userInfo)
-        Spacer(modifier = Modifier.height(20.dp))
+        SettingUserProfile(
+            userInfo = userInfo,
+            onProfileClick = onProfileClick,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
         SettingButton(
             text = stringResource(R.string.setting_notice),
             onClick = onNoticeClick,
@@ -270,7 +282,7 @@ fun SettingBottom(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 private fun SettingScreenPreview() {
     val sampleUserInfo =
@@ -298,6 +310,7 @@ private fun SettingScreenPreview() {
             onNoticeClick = {},
             onInquiryClick = {},
             onSignOutOrWithdrawComplete = {},
+            onProfileModifyClick = {},
             modifier = Modifier,
         )
     }
