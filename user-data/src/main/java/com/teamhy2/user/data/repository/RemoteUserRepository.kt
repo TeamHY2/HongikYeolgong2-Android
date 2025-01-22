@@ -2,6 +2,7 @@ package com.teamhy2.user.data.repository
 
 import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
+import com.benenfeldt.remote.dto.UserInfoRequest
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.mapper.toResult
@@ -80,5 +81,17 @@ class RemoteUserRepository
         override suspend fun getUserInfo(): Result<UserInfo> {
             return userService.getUserInfo()
                 .toResult { it.data.toDomain() }
+        }
+
+        override suspend fun modifyUserInfo(
+            nickname: String,
+            department: String,
+        ): Result<Unit> {
+            return userService.modifyUserInfo(
+                UserInfoRequest(
+                    nickname = nickname,
+                    department = department,
+                ),
+            ).toResult()
         }
     }

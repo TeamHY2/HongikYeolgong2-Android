@@ -1,6 +1,7 @@
 package com.benenfeldt.remote.api
 
 import com.benenfeldt.remote.dto.BaseResponse
+import com.benenfeldt.remote.dto.UserInfoRequest
 import com.benenfeldt.remote.dto.UserInfoResponse
 import com.benenfeldt.remote.dto.UserSignUpRequest
 import com.benenfeldt.remote.dto.UserSignUpResponse
@@ -8,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface UserService {
     @POST("/api/v1/user/join")
@@ -20,4 +22,9 @@ interface UserService {
 
     @GET("/api/v1/user/me")
     suspend fun getUserInfo(): Result<BaseResponse<UserInfoResponse>>
+
+    @PUT("/api/v1/user")
+    suspend fun modifyUserInfo(
+        @Body userInfoRequest: UserInfoRequest,
+    ): Result<BaseResponse<UserInfoResponse>>
 }

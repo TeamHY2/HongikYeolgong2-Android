@@ -25,4 +25,10 @@ dependencies {
 
 	implementation(libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
 	implementation(libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
+
+    // MVI - Orbit
+    implementation(libs.findLibrary("orbit.core").get())
+    implementation(libs.findLibrary("orbit.viewmodel").get())
+    implementation(libs.findLibrary("orbit.compose").get())
+    implementation(libs.findLibrary("orbit.test").get())
 }

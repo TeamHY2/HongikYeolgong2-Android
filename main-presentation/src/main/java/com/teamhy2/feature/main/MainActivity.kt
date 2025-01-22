@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -37,6 +38,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.designsystem.util.compositionlocal.ShowSnackBar
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             HY2Theme {
-                val navController = rememberNavController()
+                val navController: NavHostController = rememberNavController()
                 val currentBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = currentBackStackEntry?.destination?.route
 
@@ -140,6 +142,7 @@ class MainActivity : AppCompatActivity() {
                                 CompositionLocalProvider(
                                     LocalTracker provides tracker,
                                     LocalShowSnackBar provides showSnackBar,
+                                    LocalNavController provides navController,
                                 ) {
                                     LaunchedEffect(true) {
                                         initialViewModel.errorFlow.collectLatest {
