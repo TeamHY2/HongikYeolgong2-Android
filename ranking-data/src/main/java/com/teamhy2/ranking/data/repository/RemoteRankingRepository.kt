@@ -25,7 +25,7 @@ class RemoteRankingRepository
         override suspend fun fetchRanking(weekNumber: Int): Result<Ranking> {
             return studyService.getRanking(weekNumber).toResult { baseResponse ->
                 baseResponse.data.toDomain().copy(
-                    departmentRankings = baseResponse.data.toDomain().departmentRankings.sortedBy { it.currentRank },
+                    departmentRankings = baseResponse.data.toDomain().departmentRankings,
                 )
             }
         }
