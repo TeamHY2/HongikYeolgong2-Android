@@ -29,6 +29,7 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.ui.theme.White
+import com.teamhy2.hongikyeolgong2.ranking.presentation.R
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R.drawable.ic_ranking_dash
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R.drawable.ic_ranking_down
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R.drawable.ic_ranking_up
@@ -106,7 +107,7 @@ fun RankingItem(
                 },
     ) {
         Text(
-            text = "$rank",
+            text = if (rank == 0) "-" else "$rank",
             style = HY2Typography().body05,
             color = rankItemStyle.textColor,
         )
@@ -127,17 +128,25 @@ fun RankingItem(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.width(50.dp),
         ) {
-            Text(
-                text = rankChangeText,
-                style = HY2Typography().caption,
-                color = rankItemStyle.textColor,
-            )
-            Spacer(modifier = Modifier.width(7.dp))
-            Image(
-                painter = painterResource(id = rankChangeIcon),
-                contentDescription = null,
-                modifier = Modifier.size(10.dp),
-            )
+            if (rank != 0) {
+                Text(
+                    text = rankChangeText,
+                    style = HY2Typography().caption,
+                    color = rankItemStyle.textColor,
+                )
+                Spacer(modifier = Modifier.width(7.dp))
+                Image(
+                    painter = painterResource(id = rankChangeIcon),
+                    contentDescription = null,
+                    modifier = Modifier.size(10.dp),
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_ranking_dash),
+                    contentDescription = null,
+                    modifier = Modifier.size(10.dp),
+                )
+            }
         }
     }
 }
