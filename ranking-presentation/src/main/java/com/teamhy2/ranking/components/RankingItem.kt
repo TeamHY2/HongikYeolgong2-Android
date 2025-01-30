@@ -76,7 +76,14 @@ fun RankingItem(
             else -> ic_ranking_dash
         }
 
-    val rankChangeText =
+    val rankText: String =
+        if (rank == 0) {
+            "-"
+        } else {
+            "$rank"
+        }
+
+    val rankChangeText: String =
         if (rankChange > 0) {
             "+$rankChange"
         } else if (rankChange < 0) {
@@ -106,7 +113,7 @@ fun RankingItem(
                 },
     ) {
         Text(
-            text = "$rank",
+            text = rankText,
             style = HY2Typography().body05,
             color = rankItemStyle.textColor,
         )
