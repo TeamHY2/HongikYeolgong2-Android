@@ -36,9 +36,9 @@ class RankingViewModel
             getWeekNumber()
         }
 
-        private fun getWeekNumber() {
+        private fun getWeekNumber(date: LocalDate = LocalDate.now()) {
             viewModelScope.launch {
-                rankingRepository.fetchWeekNumber(LocalDate.now())
+                rankingRepository.fetchWeekNumber(date)
                     .onSuccess { weekNumber ->
                         currentWeekNumber = weekNumber.weekNumber
                         latestWeekNumber = weekNumber.weekNumber
@@ -70,6 +70,11 @@ class RankingViewModel
 
         fun getLastWeekRanking() {
             currentWeekNumber?.let { currentWeekNumber ->
+                val week = currentWeekNumber % 100
+                if (week == 1) {
+                    return
+                }
+
                 getDepartmentRankings(currentWeekNumber - 1)
             }
         }
