@@ -14,6 +14,28 @@ android {
         versionName = libs.versions.versionName.get()
     }
 
+    buildTypes {
+        debug {
+            isDebuggable = true
+            manifestPlaceholders.putAll(
+                mapOf(
+                    "appIcon" to "@mipmap/ic_app_logo_debug",
+                    "roundIcon" to "@mipmap/ic_app_logo_debug_round",
+                ),
+            )
+        }
+
+        release {
+            isDebuggable = false
+            manifestPlaceholders.putAll(
+                mapOf(
+                    "appIcon" to "@mipmap/ic_app_logo",
+                    "roundIcon" to "@mipmap/ic_app_logo_round",
+                ),
+            )
+        }
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
