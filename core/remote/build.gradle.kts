@@ -9,8 +9,14 @@ plugins {
 android {
     namespace = "com.benenfeldt.remote"
 
-    defaultConfig {
-        buildConfigField("String", "BASE_URL", getApiKey("BASE_URL"))
+    buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", getApiKey("DEBUG_BASE_URL"))
+        }
+
+        release {
+            buildConfigField("String", "BASE_URL", getApiKey("RELEASE_BASE_URL"))
+        }
     }
 
     buildFeatures {
