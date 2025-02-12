@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
@@ -32,28 +33,34 @@ import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.hongikyeolgong2.ranking.presentation.R
 import com.teamhy2.ranking.components.RankingItem
 import com.teamhy2.ranking.model.DepartmentRanking
-import com.teamhy2.ranking.model.RankingUiState
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun RankingRoute(
     modifier: Modifier = Modifier,
     rankingViewModel: RankingViewModel = hiltViewModel(),
 ) {
-    val rankingUiState by rankingViewModel.rankingUiState.collectAsStateWithLifecycle()
-
+    val state: RankingState by rankingViewModel.collectAsState()
     val localShowSnackBar = LocalShowSnackBar.current
     val tracker = LocalTracker.current
 
-    LaunchedEffect(true) {
-        tracker.trackEvent("Ranking")
-        rankingViewModel.errorFlow.collectLatest { throwable ->
-            localShowSnackBar.showSnackBar(throwable.message)
+    rankingViewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is RankingSideEffect.ShowError -> {
+                localShowSnackBar.showSnackBar(sideEffect.throwable.message)
+            }
         }
     }
 
+    LaunchedEffect(true) {
+        tracker.trackEvent("Ranking")
+    }
+
     RankingScreen(
-        rankingUiState = rankingUiState,
+        state = state,
         onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
         onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
         modifier =
@@ -62,37 +69,31 @@ fun RankingRoute(
                 .padding(horizontal = 24.dp)
                 .fillMaxSize(),
     )
+
+    if (state.isLoading) {
+        HY2CircularLoading()
+    }
 }
 
 @Composable
 fun RankingScreen(
-    rankingUiState: RankingUiState,
+    state: RankingState,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (rankingUiState) {
-        is RankingUiState.Loading -> {
-            HY2CircularLoading()
-        }
-
-        is RankingUiState.Success -> {
-            Column(
-                modifier = modifier,
-            ) {
-                RankingHeader(
-                    currentWeek = rankingUiState.currentWeek,
-                    onLastWeekClick = onLastWeekClick,
-                    onNextWeekClick = onNextWeekClick,
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                RankingBody(
-                    departmentRankings = rankingUiState.departmentRankings,
-                )
-            }
-        }
-
-        is RankingUiState.Error -> Unit
+    Column(
+        modifier = modifier,
+    ) {
+        RankingHeader(
+            currentWeek = state.currentWeek,
+            onLastWeekClick = onLastWeekClick,
+            onNextWeekClick = onNextWeekClick,
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        RankingBody(
+            departmentRankings = state.departmentRankings.toImmutableList(),
+        )
     }
 }
 
@@ -129,15 +130,15 @@ fun RankingHeader(
 
 @Composable
 fun RankingBody(
-    departmentRankings: List<DepartmentRanking>,
+    departmentRankings: ImmutableList<DepartmentRanking>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 10.dp),
     ) {
-        items(departmentRankings.size) { index ->
-            val item = departmentRankings[index]
+        items(departmentRankings) { item ->
             RankingItem(
                 rank = item.currentRank,
                 departmentName = item.department,
@@ -214,16 +215,16 @@ fun RankingScreenPreview() {
                 currentRank = 10,
                 rankChange = 3,
             ),
-        )
+        ).toImmutableList()
 
     val sampleUiState =
-        RankingUiState.Success(
+        RankingState(
             currentWeek = "9월 1주차",
             departmentRankings = sampleItems,
         )
 
     RankingScreen(
-        rankingUiState = sampleUiState,
+        state = sampleUiState,
         onLastWeekClick = {},
         onNextWeekClick = {},
     )
