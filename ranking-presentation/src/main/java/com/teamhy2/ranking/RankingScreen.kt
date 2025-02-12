@@ -60,7 +60,8 @@ fun RankingRoute(
     }
 
     RankingScreen(
-        state = state,
+        currentWeek = state.currentWeek,
+        departmentRankings = state.departmentRankings.toImmutableList(),
         onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
         onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
         modifier =
@@ -77,7 +78,8 @@ fun RankingRoute(
 
 @Composable
 fun RankingScreen(
-    state: RankingState,
+    currentWeek: String,
+    departmentRankings: ImmutableList<DepartmentRanking>,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -86,13 +88,13 @@ fun RankingScreen(
         modifier = modifier,
     ) {
         RankingHeader(
-            currentWeek = state.currentWeek,
+            currentWeek = currentWeek,
             onLastWeekClick = onLastWeekClick,
             onNextWeekClick = onNextWeekClick,
         )
         Spacer(modifier = Modifier.height(20.dp))
         RankingBody(
-            departmentRankings = state.departmentRankings.toImmutableList(),
+            departmentRankings = departmentRankings,
         )
     }
 }
@@ -153,7 +155,7 @@ fun RankingBody(
 @Preview(showBackground = true)
 @Composable
 fun RankingScreenPreview() {
-    val sampleItems =
+    val sampleDepartmentRankings =
         listOf(
             DepartmentRanking(
                 department = "국어국문학과",
@@ -217,14 +219,9 @@ fun RankingScreenPreview() {
             ),
         ).toImmutableList()
 
-    val sampleUiState =
-        RankingState(
-            currentWeek = "9월 1주차",
-            departmentRankings = sampleItems,
-        )
-
     RankingScreen(
-        state = sampleUiState,
+        currentWeek = "9월 1주차",
+        departmentRankings = sampleDepartmentRankings,
         onLastWeekClick = {},
         onNextWeekClick = {},
     )
