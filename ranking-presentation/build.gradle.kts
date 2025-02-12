@@ -11,4 +11,5 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.rankingDomain)
     implementation(projects.core.tracker)
+    implementation(libs.kotlinx.immutable.collection)
 }
