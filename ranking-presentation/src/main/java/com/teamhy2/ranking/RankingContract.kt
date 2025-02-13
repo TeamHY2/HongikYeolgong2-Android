@@ -5,7 +5,7 @@ import com.teamhy2.ranking.model.DepartmentRanking
 data class RankingState(
     val isLoading: Boolean = false,
     val currentWeek: String = "",
-    val departmentRankings: List<DepartmentRanking> = DepartmentRanking.defaultList(),
+    val departmentRankings: List<DepartmentRanking> = emptyList(),
 )
 
 sealed interface RankingSideEffect {
