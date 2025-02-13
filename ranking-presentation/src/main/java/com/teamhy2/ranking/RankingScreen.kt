@@ -59,20 +59,20 @@ fun RankingRoute(
         tracker.trackEvent("Ranking")
     }
 
-    RankingScreen(
-        currentWeek = state.currentWeek,
-        departmentRankings = state.departmentRankings.toImmutableList(),
-        onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
-        onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
-        modifier =
-            modifier
-                .background(BackgroundBlack)
-                .padding(horizontal = 24.dp)
-                .fillMaxSize(),
-    )
-
-    if (state.isLoading) {
-        HY2CircularLoading()
+    when (state.isLoading) {
+        true -> HY2CircularLoading()
+        false ->
+            RankingScreen(
+                currentWeek = state.currentWeek,
+                departmentRankings = state.departmentRankings.toImmutableList(),
+                onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
+                onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
+                modifier =
+                    modifier
+                        .background(BackgroundBlack)
+                        .padding(horizontal = 24.dp)
+                        .fillMaxSize(),
+            )
     }
 }
 
