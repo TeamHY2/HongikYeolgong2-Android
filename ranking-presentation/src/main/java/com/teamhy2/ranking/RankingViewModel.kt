@@ -34,6 +34,7 @@ class RankingViewModel
                         getDepartmentRankings(weekNumber.weekNumber)
                     }
                     .onFailure { throwable ->
+                        reduce { state.copy(isLoading = false) }
                         postSideEffect(RankingSideEffect.ShowError(throwable))
                     }
             }
@@ -53,6 +54,7 @@ class RankingViewModel
                         }
                     }
                     .onFailure { throwable ->
+                        reduce { state.copy(isLoading = false) }
                         postSideEffect(RankingSideEffect.ShowError(throwable))
                     }
             }
