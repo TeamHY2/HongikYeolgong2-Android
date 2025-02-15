@@ -140,7 +140,7 @@ fun RankingBody(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 10.dp),
     ) {
-        items(departmentRankings) { item ->
+        items(departmentRankings, key = { it.department }) { item ->
             RankingItem(
                 rank = item.currentRank,
                 departmentName = item.department,
