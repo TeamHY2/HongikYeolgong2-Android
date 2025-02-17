@@ -36,6 +36,7 @@ datastore = "1.0.0"
 firebaseFirestoreKtx = "25.0.0"
 coil = "2.3.0"
 amplitude = "1.+"
+kotlinxImmutable = "0.3.7"
 
 # HTTP
 okhttp = "4.11.0"
@@ -153,6 +154,9 @@ orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbit" 
 orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbit" }
 orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbit" }
 orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbit" }
+
+# Immutable-collection
+kotlinx-immutable-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
