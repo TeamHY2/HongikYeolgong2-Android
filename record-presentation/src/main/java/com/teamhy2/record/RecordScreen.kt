@@ -32,7 +32,7 @@ fun RecordRoute(
     modifier: Modifier = Modifier,
     recordViewModel: RecordViewModel = hiltViewModel(),
 ) {
-    val recordUiState by recordViewModel.collectAsState()
+    val recordState by recordViewModel.collectAsState()
 
     val localShowSnackBar = LocalShowSnackBar.current
     val tracker = LocalTracker.current
@@ -54,35 +54,20 @@ fun RecordRoute(
         }
     }
 
-    RecordScreen(
-        recordState = recordUiState,
-        onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
-        onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
-        modifier = modifier,
-    )
-}
-
-@Composable
-fun RecordScreen(
-    recordState: RecordState,
-    onPreviousMonthClick: () -> Unit,
-    onNextMonthClick: () -> Unit,
-    modifier: Modifier,
-) {
     if (recordState.isLoading) {
         HY2CircularLoading()
     } else {
-        RecordBody(
+        RecordScreen(
             recordState = recordState,
-            onPreviousMonthClick = onPreviousMonthClick,
-            onNextMonthClick = onNextMonthClick,
+            onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
+            onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
             modifier = modifier.fillMaxSize(),
         )
     }
 }
 
 @Composable
-fun RecordBody(
+fun RecordScreen(
     recordState: RecordState,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
