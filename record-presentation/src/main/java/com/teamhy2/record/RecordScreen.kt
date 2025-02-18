@@ -112,13 +112,6 @@ fun RecordBody(
                     studyMinutes = recordUiState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
-                Spacer(modifier = Modifier.width(13.dp))
-                StudyDurationCard(
-                    title = "이번학기",
-                    studyHours = recordUiState.studyDuration.semesterHours,
-                    studyMinutes = recordUiState.studyDuration.semesterMinutes,
-                    modifier = Modifier.weight(1f),
-                )
             }
             Spacer(modifier = Modifier.height(14.dp))
             Row {
@@ -151,8 +144,6 @@ fun RecordScreenPreview() {
             monthMinutes = 30,
             dayHours = 3,
             dayMinutes = 24,
-            semesterHours = 120,
-            semesterMinutes = 10,
         )
 
     val sampleCalendar = Calendar(studyDays = emptyList())
