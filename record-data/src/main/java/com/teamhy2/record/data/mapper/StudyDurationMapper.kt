@@ -11,7 +11,5 @@ fun StudyDurationResponse.toDomain(): StudyDuration {
         monthMinutes = monthMinutes,
         dayHours = dayHours,
         dayMinutes = dayMinutes,
-        semesterHours = semesterHours,
-        semesterMinutes = semesterMinutes,
     )
 }
