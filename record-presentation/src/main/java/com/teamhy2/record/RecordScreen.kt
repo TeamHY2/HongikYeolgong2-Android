@@ -1,5 +1,6 @@
 package com.teamhy2.record
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,9 +21,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.record.components.StudyDurationCard
+import com.teamhy2.record.components.StudyDurationCardType
 import com.teamhy2.record.domain.model.StudyDuration
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -76,39 +79,30 @@ fun RecordScreen(
     Column(
         modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 27.dp, bottom = 36.dp),
     ) {
+        Row {
+            StudyDurationCard(
+                title = "2025",
+                studyDurationCardType = StudyDurationCardType.YEAR,
+                studyHours = recordState.studyDuration.yearHours,
+                studyMinutes = recordState.studyDuration.yearMinutes,
+                modifier = Modifier.weight(1f),
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            StudyDurationCard(
+                title = "2",
+                studyDurationCardType = StudyDurationCardType.MONTH,
+                studyHours = recordState.studyDuration.monthHours,
+                studyMinutes = recordState.studyDuration.monthMinutes,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Spacer(Modifier.height(52.dp))
         Hy2Calendar(
             title = recordState.calendar.now,
             days = recordState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
         )
-        Spacer(modifier = Modifier.weight(1f))
-        Column {
-            Row {
-                StudyDurationCard(
-                    title = "연간",
-                    studyHours = recordState.studyDuration.yearHours,
-                    studyMinutes = recordState.studyDuration.yearMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            Spacer(modifier = Modifier.height(14.dp))
-            Row {
-                StudyDurationCard(
-                    title = "월간",
-                    studyHours = recordState.studyDuration.monthHours,
-                    studyMinutes = recordState.studyDuration.monthMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(modifier = Modifier.width(13.dp))
-                StudyDurationCard(
-                    title = "투데이",
-                    studyHours = recordState.studyDuration.dayHours,
-                    studyMinutes = recordState.studyDuration.dayMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
     }
 }
 
@@ -137,6 +131,8 @@ fun RecordScreenPreview() {
         recordState = sampleRecordUiState,
         onPreviousMonthClick = {},
         onNextMonthClick = {},
-        modifier = Modifier.fillMaxSize(),
+        modifier =
+            Modifier.fillMaxSize()
+                .background(color = BackgroundBlack),
     )
 }
