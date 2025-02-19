@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
@@ -25,81 +24,61 @@ import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.record.components.StudyDurationCard
 import com.teamhy2.record.domain.model.StudyDuration
-import com.teamhy2.record.model.RecordUiState
-import kotlinx.coroutines.flow.collectLatest
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun RecordRoute(
     modifier: Modifier = Modifier,
     recordViewModel: RecordViewModel = hiltViewModel(),
 ) {
-    val recordUiState by recordViewModel.recordUiState.collectAsStateWithLifecycle()
+    val recordState by recordViewModel.collectAsState()
 
     val localShowSnackBar = LocalShowSnackBar.current
     val tracker = LocalTracker.current
-
-    LaunchedEffect(true) {
-        tracker.trackEvent("Record")
-        recordViewModel.errorFlow.collectLatest { throwable ->
-            localShowSnackBar.showSnackBar(throwable.message)
-        }
-    }
-
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+
     LaunchedEffect(Unit) {
+        tracker.trackEvent("Record")
         lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            recordViewModel.loadRecordData()
+            recordViewModel.fetchStudyDuration()
+            recordViewModel.fetchCalendar()
         }
     }
 
-    RecordScreen(
-        recordUiState = recordUiState,
-        onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
-        onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
-        modifier = modifier,
-    )
+    recordViewModel.collectSideEffect {
+        when (it) {
+            is RecordSideEffect.ShowError -> {
+                localShowSnackBar.showSnackBar(it.throwable.message)
+            }
+        }
+    }
+
+    if (recordState.isLoading) {
+        HY2CircularLoading()
+    } else {
+        RecordScreen(
+            recordState = recordState,
+            onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
+            onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
+            modifier = modifier.fillMaxSize(),
+        )
+    }
 }
 
 @Composable
 fun RecordScreen(
-    recordUiState: RecordUiState,
-    onPreviousMonthClick: () -> Unit,
-    onNextMonthClick: () -> Unit,
-    modifier: Modifier,
-) {
-    when (recordUiState) {
-        is RecordUiState.Loading -> {
-            HY2CircularLoading()
-        }
-
-        is RecordUiState.Success -> {
-            RecordBody(
-                recordUiState = recordUiState,
-                onPreviousMonthClick = onPreviousMonthClick,
-                onNextMonthClick = onNextMonthClick,
-                modifier = modifier.fillMaxSize(),
-            )
-        }
-
-        is RecordUiState.Error -> Unit
-    }
-}
-
-@Composable
-fun RecordBody(
-    recordUiState: RecordUiState,
+    recordState: RecordState,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val calendar = (recordUiState as RecordUiState.Success).calendar
-
     Column(
         modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 27.dp, bottom = 36.dp),
     ) {
         Hy2Calendar(
-            title = calendar.now,
-            days = calendar.getMonth(),
+            title = recordState.calendar.now,
+            days = recordState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
         )
@@ -108,15 +87,8 @@ fun RecordBody(
             Row {
                 StudyDurationCard(
                     title = "연간",
-                    studyHours = recordUiState.studyDuration.yearHours,
-                    studyMinutes = recordUiState.studyDuration.yearMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(modifier = Modifier.width(13.dp))
-                StudyDurationCard(
-                    title = "이번학기",
-                    studyHours = recordUiState.studyDuration.semesterHours,
-                    studyMinutes = recordUiState.studyDuration.semesterMinutes,
+                    studyHours = recordState.studyDuration.yearHours,
+                    studyMinutes = recordState.studyDuration.yearMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -124,15 +96,15 @@ fun RecordBody(
             Row {
                 StudyDurationCard(
                     title = "월간",
-                    studyHours = recordUiState.studyDuration.monthHours,
-                    studyMinutes = recordUiState.studyDuration.monthMinutes,
+                    studyHours = recordState.studyDuration.monthHours,
+                    studyMinutes = recordState.studyDuration.monthMinutes,
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(13.dp))
                 StudyDurationCard(
                     title = "투데이",
-                    studyHours = recordUiState.studyDuration.dayHours,
-                    studyMinutes = recordUiState.studyDuration.dayMinutes,
+                    studyHours = recordState.studyDuration.dayHours,
+                    studyMinutes = recordState.studyDuration.dayMinutes,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -151,20 +123,18 @@ fun RecordScreenPreview() {
             monthMinutes = 30,
             dayHours = 3,
             dayMinutes = 24,
-            semesterHours = 120,
-            semesterMinutes = 10,
         )
 
     val sampleCalendar = Calendar(studyDays = emptyList())
 
     val sampleRecordUiState =
-        RecordUiState.Success(
+        RecordState(
             studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
 
     RecordScreen(
-        recordUiState = sampleRecordUiState,
+        recordState = sampleRecordUiState,
         onPreviousMonthClick = {},
         onNextMonthClick = {},
         modifier = Modifier.fillMaxSize(),

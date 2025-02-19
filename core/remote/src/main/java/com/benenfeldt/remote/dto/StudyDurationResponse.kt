@@ -10,6 +10,4 @@ data class StudyDurationResponse(
     val monthMinutes: Int,
     val dayHours: Int,
     val dayMinutes: Int,
-    val semesterHours: Int,
-    val semesterMinutes: Int,
 )
