@@ -31,7 +31,7 @@
 | **카테고리**   | **기술**                       |
 |----------------|--------------------------------|
 | **언어**       | Kotlin                      |
-| **아키텍처**   | MVVM, Clean Architecture       |
+| **아키텍처**   | MVVM + MVI(Orbit), Clean Architecture       |
 | **UI**         | Jetpack Compose               |
 | **DI**         | Hilt                          |
 | **비동기 처리** | Kotlin Coroutines, StateFlow  |
