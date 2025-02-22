@@ -31,6 +31,7 @@ import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_left
@@ -45,6 +46,7 @@ private const val DAY_SIZE_RATIO = 1f
 @Composable
 fun Hy2Calendar(
     title: String,
+    isThisMonth: Boolean,
     days: List<StudyDay>,
     selectedDay: StudyDay?,
     onPreviousMonthClick: () -> Unit,
@@ -55,6 +57,7 @@ fun Hy2Calendar(
     Column(modifier = modifier) {
         CalendarHeader(
             title = title,
+            isThisMonth = isThisMonth,
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
         )
@@ -67,6 +70,7 @@ fun Hy2Calendar(
 @Composable
 private fun CalendarHeader(
     title: String,
+    isThisMonth: Boolean,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -88,10 +92,10 @@ private fun CalendarHeader(
                 contentDescription = stringResource(description_previous_month),
             )
         }
-        IconButton(onClick = onNextMonthClick) {
+        IconButton(enabled = isThisMonth.not(), onClick = onNextMonthClick) {
             Icon(
                 painter = painterResource(id = ic_calendar_right),
-                tint = Gray300,
+                tint = if (isThisMonth) Gray800 else Gray300,
                 contentDescription = stringResource(description_next_month),
             )
         }
@@ -212,6 +216,7 @@ private fun Hy2CalendarPreview() {
         Hy2Calendar(
             title = title,
             days = month,
+            isThisMonth = true,
             onPreviousMonthClick = {
                 calendar.moveToPreviousMonth()
                 title = calendar.now
@@ -235,6 +240,7 @@ private fun CalendarHeaderPreview() {
         CalendarHeader(
             title = "Jan 2024",
             onPreviousMonthClick = { },
+            isThisMonth = false,
             onNextMonthClick = { },
         )
     }

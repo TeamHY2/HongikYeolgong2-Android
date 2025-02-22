@@ -39,6 +39,7 @@ import com.teamhy2.record.components.StudyDurationCardType
 import com.teamhy2.record.domain.model.StudyDuration
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.time.LocalDate
 
 @Composable
 fun RecordRoute(
@@ -125,6 +126,7 @@ fun RecordScreen(
         Spacer(Modifier.height(52.dp))
         Hy2Calendar(
             title = recordState.calendar.now,
+            isThisMonth = recordState.calendar.date == LocalDate.now(),
             days = recordState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
