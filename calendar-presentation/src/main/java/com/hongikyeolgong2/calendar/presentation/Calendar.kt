@@ -3,7 +3,6 @@ package com.hongikyeolgong2.calendar.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -41,12 +40,13 @@ import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_pr
 import java.time.LocalDate
 
 private const val DAY_DEFAULT_MARGIN = 5
-private const val DAY_SIZE_RATIO = 1.212f
+private const val DAY_SIZE_RATIO = 1f
 
 @Composable
 fun Hy2Calendar(
     title: String,
     days: List<StudyDay>,
+    selectedDay: StudyDay?,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,7 +59,7 @@ fun Hy2Calendar(
         )
         Spacer(modifier = Modifier.height(12.dp))
         CalendarDayOfWeeks()
-        CalendarBody(days = days)
+        CalendarBody(days = days, selectedDay = selectedDay)
     }
 }
 
@@ -128,8 +128,9 @@ private const val SIX_LINE_DAYS_COUNT = 42
 private const val DAY_COUNT_OF_WEEK = 7
 
 @Composable
-private fun ColumnScope.CalendarBody(
+private fun CalendarBody(
     days: List<StudyDay>,
+    selectedDay: StudyDay?,
     modifier: Modifier = Modifier,
 ) {
     val beforeEmptyDaysCount: Int = (days.first().date.dayOfWeek.ordinal + 1) % DAY_COUNT_OF_WEEK
@@ -141,25 +142,24 @@ private fun ColumnScope.CalendarBody(
         modifier = modifier,
     ) {
         items(beforeEmptyDaysCount) {
-            Box(
-                modifier =
-                    Modifier
-                        .aspectRatio(DAY_SIZE_RATIO, false)
-                        .weight(1f),
-            )
+            Box(modifier = Modifier.aspectRatio(DAY_SIZE_RATIO))
         }
 
         items(days) {
-            Day(studyDay = it, modifier = Modifier.weight(1f))
+            Day(
+                studyDay = it,
+                onDayClicked = {},
+                dayState =
+                    when (selectedDay) {
+                        null -> DayState.Default
+                        it -> DayState.Selected
+                        else -> DayState.Unselected
+                    },
+            )
         }
 
         items(SIX_LINE_DAYS_COUNT - days.size - beforeEmptyDaysCount) {
-            Box(
-                modifier =
-                    Modifier
-                        .aspectRatio(DAY_SIZE_RATIO, false)
-                        .weight(1f),
-            )
+            Box(modifier = Modifier.aspectRatio(DAY_SIZE_RATIO))
         }
     }
 }
@@ -209,6 +209,7 @@ private fun Hy2CalendarPreview() {
                 title = calendar.now
                 month = calendar.getMonth()
             },
+            selectedDay = null,
             onNextMonthClick = {
                 calendar.moveToNextMonth()
                 title = calendar.now
