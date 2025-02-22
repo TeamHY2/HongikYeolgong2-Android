@@ -108,7 +108,12 @@ fun RecordScreen(
         Spacer(Modifier.height(24.dp))
         Row {
             StudyDurationCard(
-                title = "2025",
+                title =
+                    if (recordState.selectedStudyDay == null) {
+                        recordState.calendar.date.year.toString()
+                    } else {
+                        recordState.selectedStudyDay.studyDay.date.year.toString()
+                    },
                 studyDurationCardType = StudyDurationCardType.YEAR,
                 studyHours = recordState.studyDuration.yearHours,
                 studyMinutes = recordState.studyDuration.yearMinutes,
@@ -116,7 +121,12 @@ fun RecordScreen(
             )
             Spacer(modifier = Modifier.width(12.dp))
             StudyDurationCard(
-                title = "2",
+                title =
+                    if (recordState.selectedStudyDay == null) {
+                        recordState.calendar.date.monthValue.toString()
+                    } else {
+                        recordState.selectedStudyDay.studyDay.date.monthValue.toString()
+                    },
                 studyDurationCardType = StudyDurationCardType.MONTH,
                 studyHours = recordState.studyDuration.monthHours,
                 studyMinutes = recordState.studyDuration.monthMinutes,
