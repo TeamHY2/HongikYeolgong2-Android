@@ -24,6 +24,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
+import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
@@ -73,6 +74,7 @@ fun RecordRoute(
             recordState = recordState,
             onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
             onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
+            onDayClicked = { recordViewModel.updateSelectedStudyDay(it) },
             modifier = modifier.fillMaxSize(),
         )
     }
@@ -83,6 +85,7 @@ fun RecordScreen(
     recordState: RecordState,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -125,6 +128,8 @@ fun RecordScreen(
             days = recordState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
+            onDayClicked = onDayClicked,
+            selectedDay = recordState.selectedStudyDay?.studyDay,
         )
     }
 }
@@ -201,6 +206,7 @@ fun RecordScreenPreview() {
         recordState = sampleRecordState,
         onPreviousMonthClick = {},
         onNextMonthClick = {},
+        onDayClicked = {},
         modifier =
             Modifier
                 .fillMaxSize()

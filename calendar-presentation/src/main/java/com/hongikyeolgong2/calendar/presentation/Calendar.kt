@@ -49,6 +49,7 @@ fun Hy2Calendar(
     selectedDay: StudyDay?,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -59,7 +60,7 @@ fun Hy2Calendar(
         )
         Spacer(modifier = Modifier.height(12.dp))
         CalendarDayOfWeeks()
-        CalendarBody(days = days, selectedDay = selectedDay)
+        CalendarBody(days = days, selectedDay = selectedDay, onDayClicked = onDayClicked)
     }
 }
 
@@ -131,6 +132,7 @@ private const val DAY_COUNT_OF_WEEK = 7
 private fun CalendarBody(
     days: List<StudyDay>,
     selectedDay: StudyDay?,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val beforeEmptyDaysCount: Int = (days.first().date.dayOfWeek.ordinal + 1) % DAY_COUNT_OF_WEEK
@@ -148,7 +150,13 @@ private fun CalendarBody(
         items(days) {
             Day(
                 studyDay = it,
-                onDayClicked = {},
+                onDayClicked = {
+                    if (it == selectedDay) {
+                        onDayClicked(null)
+                    } else {
+                        onDayClicked(it)
+                    }
+                },
                 dayState =
                     when (selectedDay) {
                         null -> DayState.Default
@@ -215,6 +223,7 @@ private fun Hy2CalendarPreview() {
                 title = calendar.now
                 month = calendar.getMonth()
             },
+            onDayClicked = {},
         )
     }
 }
