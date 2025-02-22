@@ -2,9 +2,11 @@ package com.teamhy2.record
 
 import androidx.lifecycle.ViewModel
 import com.hongikyeolgong2.calendar.model.Calendar
+import com.hongikyeolgong2.calendar.model.StudyDay
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.domain.repository.CalendarStudyDayRepository
 import com.teamhy2.record.domain.repository.StudyDurationRepository
+import com.teamhy2.record.util.toDateState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -60,7 +62,7 @@ class RecordViewModel
 
         fun updateCalendarMonth(isNextMonth: Boolean) =
             intent {
-                reduce { state.copy(isLoading = true) }
+                reduce { state.copy(isLoading = true, selectedStudyDay = null) }
                 val updatedCalendar =
                     state.calendar.apply {
                         if (isNextMonth) moveToNextMonth() else moveToPreviousMonth()
@@ -77,6 +79,31 @@ class RecordViewModel
                     }
                     .onFailure {
                         reduce { state.copy(isLoading = false) }
+                        postSideEffect(RecordSideEffect.ShowError(it))
+                    }
+            }
+
+        fun updateSelectedStudyDay(studyDay: StudyDay?) =
+            intent {
+                if (studyDay == null) {
+                    reduce { state.copy(selectedStudyDay = null) }
+                    return@intent
+                }
+
+                studyDurationRepository.fetchStudyDuration(studyDay.date)
+                    .onSuccess { studyDuration ->
+                        reduce {
+                            state.copy(
+                                selectedStudyDay =
+                                    SelectedStudyDay(
+                                        studyDay = studyDay,
+                                        date = studyDay.date.toDateState(),
+                                        studyDuration = studyDuration,
+                                    ),
+                            )
+                        }
+                    }
+                    .onFailure {
                         postSideEffect(RecordSideEffect.ShowError(it))
                     }
             }
