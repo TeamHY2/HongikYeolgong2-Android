@@ -5,13 +5,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +27,10 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
+import com.teamhy2.designsystem.ui.theme.Gray100
+import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.record.components.StudyDurationCard
@@ -77,8 +86,22 @@ fun RecordScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 27.dp, bottom = 36.dp),
+        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp),
     ) {
+        if (recordState.selectedStudyDay == null) {
+            DatePanel(
+                date = recordState.date,
+                hour = recordState.studyDuration.dayHours,
+                minute = recordState.studyDuration.dayMinutes,
+            )
+        } else {
+            DatePanel(
+                date = recordState.selectedStudyDay.date,
+                hour = recordState.selectedStudyDay.studyDuration.dayHours,
+                minute = recordState.selectedStudyDay.studyDuration.dayMinutes,
+            )
+        }
+        Spacer(Modifier.height(24.dp))
         Row {
             StudyDurationCard(
                 title = "2025",
@@ -106,6 +129,52 @@ fun RecordScreen(
     }
 }
 
+@Composable
+private fun DatePanel(
+    date: String,
+    hour: Int,
+    minute: Int,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = date,
+            style = HY2Typography().body04,
+            color = Gray300,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = "${hour}H ${minute}M",
+            style =
+                HY2Typography().body01.copy(
+                    brush =
+                        Brush.horizontalGradient(
+                            listOf(
+                                Color(0xFFD3D6E0),
+                                Color(0x99D3D6E0),
+                            ),
+                        ),
+                ),
+            color = Gray100,
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF000000)
+@Composable
+private fun DatePanelPreview() {
+    HY2Theme {
+        DatePanel(
+            date = "February 22, 2025",
+            hour = 3,
+            minute = 24,
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun RecordScreenPreview() {
@@ -121,18 +190,20 @@ fun RecordScreenPreview() {
 
     val sampleCalendar = Calendar(studyDays = emptyList())
 
-    val sampleRecordUiState =
+    val sampleRecordState =
         RecordState(
+            date = "February 22, 2025",
             studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
 
     RecordScreen(
-        recordState = sampleRecordUiState,
+        recordState = sampleRecordState,
         onPreviousMonthClick = {},
         onNextMonthClick = {},
         modifier =
-            Modifier.fillMaxSize()
+            Modifier
+                .fillMaxSize()
                 .background(color = BackgroundBlack),
     )
 }
