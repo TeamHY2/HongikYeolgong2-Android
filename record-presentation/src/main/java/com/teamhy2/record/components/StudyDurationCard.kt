@@ -85,7 +85,7 @@ internal enum class StudyDurationCardType(
 
 @Preview(showBackground = true)
 @Composable
-fun StudyDurationCardPreview() {
+private fun StudyDurationCardPreview() {
     Surface(color = BackgroundBlack) {
         StudyDurationCard(
             title = "2025",
