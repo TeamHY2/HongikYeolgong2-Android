@@ -228,4 +228,29 @@ class CalendarTest : BehaviorSpec({
             }
         }
     }
+
+    Given("캘린더 객체가 주어지고, 캘린더의 date가 이번달이고") {
+        val calendar = Calendar()
+
+        When("현재 달이 이번 달인지 확인하면") {
+            val actual = calendar.isThisMonth
+
+            Then("true를 반환한다") {
+                actual shouldBe true
+            }
+        }
+    }
+
+    Given("캘린더 객체가 주어지고, 캘린더의 date가 저번달이고") {
+        val calendar = Calendar()
+        calendar.moveToPreviousMonth()
+
+        When("현재 달이 이번 달인지 확인하면") {
+            val actual = calendar.isThisMonth
+
+            Then("false를 반환한다") {
+                actual shouldBe false
+            }
+        }
+    }
 })
