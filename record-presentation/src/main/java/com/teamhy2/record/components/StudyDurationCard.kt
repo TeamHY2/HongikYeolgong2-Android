@@ -1,6 +1,7 @@
 package com.teamhy2.record.components
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.R.drawable.ic_calendar
@@ -29,6 +31,7 @@ import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.hongikyeolgong2.record.presentation.R
 
 @Composable
 internal fun StudyDurationCard(
@@ -61,14 +64,14 @@ internal fun StudyDurationCard(
                 tint = Gray200,
             )
             Text(
-                text = "$title${studyDurationCardType.format}",
+                text = title + stringResource(studyDurationCardType.unit),
                 style = HY2Typography().body04,
                 color = Gray200,
             )
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "${studyHours}H ${studyMinutes}M",
+            text = stringResource(R.string.record_time_format, studyHours, studyMinutes),
             style = HY2Typography().title03,
             color = Gray100,
         )
@@ -77,10 +80,10 @@ internal fun StudyDurationCard(
 
 internal enum class StudyDurationCardType(
     @DrawableRes val icon: Int,
-    val format: String,
+    @StringRes val unit: Int,
 ) {
-    YEAR(icon = ic_clock, "년"),
-    MONTH(icon = ic_calendar, "월"),
+    YEAR(icon = ic_clock, unit = R.string.record_unit_year),
+    MONTH(icon = ic_calendar, unit = R.string.record_unit_month),
 }
 
 @Preview(showBackground = true)
