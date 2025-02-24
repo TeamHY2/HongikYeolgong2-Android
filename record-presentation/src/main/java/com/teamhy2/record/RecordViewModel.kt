@@ -6,7 +6,7 @@ import com.hongikyeolgong2.calendar.model.StudyDay
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.domain.repository.CalendarStudyDayRepository
 import com.teamhy2.record.domain.repository.StudyDurationRepository
-import com.teamhy2.record.util.toDateState
+import com.teamhy2.record.util.toFormattedString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -97,7 +97,7 @@ class RecordViewModel
                                 selectedStudyDay =
                                     SelectedStudyDay(
                                         studyDay = studyDay,
-                                        date = studyDay.date.toDateState(),
+                                        formattedDate = studyDay.date.toFormattedString(),
                                         studyDuration = studyDuration,
                                     ),
                             )
