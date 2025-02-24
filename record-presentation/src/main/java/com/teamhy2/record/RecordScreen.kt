@@ -99,7 +99,7 @@ fun RecordScreen(
             )
         } else {
             DatePanel(
-                date = recordState.selectedStudyDay.date,
+                date = recordState.selectedStudyDay.formattedDate,
                 hour = recordState.selectedStudyDay.studyDuration.dayHours,
                 minute = recordState.selectedStudyDay.studyDuration.dayMinutes,
             )
