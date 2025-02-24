@@ -22,9 +22,16 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.common.HY2IconButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
+import com.teamhy2.designsystem.ui.theme.Gray100
+import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray600
+import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
+import com.teamhy2.hongikyeolgong2.record.presentation.R
 import com.teamhy2.record.components.DatePanel
 import com.teamhy2.record.components.StudyDurationCard
 import com.teamhy2.record.components.StudyDurationCardType
@@ -81,7 +88,7 @@ fun RecordScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp),
+        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 28.dp),
     ) {
         if (recordState.selectedStudyDay == null) {
             DatePanel(
@@ -134,6 +141,14 @@ fun RecordScreen(
             onDayClicked = onDayClicked,
             selectedDay = recordState.selectedStudyDay?.studyDay,
         )
+        Spacer(Modifier.weight(1f))
+        HY2IconButton(
+            text = "기록 공유하기",
+            iconResId = R.drawable.ic_share,
+            backgroundColor = Gray600,
+            textColor = Gray100,
+            onClick = { },
+        )
     }
 }
 
@@ -158,15 +173,16 @@ fun RecordScreenPreview() {
             studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
-
-    RecordScreen(
-        recordState = sampleRecordState,
-        onPreviousMonthClick = {},
-        onNextMonthClick = {},
-        onDayClicked = {},
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = BackgroundBlack),
-    )
+    HY2Theme {
+        RecordScreen(
+            recordState = sampleRecordState,
+            onPreviousMonthClick = {},
+            onNextMonthClick = {},
+            onDayClicked = {},
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(color = BackgroundBlack),
+        )
+    }
 }
