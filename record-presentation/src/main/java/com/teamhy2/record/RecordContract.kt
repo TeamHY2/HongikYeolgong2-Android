@@ -8,6 +8,7 @@ import java.time.LocalDate
 
 data class RecordState(
     val isLoading: Boolean = false,
+    val isRecordShareDialogShow: Boolean = false,
     val date: String = LocalDate.now().toFormattedString(),
     val studyDuration: StudyDuration,
     val selectedStudyDay: SelectedStudyDay? = null,
@@ -22,4 +23,8 @@ data class SelectedStudyDay(
 
 sealed interface RecordSideEffect {
     data class ShowError(val throwable: Throwable) : RecordSideEffect
+
+    data class ShowSnackBar(val message: String) : RecordSideEffect
+
+    data class ShowToast(val message: String) : RecordSideEffect
 }
