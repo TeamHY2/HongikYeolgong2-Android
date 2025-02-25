@@ -3,7 +3,6 @@ package com.hongikyeolgong2.calendar.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -32,6 +31,7 @@ import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.model.StudyRoomUsage
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.ic_calendar_left
@@ -41,31 +41,36 @@ import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_pr
 import java.time.LocalDate
 
 private const val DAY_DEFAULT_MARGIN = 5
-private const val DAY_SIZE_RATIO = 1.212f
+private const val DAY_SIZE_RATIO = 1f
 
 @Composable
 fun Hy2Calendar(
     title: String,
+    isThisMonth: Boolean,
     days: List<StudyDay>,
+    selectedDay: StudyDay?,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         CalendarHeader(
             title = title,
+            isThisMonth = isThisMonth,
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
         )
         Spacer(modifier = Modifier.height(12.dp))
         CalendarDayOfWeeks()
-        CalendarBody(days = days)
+        CalendarBody(days = days, selectedDay = selectedDay, onDayClicked = onDayClicked)
     }
 }
 
 @Composable
 private fun CalendarHeader(
     title: String,
+    isThisMonth: Boolean,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -87,10 +92,10 @@ private fun CalendarHeader(
                 contentDescription = stringResource(description_previous_month),
             )
         }
-        IconButton(onClick = onNextMonthClick) {
+        IconButton(enabled = isThisMonth.not(), onClick = onNextMonthClick) {
             Icon(
                 painter = painterResource(id = ic_calendar_right),
-                tint = Gray300,
+                tint = if (isThisMonth) Gray800 else Gray300,
                 contentDescription = stringResource(description_next_month),
             )
         }
@@ -128,8 +133,10 @@ private const val SIX_LINE_DAYS_COUNT = 42
 private const val DAY_COUNT_OF_WEEK = 7
 
 @Composable
-private fun ColumnScope.CalendarBody(
+private fun CalendarBody(
     days: List<StudyDay>,
+    selectedDay: StudyDay?,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val beforeEmptyDaysCount: Int = (days.first().date.dayOfWeek.ordinal + 1) % DAY_COUNT_OF_WEEK
@@ -141,25 +148,30 @@ private fun ColumnScope.CalendarBody(
         modifier = modifier,
     ) {
         items(beforeEmptyDaysCount) {
-            Box(
-                modifier =
-                    Modifier
-                        .aspectRatio(DAY_SIZE_RATIO, false)
-                        .weight(1f),
-            )
+            Box(modifier = Modifier.aspectRatio(DAY_SIZE_RATIO))
         }
 
         items(days) {
-            Day(studyDay = it, modifier = Modifier.weight(1f))
+            Day(
+                studyDay = it,
+                onDayClicked = {
+                    if (it == selectedDay) {
+                        onDayClicked(null)
+                    } else {
+                        onDayClicked(it)
+                    }
+                },
+                dayState =
+                    when (selectedDay) {
+                        null -> DayState.Default
+                        it -> DayState.Selected
+                        else -> DayState.Unselected
+                    },
+            )
         }
 
         items(SIX_LINE_DAYS_COUNT - days.size - beforeEmptyDaysCount) {
-            Box(
-                modifier =
-                    Modifier
-                        .aspectRatio(DAY_SIZE_RATIO, false)
-                        .weight(1f),
-            )
+            Box(modifier = Modifier.aspectRatio(DAY_SIZE_RATIO))
         }
     }
 }
@@ -204,16 +216,19 @@ private fun Hy2CalendarPreview() {
         Hy2Calendar(
             title = title,
             days = month,
+            isThisMonth = true,
             onPreviousMonthClick = {
                 calendar.moveToPreviousMonth()
                 title = calendar.now
                 month = calendar.getMonth()
             },
+            selectedDay = null,
             onNextMonthClick = {
                 calendar.moveToNextMonth()
                 title = calendar.now
                 month = calendar.getMonth()
             },
+            onDayClicked = {},
         )
     }
 }
@@ -225,6 +240,7 @@ private fun CalendarHeaderPreview() {
         CalendarHeader(
             title = "Jan 2024",
             onPreviousMonthClick = { },
+            isThisMonth = false,
             onNextMonthClick = { },
         )
     }

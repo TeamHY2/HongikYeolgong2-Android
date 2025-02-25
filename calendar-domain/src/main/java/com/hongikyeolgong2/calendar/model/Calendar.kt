@@ -17,6 +17,8 @@ class Calendar(
     val now: String
         get() = dateTimeFormatter.format(date)
 
+    val isThisMonth: Boolean get() = date == LocalDate.now()
+
     fun getMonth(): List<StudyDay> {
         val studyDaysWithMonth: List<StudyDay> = getStudyDaysByMonth()
         val existingDays: Map<Int, StudyDay> = studyDaysWithMonth.associateBy { it.date.dayOfMonth }
