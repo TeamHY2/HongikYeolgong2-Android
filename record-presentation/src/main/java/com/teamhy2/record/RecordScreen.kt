@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -25,14 +26,14 @@ import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2IconButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
-import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
-import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowToast
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.hongikyeolgong2.record.presentation.R
 import com.teamhy2.record.components.DatePanel
+import com.teamhy2.record.components.RecordShareFullScreenDialog
 import com.teamhy2.record.components.StudyDurationCard
 import com.teamhy2.record.components.StudyDurationCardType
 import com.teamhy2.record.domain.model.StudyDuration
@@ -47,6 +48,7 @@ fun RecordRoute(
     val recordState by recordViewModel.collectAsState()
 
     val localShowSnackBar = LocalShowSnackBar.current
+    val localToast = LocalShowToast.current
     val tracker = LocalTracker.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
 
@@ -63,6 +65,14 @@ fun RecordRoute(
             is RecordSideEffect.ShowError -> {
                 localShowSnackBar.showSnackBar(it.throwable.message)
             }
+
+            is RecordSideEffect.ShowSnackBar -> {
+                localShowSnackBar.showSnackBar(it.message)
+            }
+
+            is RecordSideEffect.ShowToast -> {
+                localToast.showToast(it.message)
+            }
         }
     }
 
@@ -74,8 +84,17 @@ fun RecordRoute(
             onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
             onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
             onDayClicked = { recordViewModel.updateSelectedStudyDay(it) },
-            modifier = modifier.fillMaxSize(),
+            onRecordShareButtonClick = { recordViewModel.updateRecordShareDialogVisibility(visible = true) },
+            modifier = modifier,
         )
+        if (recordState.isRecordShareDialogShow) {
+            RecordShareFullScreenDialog(
+                recordState = recordState,
+                onDismiss = { recordViewModel.updateRecordShareDialogVisibility(visible = false) },
+                onSaveImageComplete = { recordViewModel.onSaveImageComplete() },
+                onSaveImageFailed = { recordViewModel.onSaveImageFailed() },
+            )
+        }
     }
 }
 
@@ -85,10 +104,47 @@ fun RecordScreen(
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
     onDayClicked: (StudyDay?) -> Unit,
+    onRecordShareButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 28.dp),
+        modifier = modifier.fillMaxSize(),
+    ) {
+        RecordContent(
+            recordState = recordState,
+            onPreviousMonthClick = onPreviousMonthClick,
+            onNextMonthClick = onNextMonthClick,
+            onDayClicked = onDayClicked,
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 28.dp),
+        )
+        HY2IconButton(
+            text = "기록 공유하기",
+            iconResId = R.drawable.ic_share,
+            backgroundColor = Gray600,
+            textColor = Gray100,
+            onClick = onRecordShareButtonClick,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+        )
+    }
+}
+
+@Composable
+fun RecordContent(
+    recordState: RecordState,
+    onPreviousMonthClick: () -> Unit,
+    onNextMonthClick: () -> Unit,
+    onDayClicked: (StudyDay?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
     ) {
         if (recordState.selectedStudyDay == null) {
             DatePanel(
@@ -141,14 +197,6 @@ fun RecordScreen(
             onDayClicked = onDayClicked,
             selectedDay = recordState.selectedStudyDay?.studyDay,
         )
-        Spacer(Modifier.weight(1f))
-        HY2IconButton(
-            text = "기록 공유하기",
-            iconResId = R.drawable.ic_share,
-            backgroundColor = Gray600,
-            textColor = Gray100,
-            onClick = { },
-        )
     }
 }
 
@@ -179,6 +227,7 @@ fun RecordScreenPreview() {
             onPreviousMonthClick = {},
             onNextMonthClick = {},
             onDayClicked = {},
+            onRecordShareButtonClick = {},
             modifier =
                 Modifier
                     .fillMaxSize()
