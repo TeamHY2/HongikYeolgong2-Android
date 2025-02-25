@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="record_time_format">%dH %dM</string>
+    <string name="record_unit_year">년</string>
+    <string name="record_unit_month">월</string>
+</resources>

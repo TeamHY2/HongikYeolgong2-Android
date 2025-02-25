@@ -5,6 +5,7 @@ import com.benenfeldt.remote.mapper.toResult
 import com.teamhy2.record.data.mapper.toDomain
 import com.teamhy2.record.domain.model.StudyDuration
 import com.teamhy2.record.domain.repository.StudyDurationRepository
+import java.time.LocalDate
 import javax.inject.Inject
 
 class RemoteStudyDurationRepository
@@ -12,8 +13,8 @@ class RemoteStudyDurationRepository
     constructor(
         private val studyService: StudyService,
     ) : StudyDurationRepository {
-        override suspend fun fetchStudyDuration(): Result<StudyDuration> {
-            return studyService.getStudyDuration().toResult { baseResponse ->
+        override suspend fun fetchStudyDuration(date: LocalDate?): Result<StudyDuration> {
+            return studyService.getStudyDuration(date?.toString()).toResult { baseResponse ->
                 baseResponse.data.toDomain()
             }
         }

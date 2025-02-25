@@ -1,5 +1,6 @@
 package com.teamhy2.record
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,11 +19,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.hongikyeolgong2.calendar.model.Calendar
+import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
+import com.teamhy2.record.components.DatePanel
 import com.teamhy2.record.components.StudyDurationCard
+import com.teamhy2.record.components.StudyDurationCardType
 import com.teamhy2.record.domain.model.StudyDuration
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -61,6 +66,7 @@ fun RecordRoute(
             recordState = recordState,
             onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
             onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
+            onDayClicked = { recordViewModel.updateSelectedStudyDay(it) },
             modifier = modifier.fillMaxSize(),
         )
     }
@@ -71,44 +77,63 @@ fun RecordScreen(
     recordState: RecordState,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
+    onDayClicked: (StudyDay?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 27.dp, bottom = 36.dp),
+        modifier = modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp),
     ) {
+        if (recordState.selectedStudyDay == null) {
+            DatePanel(
+                date = recordState.date,
+                hour = recordState.studyDuration.dayHours,
+                minute = recordState.studyDuration.dayMinutes,
+            )
+        } else {
+            DatePanel(
+                date = recordState.selectedStudyDay.formattedDate,
+                hour = recordState.selectedStudyDay.studyDuration.dayHours,
+                minute = recordState.selectedStudyDay.studyDuration.dayMinutes,
+            )
+        }
+        Spacer(Modifier.height(24.dp))
+        Row {
+            StudyDurationCard(
+                title =
+                    if (recordState.selectedStudyDay == null) {
+                        recordState.calendar.date.year.toString()
+                    } else {
+                        recordState.selectedStudyDay.studyDay.date.year.toString()
+                    },
+                studyDurationCardType = StudyDurationCardType.YEAR,
+                studyHours = recordState.studyDuration.yearHours,
+                studyMinutes = recordState.studyDuration.yearMinutes,
+                modifier = Modifier.weight(1f),
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            StudyDurationCard(
+                title =
+                    if (recordState.selectedStudyDay == null) {
+                        recordState.calendar.date.monthValue.toString()
+                    } else {
+                        recordState.selectedStudyDay.studyDay.date.monthValue.toString()
+                    },
+                studyDurationCardType = StudyDurationCardType.MONTH,
+                studyHours = recordState.studyDuration.monthHours,
+                studyMinutes = recordState.studyDuration.monthMinutes,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Spacer(Modifier.height(52.dp))
         Hy2Calendar(
             title = recordState.calendar.now,
+            isThisMonth = recordState.calendar.isThisMonth,
             days = recordState.calendar.getMonth(),
             onPreviousMonthClick = onPreviousMonthClick,
             onNextMonthClick = onNextMonthClick,
+            onDayClicked = onDayClicked,
+            selectedDay = recordState.selectedStudyDay?.studyDay,
         )
-        Spacer(modifier = Modifier.weight(1f))
-        Column {
-            Row {
-                StudyDurationCard(
-                    title = "연간",
-                    studyHours = recordState.studyDuration.yearHours,
-                    studyMinutes = recordState.studyDuration.yearMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            Spacer(modifier = Modifier.height(14.dp))
-            Row {
-                StudyDurationCard(
-                    title = "월간",
-                    studyHours = recordState.studyDuration.monthHours,
-                    studyMinutes = recordState.studyDuration.monthMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(modifier = Modifier.width(13.dp))
-                StudyDurationCard(
-                    title = "투데이",
-                    studyHours = recordState.studyDuration.dayHours,
-                    studyMinutes = recordState.studyDuration.dayMinutes,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
     }
 }
 
@@ -127,16 +152,21 @@ fun RecordScreenPreview() {
 
     val sampleCalendar = Calendar(studyDays = emptyList())
 
-    val sampleRecordUiState =
+    val sampleRecordState =
         RecordState(
+            date = "February 22, 2025",
             studyDuration = sampleStudySummary,
             calendar = sampleCalendar,
         )
 
     RecordScreen(
-        recordState = sampleRecordUiState,
+        recordState = sampleRecordState,
         onPreviousMonthClick = {},
         onNextMonthClick = {},
-        modifier = Modifier.fillMaxSize(),
+        onDayClicked = {},
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = BackgroundBlack),
     )
 }

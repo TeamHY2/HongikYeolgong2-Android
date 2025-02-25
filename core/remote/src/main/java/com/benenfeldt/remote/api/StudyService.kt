@@ -30,5 +30,7 @@ interface StudyService {
     suspend fun getCalendarStudyDay(): Result<BaseResponse<List<CalendarStudyDayResponse>>>
 
     @GET("/api/v1/study/duration")
-    suspend fun getStudyDuration(): Result<BaseResponse<StudyDurationResponse>>
+    suspend fun getStudyDuration(
+        @Query("date") date: String? = null,
+    ): Result<BaseResponse<StudyDurationResponse>>
 }
