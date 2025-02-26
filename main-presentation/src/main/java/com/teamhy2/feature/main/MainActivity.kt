@@ -95,7 +95,9 @@ class MainActivity : AppCompatActivity() {
 
                 val showToast =
                     ShowToast { message: String? ->
-                        Toast.makeText(this, message ?: "", Toast.LENGTH_SHORT).show()
+                        if (message.isNullOrBlank().not()) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                 Scaffold(
