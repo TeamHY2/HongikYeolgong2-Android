@@ -111,14 +111,8 @@ class RecordViewModel
                     }
             }
 
-        fun updateRecordShareDialogVisibility(visible: Boolean) =
-            intent {
-                reduce { state.copy(isRecordShareDialogShow = visible) }
-            }
-
         fun onSaveImageComplete() =
             intent {
-                reduce { state.copy(isRecordShareDialogShow = false) }
                 postSideEffect(RecordSideEffect.ShowSnackBar("이미지 저장 성공"))
             }
 

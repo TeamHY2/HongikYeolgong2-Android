@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +54,7 @@ fun RecordRoute(
     val localToast = LocalShowToast.current
     val tracker = LocalTracker.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    var isRecordShareDialogShow by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         tracker.trackEvent("Record")
@@ -84,14 +88,18 @@ fun RecordRoute(
             onPreviousMonthClick = { recordViewModel.updateCalendarMonth(false) },
             onNextMonthClick = { recordViewModel.updateCalendarMonth(true) },
             onDayClicked = { recordViewModel.updateSelectedStudyDay(it) },
-            onRecordShareButtonClick = { recordViewModel.updateRecordShareDialogVisibility(visible = true) },
+            onRecordShareButtonClick = { isRecordShareDialogShow = true },
             modifier = modifier,
         )
-        if (recordState.isRecordShareDialogShow) {
+        if (isRecordShareDialogShow) {
             RecordShareFullScreenDialog(
                 recordState = recordState,
-                onDismiss = { recordViewModel.updateRecordShareDialogVisibility(visible = false) },
-                onSaveImageComplete = { recordViewModel.onSaveImageComplete() },
+                onDismiss = {
+                    isRecordShareDialogShow = false
+                },
+                onSaveImageComplete = {
+                    isRecordShareDialogShow = false
+                },
                 onSaveImageFailed = { recordViewModel.onSaveImageFailed() },
             )
         }
