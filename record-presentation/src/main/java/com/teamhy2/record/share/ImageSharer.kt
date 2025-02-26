@@ -4,6 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.core.content.FileProvider
+import com.teamhy2.record.share.InstagramImageSharer.CACHE_FOLDER
+import com.teamhy2.record.share.InstagramImageSharer.SHARE_FILE_NAME
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,6 +39,7 @@ interface ImageSharer {
  * 2. [bitmap]을 JPEG 형식으로 [CACHE_FOLDER]에 [SHARE_FILE_NAME] 이름으로 저장합니다.
  * 3. FileProvider를 통해 저장된 파일의 content Uri를 획득합니다.
  * 4. 인텐트를 생성하여 인스타그램 앱으로 공유합니다.
+ * 5. 공유 후 5초 뒤에 저장된 파일을 삭제합니다.
  */
 object InstagramImageSharer : ImageSharer {
     private const val IMAGE_QUALITY: Int = 100
@@ -73,5 +80,10 @@ object InstagramImageSharer : ImageSharer {
             }
 
         context.startActivity(Intent.createChooser(shareIntent, "Share Image"))
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(5000L)
+            file.delete()
+        }
     }
 }
