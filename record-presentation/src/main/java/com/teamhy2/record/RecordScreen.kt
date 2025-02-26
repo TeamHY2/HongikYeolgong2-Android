@@ -26,7 +26,7 @@ import com.hongikyeolgong2.calendar.model.Calendar
 import com.hongikyeolgong2.calendar.model.StudyDay
 import com.hongikyeolgong2.calendar.presentation.Hy2Calendar
 import com.teamhy2.designsystem.common.HY2CircularLoading
-import com.teamhy2.designsystem.common.HY2IconButton
+import com.teamhy2.designsystem.common.HY2IconTextButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray600
@@ -133,7 +133,7 @@ fun RecordScreen(
                     .fillMaxWidth()
                     .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 28.dp),
         )
-        HY2IconButton(
+        HY2IconTextButton(
             text = "기록 공유하기",
             iconResId = R.drawable.ic_share,
             backgroundColor = Gray600,

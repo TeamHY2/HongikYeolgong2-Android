@@ -29,13 +29,13 @@ private const val BUTTON_ROUNDED_CORNER_SIZE = 4
 private const val BUTTON_HEIGHT = 52
 
 @Composable
-fun HY2IconButton(
+fun HY2IconTextButton(
+    modifier: Modifier = Modifier,
     text: String,
     @DrawableRes iconResId: Int,
     backgroundColor: Color = Blue100,
     textColor: Color = White,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     ThrottleButton(
         onClick = onClick,
@@ -74,9 +74,9 @@ fun HY2IconButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun HY2IconButtonPreview() {
+private fun HY2IconTextButtonPreview() {
     HY2Theme {
-        HY2IconButton(
+        HY2IconTextButton(
             text = "열람실 이용 연장",
             iconResId = R.drawable.ic_clock,
             onClick = { },
@@ -86,9 +86,9 @@ private fun HY2IconButtonPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun HY2IconButtonDifferentColorPreview() {
+private fun HY2IconTextButtonDifferentColorPreview() {
     HY2Theme {
-        HY2IconButton(
+        HY2IconTextButton(
             text = "커스텀 배경색 버튼",
             iconResId = R.drawable.ic_calendar,
             backgroundColor = Gray600,

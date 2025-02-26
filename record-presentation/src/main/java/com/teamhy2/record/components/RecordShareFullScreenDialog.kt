@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.hongikyeolgong2.calendar.model.Calendar
-import com.teamhy2.designsystem.common.HY2IconButton
+import com.teamhy2.designsystem.common.HY2IconTextButton
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.Gray800
@@ -111,7 +111,7 @@ fun RecordShareFullScreenDialog(
                         .padding(start = 32.dp, end = 32.dp, top = 20.dp, bottom = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                HY2IconButton(
+                HY2IconTextButton(
                     text = "이미지 저장",
                     iconResId = R.drawable.ic_save_image,
                     backgroundColor = Gray600,
@@ -126,7 +126,7 @@ fun RecordShareFullScreenDialog(
                     modifier = Modifier.weight(1f),
                 )
 
-                HY2IconButton(
+                HY2IconTextButton(
                     text = "인스타 공유",
                     iconResId = R.drawable.ic_share,
                     onClick = {
