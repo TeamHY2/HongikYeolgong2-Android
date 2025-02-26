@@ -45,8 +45,7 @@ import com.teamhy2.record.share.RecordShareImageManager
 fun RecordShareFullScreenDialog(
     recordState: RecordState,
     onDismiss: () -> Unit,
-    onSaveImageComplete: () -> Unit,
-    onSaveImageFailed: () -> Unit,
+    onSaveImageComplete: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -120,10 +119,7 @@ fun RecordShareFullScreenDialog(
                     onClick = {
                         capturedBitmap?.let { bitmap ->
                             RecordShareImageManager.imageSaver.saveImage(context, bitmap) { success ->
-                                when (success) {
-                                    true -> onSaveImageComplete()
-                                    false -> onSaveImageFailed()
-                                }
+                                onSaveImageComplete(success)
                             }
                         }
                     },
@@ -172,7 +168,6 @@ private fun RecordShareFullScreenDialogPreview() {
             recordState = sampleRecordState,
             onDismiss = {},
             onSaveImageComplete = {},
-            onSaveImageFailed = {},
         )
     }
 }
