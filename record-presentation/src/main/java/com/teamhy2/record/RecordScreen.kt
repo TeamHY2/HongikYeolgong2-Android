@@ -97,10 +97,14 @@ fun RecordRoute(
                 onDismiss = {
                     isRecordShareDialogShow = false
                 },
-                onSaveImageComplete = {
-                    isRecordShareDialogShow = false
+                onSaveImageComplete = { isSuccess ->
+                    recordViewModel.handleImageSaveResult(isSuccess)
+                    isRecordShareDialogShow =
+                        when (isSuccess) {
+                            true -> false
+                            false -> true
+                        }
                 },
-                onSaveImageFailed = { recordViewModel.onSaveImageFailed() },
             )
         }
     }
