@@ -15,29 +15,16 @@ class RankingViewModel
     constructor(
         private val rankingRepository: RankingRepository,
     ) : ViewModel(), ContainerHost<RankingState, RankingSideEffect> {
-        override val container: Container<RankingState, RankingSideEffect> = container(RankingState())
+        override val container: Container<RankingState, RankingSideEffect> =
+            container(RankingState())
 
-        private var currentWeekNumber: Int? = null
-        private var latestWeekNumber: Int? = null
+        private var currentWeekNumber: Int =
+            WeekNumberCalculator.calculateWeekNumber(LocalDate.now())
+        private val latestWeekNumber: Int = currentWeekNumber
 
         init {
-            getWeekNumber()
+            getDepartmentRankings(currentWeekNumber)
         }
-
-        private fun getWeekNumber(date: LocalDate = LocalDate.now()) =
-            intent {
-                reduce { state.copy(isLoading = true) }
-                rankingRepository.fetchWeekNumber(date)
-                    .onSuccess { weekNumber ->
-                        currentWeekNumber = weekNumber.weekNumber
-                        latestWeekNumber = weekNumber.weekNumber
-                        getDepartmentRankings(weekNumber.weekNumber)
-                    }
-                    .onFailure { throwable ->
-                        reduce { state.copy(isLoading = false) }
-                        postSideEffect(RankingSideEffect.ShowError(throwable))
-                    }
-            }
 
         private fun getDepartmentRankings(weekNumber: Int) =
             intent {
@@ -50,6 +37,7 @@ class RankingViewModel
                                 isLoading = false,
                                 currentWeek = ranking.weekName,
                                 departmentRankings = ranking.departmentRankings,
+                                isNextWeekEnabled = currentWeekNumber < latestWeekNumber,
                             )
                         }
                     }
@@ -60,19 +48,13 @@ class RankingViewModel
             }
 
         fun getLastWeekRanking() {
-            currentWeekNumber?.let { currentWeekNumber ->
-                val week: Int = currentWeekNumber % 100
-                if (week == 1) return
-
-                getDepartmentRankings(currentWeekNumber - 1)
-            }
+            val lastWeekNumber: Int = WeekNumberCalculator.shiftWeekNumber(currentWeekNumber, -1)
+            getDepartmentRankings(lastWeekNumber)
         }
 
         fun getNextWeekRanking() {
-            currentWeekNumber?.let { currentWeekNumber ->
-                if (currentWeekNumber >= (latestWeekNumber ?: currentWeekNumber)) return
-
-                getDepartmentRankings(currentWeekNumber + 1)
-            }
+            if (currentWeekNumber >= latestWeekNumber) return
+            val nextWeekNumber = WeekNumberCalculator.shiftWeekNumber(currentWeekNumber, 1)
+            getDepartmentRankings(nextWeekNumber)
         }
     }
