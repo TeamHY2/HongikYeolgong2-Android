@@ -6,6 +6,7 @@ data class RankingState(
     val isLoading: Boolean = false,
     val currentWeek: String = "",
     val departmentRankings: List<DepartmentRanking> = emptyList(),
+    val isNextWeekEnabled: Boolean = false,
 )
 
 sealed interface RankingSideEffect {
