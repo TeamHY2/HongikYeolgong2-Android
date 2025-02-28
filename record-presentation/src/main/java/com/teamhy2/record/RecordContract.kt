@@ -22,4 +22,8 @@ data class SelectedStudyDay(
 
 sealed interface RecordSideEffect {
     data class ShowError(val throwable: Throwable) : RecordSideEffect
+
+    data class ShowSnackBar(val message: String) : RecordSideEffect
+
+    data class ShowToast(val message: String) : RecordSideEffect
 }

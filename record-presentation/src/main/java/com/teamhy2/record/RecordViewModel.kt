@@ -46,7 +46,10 @@ class RecordViewModel
                         calendarStudyDayRepository.fetchStudyDaysForYearMonth(LocalDate.now())
                             .onSuccess { calendarStudyDays ->
                                 reduce {
-                                    state.copy(isLoading = false, calendar = Calendar(studyDays = calendarStudyDays))
+                                    state.copy(
+                                        isLoading = false,
+                                        calendar = Calendar(studyDays = calendarStudyDays),
+                                    )
                                 }
                             }
                             .onFailure {
@@ -106,5 +109,13 @@ class RecordViewModel
                     .onFailure {
                         postSideEffect(RecordSideEffect.ShowError(it))
                     }
+            }
+
+        fun handleImageSaveResult(isSuccess: Boolean) =
+            intent {
+                when (isSuccess) {
+                    true -> postSideEffect(RecordSideEffect.ShowSnackBar("이미지 저장 성공"))
+                    false -> postSideEffect(RecordSideEffect.ShowToast("이미지 저장 실패"))
+                }
             }
     }

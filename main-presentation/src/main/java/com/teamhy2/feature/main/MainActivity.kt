@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -40,8 +41,10 @@ import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.LocalShowToast
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.designsystem.util.compositionlocal.ShowSnackBar
+import com.teamhy2.designsystem.util.compositionlocal.ShowToast
 import com.teamhy2.feature.home.navigation.Home
 import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
@@ -87,6 +90,13 @@ class MainActivity : AppCompatActivity() {
                             snackBarHostState.showSnackbar(
                                 message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
                             )
+                        }
+                    }
+
+                val showToast =
+                    ShowToast { message: String? ->
+                        if (message.isNullOrBlank().not()) {
+                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -143,6 +153,7 @@ class MainActivity : AppCompatActivity() {
                                     LocalTracker provides tracker,
                                     LocalShowSnackBar provides showSnackBar,
                                     LocalNavController provides navController,
+                                    LocalShowToast provides showToast,
                                 ) {
                                     LaunchedEffect(true) {
                                         initialViewModel.errorFlow.collectLatest {
