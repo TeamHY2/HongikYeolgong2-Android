@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray800
@@ -61,26 +61,24 @@ fun RankingRoute(
         tracker.trackEvent("Ranking")
     }
 
-    when (state.isLoading) {
-        true -> HY2CircularLoading()
-        false ->
-            RankingScreen(
-                currentWeek = state.currentWeek,
-                departmentRankings = state.departmentRankings.toImmutableList(),
-                isNextWeekEnabled = state.isNextWeekEnabled,
-                onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
-                onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
-                modifier =
-                    modifier
-                        .background(BackgroundBlack)
-                        .padding(horizontal = 24.dp)
-                        .fillMaxSize(),
-            )
-    }
+    RankingScreen(
+        isLoading = state.isLoading,
+        currentWeek = state.currentWeek,
+        departmentRankings = state.departmentRankings.toImmutableList(),
+        isNextWeekEnabled = state.isNextWeekEnabled,
+        onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
+        onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
+        modifier =
+            modifier
+                .background(BackgroundBlack)
+                .padding(horizontal = 24.dp)
+                .fillMaxSize(),
+    )
 }
 
 @Composable
 fun RankingScreen(
+    isLoading: Boolean,
     currentWeek: String,
     departmentRankings: ImmutableList<DepartmentRanking>,
     isNextWeekEnabled: Boolean,
@@ -98,9 +96,10 @@ fun RankingScreen(
             isNextWeekEnabled = isNextWeekEnabled,
         )
         Spacer(modifier = Modifier.height(20.dp))
-        RankingBody(
-            departmentRankings = departmentRankings,
-        )
+        when (isLoading) {
+            true -> HY2LoadingScreen()
+            false -> RankingBody(departmentRankings = departmentRankings)
+        }
     }
 }
 
@@ -230,6 +229,7 @@ fun RankingScreenPreview() {
         ).toImmutableList()
 
     RankingScreen(
+        isLoading = false,
         currentWeek = "9월 1주차",
         departmentRankings = sampleDepartmentRankings,
         onLastWeekClick = {},
