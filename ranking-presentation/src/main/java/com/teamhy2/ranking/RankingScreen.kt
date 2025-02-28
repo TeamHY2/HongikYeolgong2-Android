@@ -20,13 +20,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.teamhy2.designsystem.common.HY2CircularLoading
+import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
+import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
@@ -59,27 +61,27 @@ fun RankingRoute(
         tracker.trackEvent("Ranking")
     }
 
-    when (state.isLoading) {
-        true -> HY2CircularLoading()
-        false ->
-            RankingScreen(
-                currentWeek = state.currentWeek,
-                departmentRankings = state.departmentRankings.toImmutableList(),
-                onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
-                onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
-                modifier =
-                    modifier
-                        .background(BackgroundBlack)
-                        .padding(horizontal = 24.dp)
-                        .fillMaxSize(),
-            )
-    }
+    RankingScreen(
+        isLoading = state.isLoading,
+        currentWeek = state.currentWeek,
+        departmentRankings = state.departmentRankings.toImmutableList(),
+        isNextWeekEnabled = state.isNextWeekEnabled,
+        onLastWeekClick = { rankingViewModel.getLastWeekRanking() },
+        onNextWeekClick = { rankingViewModel.getNextWeekRanking() },
+        modifier =
+            modifier
+                .background(BackgroundBlack)
+                .padding(horizontal = 24.dp)
+                .fillMaxSize(),
+    )
 }
 
 @Composable
 fun RankingScreen(
+    isLoading: Boolean,
     currentWeek: String,
     departmentRankings: ImmutableList<DepartmentRanking>,
+    isNextWeekEnabled: Boolean,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -91,17 +93,20 @@ fun RankingScreen(
             currentWeek = currentWeek,
             onLastWeekClick = onLastWeekClick,
             onNextWeekClick = onNextWeekClick,
+            isNextWeekEnabled = isNextWeekEnabled,
         )
         Spacer(modifier = Modifier.height(20.dp))
-        RankingBody(
-            departmentRankings = departmentRankings,
-        )
+        when (isLoading) {
+            true -> HY2LoadingScreen()
+            false -> RankingBody(departmentRankings = departmentRankings)
+        }
     }
 }
 
 @Composable
 fun RankingHeader(
     currentWeek: String,
+    isNextWeekEnabled: Boolean,
     onLastWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,10 +126,14 @@ fun RankingHeader(
                 contentDescription = null,
             )
         }
-        IconButton(onClick = onNextWeekClick) {
+        IconButton(
+            onClick = onNextWeekClick,
+            enabled = isNextWeekEnabled,
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_ranking_next_week),
                 contentDescription = null,
+                colorFilter = if (isNextWeekEnabled.not()) ColorFilter.tint(Gray800) else null,
             )
         }
     }
@@ -220,9 +229,11 @@ fun RankingScreenPreview() {
         ).toImmutableList()
 
     RankingScreen(
+        isLoading = false,
         currentWeek = "9월 1주차",
         departmentRankings = sampleDepartmentRankings,
         onLastWeekClick = {},
         onNextWeekClick = {},
+        isNextWeekEnabled = true,
     )
 }
