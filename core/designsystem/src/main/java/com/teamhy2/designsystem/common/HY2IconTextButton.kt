@@ -30,12 +30,12 @@ private const val BUTTON_HEIGHT = 52
 
 @Composable
 fun HY2IconTextButton(
-    modifier: Modifier = Modifier,
     text: String,
     @DrawableRes iconResId: Int,
     backgroundColor: Color = Blue100,
     textColor: Color = White,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ThrottleButton(
         onClick = onClick,
