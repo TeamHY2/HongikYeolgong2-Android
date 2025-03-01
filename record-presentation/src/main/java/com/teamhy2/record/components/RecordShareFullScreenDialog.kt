@@ -83,7 +83,7 @@ fun RecordShareFullScreenDialog(
                 text = "열공 기록을 공유해보세요!",
                 color = Gray100,
                 style = HY2Typography().title03,
-                modifier = Modifier.padding(bottom = 12.dp),
+                modifier = Modifier.padding(bottom = 18.dp),
             )
 
             ShareImageComponent(
