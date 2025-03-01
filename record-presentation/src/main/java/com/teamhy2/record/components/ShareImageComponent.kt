@@ -64,9 +64,9 @@ fun ShareImageComponent(
             onPreviousMonthClick = { },
             onNextMonthClick = { },
             onDayClicked = { },
-            modifier = Modifier.padding(start = 26.dp, end = 26.dp, top = 42.dp),
+            modifier = Modifier.padding(start = 30.dp, end = 30.dp, top = 52.dp),
         )
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_share_image_star),
             contentDescription = null,
