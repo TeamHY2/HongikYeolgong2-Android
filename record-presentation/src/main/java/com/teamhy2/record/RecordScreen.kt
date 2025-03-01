@@ -131,7 +131,7 @@ fun RecordScreen(
                 Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 28.dp),
+                    .padding(start = 24.dp, end = 24.dp, top = 32.dp),
         )
         HY2IconTextButton(
             text = "기록 공유하기",
@@ -142,7 +142,7 @@ fun RecordScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(start = 24.dp, end = 24.dp, bottom = 28.dp),
         )
     }
 }
