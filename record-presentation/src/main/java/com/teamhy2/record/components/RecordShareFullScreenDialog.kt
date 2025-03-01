@@ -31,6 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.hongikyeolgong2.calendar.model.Calendar
 import com.teamhy2.designsystem.common.HY2IconTextButton
+import com.teamhy2.designsystem.ui.theme.Blue100
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
@@ -130,8 +131,8 @@ fun RecordShareFullScreenDialog(
 
                 HY2IconTextButton(
                     text = "인스타 공유",
-                    iconResId = R.drawable.ic_share,
-                    backgroundColor = Gray800,
+                    iconResId = R.drawable.ic_instagram,
+                    backgroundColor = Blue100,
                     onClick = {
                         capturedBitmap?.let { bitmap ->
                             RecordShareImageManager.imageSharer.shareImage(context, bitmap)
