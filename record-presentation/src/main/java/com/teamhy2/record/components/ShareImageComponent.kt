@@ -64,7 +64,7 @@ fun ShareImageComponent(
             onPreviousMonthClick = { },
             onNextMonthClick = { },
             onDayClicked = { },
-            modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 32.dp),
+            modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 42.dp),
         )
         Spacer(modifier = Modifier.height(18.dp))
         Image(
