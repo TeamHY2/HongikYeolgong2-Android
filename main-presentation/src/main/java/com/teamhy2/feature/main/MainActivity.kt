@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -95,8 +97,17 @@ class MainActivity : AppCompatActivity() {
 
                 val showToast =
                     ShowToast { message: String? ->
-                        if (message.isNullOrBlank().not()) {
-                            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                        if (!message.isNullOrBlank()) {
+                            val inflater = LayoutInflater.from(this)
+                            val layout = inflater.inflate(R.layout.custom_toast, null)
+                            val textView = layout.findViewById<TextView>(R.id.custom_toast_text)
+                            textView.text = message
+
+                            Toast(this).apply {
+                                duration = Toast.LENGTH_SHORT
+                                view = layout
+                                show()
+                            }
                         }
                     }
 
