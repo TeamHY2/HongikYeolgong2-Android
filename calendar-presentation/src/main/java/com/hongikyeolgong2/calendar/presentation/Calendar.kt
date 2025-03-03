@@ -40,7 +40,7 @@ import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_ne
 import com.teamhy2.hongikyeolgong2.calendar.presentation.R.string.description_previous_month
 import java.time.LocalDate
 
-private const val DAY_DEFAULT_MARGIN = 5
+private const val DAY_DEFAULT_MARGIN = 7
 private const val DAY_SIZE_RATIO = 1f
 
 @Composable
