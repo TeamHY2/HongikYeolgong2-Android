@@ -46,7 +46,13 @@ internal fun StudyDurationCard(
             modifier
                 .aspectRatio(1.98f)
                 .background(
-                    brush = Brush.radialGradient(listOf(Color(0xFF23262D), Color(0x3323262D))),
+                    brush =
+                        Brush.radialGradient(
+                            listOf(
+                                Color(0x3323262D),
+                                Color(0xFF23262D),
+                            ),
+                        ),
                     shape = RoundedCornerShape(4.dp),
                 )
                 .border(
