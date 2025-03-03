@@ -114,8 +114,8 @@ class RecordViewModel
         fun handleImageSaveResult(isSuccess: Boolean) =
             intent {
                 when (isSuccess) {
-                    true -> postSideEffect(RecordSideEffect.ShowSnackBar("이미지 저장 성공"))
-                    false -> postSideEffect(RecordSideEffect.ShowToast("이미지 저장 실패"))
+                    true -> postSideEffect(RecordSideEffect.ShowSnackBar("이미지가 저장되었습니다."))
+                    false -> postSideEffect(RecordSideEffect.ShowToast("이미지 저장에 실패했습니다. 다시 시도해주세요."))
                 }
             }
     }
