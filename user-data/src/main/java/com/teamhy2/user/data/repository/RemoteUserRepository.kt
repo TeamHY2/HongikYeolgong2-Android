@@ -94,4 +94,8 @@ class RemoteUserRepository
                 ),
             ).toResult()
         }
+
+        override suspend fun updateDeviceToken(deviceToken: String): Result<Unit> {
+            return userService.updateDeviceToken(deviceToken).toResult()
+        }
     }
