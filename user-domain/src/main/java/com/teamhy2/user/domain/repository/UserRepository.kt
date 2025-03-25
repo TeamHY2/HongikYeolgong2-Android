@@ -25,4 +25,6 @@ interface UserRepository {
         nickname: String,
         department: String,
     ): Result<Unit>
+
+    suspend fun updateDeviceToken(deviceToken: String): Result<Unit>
 }
