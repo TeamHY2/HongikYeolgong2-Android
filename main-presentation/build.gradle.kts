@@ -45,7 +45,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.messaging.ktx)
     implementation(libs.accompanist.permissions)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.navigation)
