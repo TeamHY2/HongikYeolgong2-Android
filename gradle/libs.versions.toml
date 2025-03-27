@@ -7,6 +7,7 @@ accompanistPermissions = "0.31.1-alpha"
 agp = "8.3.2"
 firebaseBom = "33.1.2"
 kotlin = "1.9.0"
+ksp = "1.9.0-1.0.13"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -23,8 +24,8 @@ kotest = "5.6.2"
 coroutine = "1.7.2"
 androidxComposeNavigation = "2.7.0"
 androidxLifecycle = "2.6.1"
-hilt = "2.46.1"
-hiltNavigationCompose = "1.0.0"
+hilt = "2.49"
+hiltNavigationCompose = "1.2.0"
 activity = "1.9.0"
 constraintlayout = "2.1.4"
 navigationFragmentKtx = "2.7.7"
@@ -168,3 +169,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
