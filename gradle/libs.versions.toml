@@ -57,6 +57,10 @@ firebaseConfigKtx = "22.0.1"
 orbit = "9.0.0"
 navigationRuntimeKtx = "2.8.5"
 
+## license
+ossLicenses = "17.1.0"
+ossLicensesPlugin = "0.10.6"
+
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -158,6 +162,9 @@ orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orb
 
 # Immutable-collection
 kotlinx-immutable-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+
+oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "ossLicenses" }
+oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
