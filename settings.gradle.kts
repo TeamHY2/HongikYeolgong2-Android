@@ -28,6 +28,7 @@ include(":core:remote")
 include(":core:auth")
 include(":core:notification")
 include(":core:tracker")
+include(":core:fcm")
 
 include(":calendar-domain")
 include(":calendar-presentation")

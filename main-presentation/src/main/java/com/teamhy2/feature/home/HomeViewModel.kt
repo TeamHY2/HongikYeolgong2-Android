@@ -1,7 +1,10 @@
 package com.teamhy2.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
@@ -9,6 +12,7 @@ import com.teamhy2.main.domain.model.WiseSaying
 import com.teamhy2.main.domain.repository.PromotionRepository
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
+import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -32,6 +36,7 @@ class HomeViewModel
         private val wiseSayingRepository: WiseSayingRepository,
         private val studyDayRepository: StudyDayRepository,
         private val promotionRepository: PromotionRepository,
+        private val userRepository: UserRepository,
     ) : ViewModel() {
         private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
         val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
@@ -42,6 +47,7 @@ class HomeViewModel
         init {
             loadPromotionData()
             loadHomeData()
+            updateDeviceToken()
         }
 
         private fun loadHomeData() {
@@ -133,5 +139,31 @@ class HomeViewModel
                     else -> currentState
                 }
             }
+        }
+
+        private fun updateDeviceToken() {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                OnCompleteListener { task ->
+                    if (task.isSuccessful.not()) {
+                        return@OnCompleteListener
+                    }
+
+                    val token = task.result
+
+                    viewModelScope.launch {
+                        userRepository.updateDeviceToken(token)
+                            .onSuccess {
+                                Log.d(TAG, "Device token updated successfully")
+                            }
+                            .onFailure { exception ->
+                                Log.e(TAG, "Failed to update device token", exception)
+                            }
+                    }
+                },
+            )
+        }
+
+        companion object {
+            private const val TAG = "HomeViewModel"
         }
     }

@@ -1,6 +1,8 @@
 package com.benenfeldt.remote.api
 
 import com.benenfeldt.remote.dto.BaseResponse
+import com.benenfeldt.remote.dto.DeviceTokenRequest
+import com.benenfeldt.remote.dto.DeviceTokenResponse
 import com.benenfeldt.remote.dto.UserInfoRequest
 import com.benenfeldt.remote.dto.UserInfoResponse
 import com.benenfeldt.remote.dto.UserSignUpRequest
@@ -27,4 +29,9 @@ interface UserService {
     suspend fun modifyUserInfo(
         @Body userInfoRequest: UserInfoRequest,
     ): Result<BaseResponse<UserInfoResponse>>
+
+    @PUT("/api/v1/user/device-token")
+    suspend fun updateDeviceToken(
+        @Body deviceTokenRequest: DeviceTokenRequest,
+    ): Result<BaseResponse<DeviceTokenResponse?>>
 }

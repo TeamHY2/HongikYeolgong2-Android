@@ -2,6 +2,7 @@ package com.teamhy2.user.data.repository
 
 import com.benenfeldt.remote.api.UserPublicService
 import com.benenfeldt.remote.api.UserService
+import com.benenfeldt.remote.dto.DeviceTokenRequest
 import com.benenfeldt.remote.dto.UserInfoRequest
 import com.benenfeldt.remote.dto.UserSignInRequest
 import com.benenfeldt.remote.dto.UserSignUpRequest
@@ -91,6 +92,14 @@ class RemoteUserRepository
                 UserInfoRequest(
                     nickname = nickname,
                     department = department,
+                ),
+            ).toResult()
+        }
+
+        override suspend fun updateDeviceToken(deviceToken: String): Result<Unit> {
+            return userService.updateDeviceToken(
+                DeviceTokenRequest(
+                    deviceToken = deviceToken,
                 ),
             ).toResult()
         }
