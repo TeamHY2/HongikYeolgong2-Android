@@ -35,7 +35,7 @@
         </provider>
 
         <service
-            android:name="com.hongikyeolgong2.fcm.MyFirebaseMessagingService"
+            android:name="com.hongikyeolgong2.fcm.Hy2FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
