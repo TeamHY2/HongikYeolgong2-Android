@@ -48,6 +48,7 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.core.remote)
     implementation(projects.core.auth)
+    implementation(projects.core.fcm)
 
     implementation(projects.mainPresentation)
     implementation(projects.mainData)
@@ -80,6 +81,7 @@ dependencies {
     implementation(libs.google.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)
+    implementation(libs.firebase.messaging.ktx)
 
     implementation(libs.accompanist.permissions)
 }
