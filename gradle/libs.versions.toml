@@ -7,6 +7,7 @@ accompanistPermissions = "0.31.1-alpha"
 agp = "8.3.2"
 firebaseBom = "33.1.2"
 kotlin = "1.9.0"
+ksp = "1.9.0-1.0.13"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -23,8 +24,8 @@ kotest = "5.6.2"
 coroutine = "1.7.2"
 androidxComposeNavigation = "2.7.0"
 androidxLifecycle = "2.6.1"
-hilt = "2.46.1"
-hiltNavigationCompose = "1.0.0"
+hilt = "2.49"
+hiltNavigationCompose = "1.2.0"
 activity = "1.9.0"
 constraintlayout = "2.1.4"
 navigationFragmentKtx = "2.7.7"
@@ -55,6 +56,10 @@ firebaseConfigKtx = "22.0.1"
 # MVI - Oribt
 orbit = "9.0.0"
 navigationRuntimeKtx = "2.8.5"
+
+## license
+ossLicenses = "17.1.0"
+ossLicensesPlugin = "0.10.6"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -158,6 +163,9 @@ orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orb
 # Immutable-collection
 kotlinx-immutable-collection = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
+oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "ossLicenses" }
+oss-licenses-plugin = { group = "com.google.android.gms", name = "oss-licenses-plugin", version.ref = "ossLicensesPlugin" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -168,3 +176,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
