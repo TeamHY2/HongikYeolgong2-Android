@@ -1,4 +1,4 @@
-package com.teamhy2.feature.home
+package com.teamhy2.feature.notification
 
 import android.app.Notification
 import android.app.NotificationManager
