@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -54,8 +53,9 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.tracker.Tracker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import javax.inject.Inject
 
 private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         initialViewModel.getMinVersion(versionCode)
 
         enableEdgeToEdge()
+
         setContent {
             HY2Theme {
                 val navController: NavHostController = rememberNavController()
@@ -116,10 +117,10 @@ class MainActivity : AppCompatActivity() {
                 ) { innerPadding ->
                     val postNotificationPermission =
                         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                    val initialUiState by initialViewModel.initialUiState.collectAsStateWithLifecycle()
+                    val initialUiState by initialViewModel.collectAsState()
 
-                    LaunchedEffect(key1 = true) {
-                        if (!postNotificationPermission.status.isGranted) {
+                    LaunchedEffect(true) {
+                        if (postNotificationPermission.status.isGranted.not()) {
                             postNotificationPermission.launchPermissionRequest()
                         }
                     }
@@ -135,33 +136,36 @@ class MainActivity : AppCompatActivity() {
                                 .padding(innerPadding),
                     ) {
                         when (initialUiState) {
-                            is InitialUiState.Loading -> {
+                            is InitialState.Loading -> {
                                 HY2LoadingScreen()
                             }
 
-                            is InitialUiState.Success -> {
+                            is InitialState.Success -> {
+                                val success = initialUiState as InitialState.Success
+
                                 CompositionLocalProvider(
                                     LocalTracker provides tracker,
                                     LocalShowSnackBar provides showSnackBar,
                                     LocalNavController provides navController,
                                     LocalShowToast provides showToast,
                                 ) {
-                                    LaunchedEffect(true) {
-                                        initialViewModel.errorFlow.collectLatest {
-                                            showSnackBar.showSnackBar(it.message)
+                                    initialViewModel.collectSideEffect { sideEffect ->
+                                        when (sideEffect) {
+                                            is InitialSideEffect.ShowError ->
+                                                showSnackBar.showSnackBar(sideEffect.throwable.message)
                                         }
                                     }
 
                                     HY2NavHost(
                                         navController = navController,
-                                        urls = (initialUiState as InitialUiState.Success).urls,
-                                        startDestination = (initialUiState as InitialUiState.Success).startDestination,
+                                        urls = success.urls,
+                                        startDestination = success.startDestination,
                                         onLogoutOrWithdrawComplete = ::restartMainActivity,
                                     )
                                 }
                             }
 
-                            is InitialUiState.NeedUpdate -> {
+                            is InitialState.NeedUpdate -> {
                                 NeedUpdateScreen(
                                     onExitClick = ::finish,
                                     onUpdateClick = ::moveToPlayStoreForUpdate,
