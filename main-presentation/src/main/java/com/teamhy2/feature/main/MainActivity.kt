@@ -176,16 +176,14 @@ class MainActivity : AppCompatActivity() {
                                         navController = navController,
                                         urls = (initialUiState as InitialUiState.Success).urls,
                                         startDestination = (initialUiState as InitialUiState.Success).startDestination,
-                                        onLogoutOrWithdrawComplete = {
-                                            restartMainActivity()
-                                        },
+                                        onLogoutOrWithdrawComplete = ::restartMainActivity,
                                     )
                                 }
                             }
 
                             is InitialUiState.NeedUpdate -> {
                                 NeedUpdateScreen(
-                                    onExitClick = { finish() },
+                                    onExitClick = ::finish,
                                     onUpdateClick = ::moveToPlayStoreForUpdate,
                                 )
                             }
