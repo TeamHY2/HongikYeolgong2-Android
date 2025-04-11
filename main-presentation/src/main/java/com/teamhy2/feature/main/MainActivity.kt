@@ -217,8 +217,3 @@ class MainActivity : AppCompatActivity() {
             "http://play.google.com/store/apps/details?id=com.teamhy2.hongikyeolgong2"
     }
 }
-
-enum class BackgroundState {
-    GRADIENT,
-    DEFAULT,
-}
