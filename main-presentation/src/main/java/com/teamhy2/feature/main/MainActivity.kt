@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +53,7 @@ import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.tracker.Tracker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -86,30 +88,8 @@ class MainActivity : AppCompatActivity() {
                 val scope = rememberCoroutineScope()
                 val snackBarHostState = remember { SnackbarHostState() }
 
-                val showSnackBar =
-                    ShowSnackBar { message: String? ->
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
-                            )
-                        }
-                    }
-
-                val showToast =
-                    ShowToast { message: String? ->
-                        if (!message.isNullOrBlank()) {
-                            val inflater = LayoutInflater.from(this)
-                            val layout = inflater.inflate(R.layout.custom_toast, null)
-                            val textView = layout.findViewById<TextView>(R.id.custom_toast_text)
-                            textView.text = message
-
-                            Toast(this).apply {
-                                duration = Toast.LENGTH_SHORT
-                                view = layout
-                                show()
-                            }
-                        }
-                    }
+                val showSnackBar = initLocalShowSnackBar(scope, snackBarHostState)
+                val showToast = initLocalShowToast()
 
                 Scaffold(
                     modifier =
@@ -193,6 +173,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    @Composable
+    private fun initLocalShowSnackBar(
+        scope: CoroutineScope,
+        snackBarHostState: SnackbarHostState,
+    ) = ShowSnackBar { message: String? ->
+        scope.launch {
+            snackBarHostState.showSnackbar(
+                message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
+            )
+        }
+    }
+
+    @Composable
+    private fun initLocalShowToast() =
+        ShowToast { message: String? ->
+            if (!message.isNullOrBlank()) {
+                val inflater = LayoutInflater.from(this)
+                val layout = inflater.inflate(R.layout.custom_toast, null)
+                val textView = layout.findViewById<TextView>(R.id.custom_toast_text)
+                textView.text = message
+
+                Toast(this).apply {
+                    duration = Toast.LENGTH_SHORT
+                    view = layout
+                    show()
+                }
+            }
+        }
 
     private fun moveToPlayStoreForUpdate() {
         startActivity(
