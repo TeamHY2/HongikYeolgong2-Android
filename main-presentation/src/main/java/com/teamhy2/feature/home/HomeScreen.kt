@@ -39,13 +39,14 @@ import com.teamhy2.feature.home.component.InitTimerComponent
 import com.teamhy2.feature.home.component.PromotionDialog
 import com.teamhy2.feature.home.component.RunningTimerComponent
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
-import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.model.WiseSaying
 import kotlinx.coroutines.flow.collectLatest
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import java.time.LocalDate
 
 @Composable
@@ -55,7 +56,7 @@ fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     timerViewModel: TimerViewModel = hiltViewModel(),
 ) {
-    val homeUiState: HomeUiState by homeViewModel.homeUiState.collectAsStateWithLifecycle()
+    val homeState: HomeState by homeViewModel.collectAsState()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -70,6 +71,14 @@ fun HomeRoute(
     var isStudyRoomExtendDialog by rememberSaveable { mutableStateOf(false) }
     var isStudyRoomEndDialog by rememberSaveable { mutableStateOf(false) }
 
+    homeViewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is HomeSideEffect.ShowError -> {
+                localShowSnackBar.showSnackBar(sideEffect.throwable.message)
+            }
+        }
+    }
+
     BackHandler(enabled = true) {
         if (System.currentTimeMillis() - backPressedTime <= 2000L) {
             (context as Activity).finish()
@@ -81,9 +90,6 @@ fun HomeRoute(
 
     LaunchedEffect(true) {
         tracker.trackEvent("Home")
-        homeViewModel.errorFlow.collectLatest { throwable ->
-            localShowSnackBar.showSnackBar(throwable.message)
-        }
         timerViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
@@ -91,13 +97,13 @@ fun HomeRoute(
 
     SetNavigationBarColor(Color.Black)
 
-    when (homeUiState) {
-        is HomeUiState.Loading -> {
+    when (homeState) {
+        is HomeState.Loading -> {
             HY2CircularLoading(modifier = Modifier.fillMaxSize())
         }
 
-        is HomeUiState.Success -> {
-            val uiState = homeUiState as HomeUiState.Success
+        is HomeState.Success -> {
+            val uiState = homeState as HomeState.Success
             if (isTimePickerVisible) {
                 HY2TimePicker(
                     title = stringResource(R.string.main_study_room_use_start_time),
@@ -148,7 +154,6 @@ fun HomeRoute(
                     },
                     onRightButtonClick = {
                         isStudyRoomEndDialog = false
-//                        homeViewModel.saveStudyDay((timerState as TimerUiState.Running).duration, false)
                         timerViewModel.stopTimer()
 
                         tracker.trackEvent("StudyEndButton")
@@ -200,19 +205,13 @@ fun HomeRoute(
                 modifier = modifier,
             )
         }
-
-        is HomeUiState.Error -> {
-            localShowSnackBar.showSnackBar(
-                (homeUiState as HomeUiState.Error).message,
-            )
-        }
     }
 }
 
 @Composable
 fun SetNavigationBarColor(color: Color) {
     val view = LocalView.current
-    if (!view.isInEditMode) {
+    if (view.isInEditMode.not()) {
         LaunchedEffect(Unit) {
             val window = (view.context as Activity).window
             window.navigationBarColor = color.toArgb()
