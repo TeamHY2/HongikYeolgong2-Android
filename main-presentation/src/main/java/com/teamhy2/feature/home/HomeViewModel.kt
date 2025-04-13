@@ -76,7 +76,7 @@ class HomeViewModel
                             reduce {
                                 state.copy(
                                     promotion = promotion,
-                                    isPromotionDialog = !isDismissed && promotion.isActive,
+                                    isPromotionDialog = isDismissed.not() && promotion.isActive,
                                 )
                             }
                         }
