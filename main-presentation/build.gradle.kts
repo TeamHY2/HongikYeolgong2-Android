@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
 
     implementation(libs.coil)
+    implementation(libs.kotlinx.immutable.collection)
 }
