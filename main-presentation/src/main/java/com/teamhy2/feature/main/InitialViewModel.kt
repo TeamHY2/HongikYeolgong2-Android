@@ -11,6 +11,7 @@ import com.teamhy2.onboarding.domain.repository.WebViewRepository
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.SignUp
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -48,7 +49,12 @@ class InitialViewModel
                     }
                 }
                     .onSuccess { (startDestination, urls) ->
-                        reduce { InitialState.Success(startDestination = startDestination, urls = urls) }
+                        reduce {
+                            InitialState.Success(
+                                startDestination = startDestination,
+                                urls = urls.toImmutableMap(),
+                            )
+                        }
                     }
                     .onFailure {
                         postSideEffect(InitialSideEffect.ShowError(it))
@@ -77,7 +83,8 @@ class InitialViewModel
                 val firebaseStore = FirebaseFirestore.getInstance()
 
                 runCatching {
-                    firebaseStore.collection(COLLECTION_APP_VERSION).document(DOCUMENT_ANDROID).get().await()
+                    firebaseStore.collection(COLLECTION_APP_VERSION).document(DOCUMENT_ANDROID).get()
+                        .await()
                 }
                     .onSuccess {
                         val minVersion = it.get("minVersion")

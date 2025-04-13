@@ -12,6 +12,7 @@ import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,7 @@ class HomeViewModel
                         reduce {
                             HomeState.Success(
                                 wiseSaying = wiseSaying,
-                                weeklyStudyDays = weeklyStudyDays,
+                                weeklyStudyDays = weeklyStudyDays.toImmutableList(),
                             )
                         }
                     }
@@ -99,7 +100,7 @@ class HomeViewModel
                                     studyDay
                                 }
                             }
-                        state.copy(weeklyStudyDays = updatedWeeklyStudyDays)
+                        state.copy(weeklyStudyDays = updatedWeeklyStudyDays.toImmutableList())
                     }
                 }
             }
