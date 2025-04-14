@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         val versionCode: Long = packageManager.getPackageInfo(packageName, 0).longVersionCode
         initialViewModel.getMinVersion(versionCode)
 
-        checkLaunchedWithFcm()
+        checkLaunchedFromFcm()
 
         enableEdgeToEdge()
 
@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLaunchedWithFcm() {
+    private fun checkLaunchedFromFcm() {
         val fromFcm = intent.extras?.get("google.message_id") != null
         if (fromFcm) {
             tracker.trackEvent("Push Noti")
