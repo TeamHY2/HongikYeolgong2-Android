@@ -5,30 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.teamhy2.feature.home.model.HomeUiState
 import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
-import com.teamhy2.main.domain.model.WiseSaying
 import com.teamhy2.main.domain.repository.PromotionRepository
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.annotation.OrbitExperimental
+import org.orbitmvi.orbit.viewmodel.container
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
+@OptIn(OrbitExperimental::class)
 @HiltViewModel
 class HomeViewModel
     @Inject
@@ -37,12 +34,8 @@ class HomeViewModel
         private val studyDayRepository: StudyDayRepository,
         private val promotionRepository: PromotionRepository,
         private val userRepository: UserRepository,
-    ) : ViewModel() {
-        private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-        val homeUiState: StateFlow<HomeUiState> = _homeUiState.asStateFlow()
-
-        private val _errorFlow = MutableSharedFlow<Throwable>()
-        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
+    ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
+        override val container: Container<HomeState, HomeSideEffect> = container(HomeState.Loading)
 
         init {
             loadPromotionData()
@@ -50,59 +43,54 @@ class HomeViewModel
             updateDeviceToken()
         }
 
-        private fun loadHomeData() {
-            viewModelScope.launch {
+        private fun loadHomeData() =
+            intent {
                 runCatching {
-                    listOf(
-                        async { wiseSayingRepository.fetchWiseSaying().getOrThrow() },
-                        async { studyDayRepository.fetchWeeklyStudyDay().getOrThrow() },
-                    ).awaitAll()
-                }.onSuccess { results ->
-                    val (wiseSaying, weeklyStudyDays) = results
+                    coroutineScope {
+                        val deferredWiseSaying =
+                            async { wiseSayingRepository.fetchWiseSaying().getOrThrow() }
+                        val deferredWeeklyStudyDays =
+                            async { studyDayRepository.fetchWeeklyStudyDay().getOrThrow() }
 
-                    _homeUiState.update {
-                        HomeUiState.Success(
-                            wiseSaying = wiseSaying as WiseSaying,
-                            weeklyStudyDays = weeklyStudyDays as List<WeeklyStudyDay>,
-                        )
+                        deferredWiseSaying.await() to deferredWeeklyStudyDays.await()
                     }
-                }.onFailure { exception ->
-                    _errorFlow.emit(exception)
-                    _homeUiState.value = HomeUiState.Error(exception.message)
                 }
+                    .onSuccess { (wiseSaying, weeklyStudyDays) ->
+                        reduce {
+                            HomeState.Success(
+                                wiseSaying = wiseSaying,
+                                weeklyStudyDays = weeklyStudyDays.toImmutableList(),
+                            )
+                        }
+                    }
+                    .onFailure { postSideEffect(HomeSideEffect.ShowError(it)) }
             }
-        }
 
-        private fun loadPromotionData() {
-            viewModelScope.launch {
+        private fun loadPromotionData() =
+            intent {
                 runCatching {
                     val promotion: Promotion = promotionRepository.fetchPromotionData().getOrThrow()
                     val isDismissedFlow: Flow<Boolean> = promotionRepository.isPromotionDismissed
 
                     isDismissedFlow.collect { isDismissed ->
-                        _homeUiState.update { currentState ->
-                            if (currentState is HomeUiState.Success) {
-                                currentState.copy(
+                        runOn<HomeState.Success> {
+                            reduce {
+                                state.copy(
                                     promotion = promotion,
-                                    isPromotionDialog = !isDismissed && promotion.isActive,
+                                    isPromotionDialog = isDismissed.not() && promotion.isActive,
                                 )
-                            } else {
-                                currentState
                             }
                         }
                     }
-                }.onFailure { exception ->
-                    _errorFlow.emit(exception)
-                }
+                }.onFailure { postSideEffect(HomeSideEffect.ShowError(it)) }
             }
-        }
 
-        fun increaseTodayStudyCount() {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> {
+        fun increaseTodayStudyCount() =
+            intent {
+                runOn<HomeState.Success> {
+                    reduce {
                         val updatedWeeklyStudyDays: List<WeeklyStudyDay> =
-                            currentState.weeklyStudyDays.map { studyDay ->
+                            state.weeklyStudyDays.map { studyDay ->
                                 if (studyDay.date ==
                                     LocalDate.now()
                                         .format(DateTimeFormatter.ofPattern("M/dd"))
@@ -112,34 +100,25 @@ class HomeViewModel
                                     studyDay
                                 }
                             }
-                        currentState.copy(weeklyStudyDays = updatedWeeklyStudyDays)
+                        state.copy(weeklyStudyDays = updatedWeeklyStudyDays.toImmutableList())
                     }
-
-                    else -> currentState
                 }
             }
-        }
 
         fun updatePromotionDismissPeriod(
             startDate: LocalDate,
             endDate: LocalDate,
-        ) {
-            viewModelScope.launch {
-                promotionRepository.savePromotionDismissPeriod(startDate, endDate)
-                    .onFailure { exception ->
-                        _errorFlow.emit(exception)
-                    }
-            }
+        ) = intent {
+            promotionRepository.savePromotionDismissPeriod(startDate, endDate)
+                .onFailure { postSideEffect(HomeSideEffect.ShowError(it)) }
         }
 
-        fun updatePromotionDialogVisibility(isVisible: Boolean) {
-            _homeUiState.update { currentState ->
-                when (currentState) {
-                    is HomeUiState.Success -> currentState.copy(isPromotionDialog = isVisible)
-                    else -> currentState
+        fun updatePromotionDialogVisibility(isVisible: Boolean) =
+            intent {
+                runOn<HomeState.Success> {
+                    reduce { state.copy(isPromotionDialog = isVisible) }
                 }
             }
-        }
 
         private fun updateDeviceToken() {
             FirebaseMessaging.getInstance().token.addOnCompleteListener(

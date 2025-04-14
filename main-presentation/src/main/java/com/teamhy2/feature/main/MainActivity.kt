@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -52,8 +52,10 @@ import com.teamhy2.feature.main.component.MainBottomBar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.tracker.Tracker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import javax.inject.Inject
 
 private const val DEFAULT_BACKGROUND_OPACITY = 0.7f
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         initialViewModel.getMinVersion(versionCode)
 
         enableEdgeToEdge()
+
         setContent {
             HY2Theme {
                 val navController: NavHostController = rememberNavController()
@@ -86,30 +89,8 @@ class MainActivity : AppCompatActivity() {
                 val scope = rememberCoroutineScope()
                 val snackBarHostState = remember { SnackbarHostState() }
 
-                val showSnackBar =
-                    ShowSnackBar { message: String? ->
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
-                            )
-                        }
-                    }
-
-                val showToast =
-                    ShowToast { message: String? ->
-                        if (!message.isNullOrBlank()) {
-                            val inflater = LayoutInflater.from(this)
-                            val layout = inflater.inflate(R.layout.custom_toast, null)
-                            val textView = layout.findViewById<TextView>(R.id.custom_toast_text)
-                            textView.text = message
-
-                            Toast(this).apply {
-                                duration = Toast.LENGTH_SHORT
-                                view = layout
-                                show()
-                            }
-                        }
-                    }
+                val showSnackBar = initLocalShowSnackBar(scope, snackBarHostState)
+                val showToast = initLocalShowToast()
 
                 Scaffold(
                     modifier =
@@ -136,10 +117,10 @@ class MainActivity : AppCompatActivity() {
                 ) { innerPadding ->
                     val postNotificationPermission =
                         rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-                    val initialUiState by initialViewModel.initialUiState.collectAsStateWithLifecycle()
+                    val initialUiState by initialViewModel.collectAsState()
 
-                    LaunchedEffect(key1 = true) {
-                        if (!postNotificationPermission.status.isGranted) {
+                    LaunchedEffect(true) {
+                        if (postNotificationPermission.status.isGranted.not()) {
                             postNotificationPermission.launchPermissionRequest()
                         }
                     }
@@ -155,37 +136,38 @@ class MainActivity : AppCompatActivity() {
                                 .padding(innerPadding),
                     ) {
                         when (initialUiState) {
-                            is InitialUiState.Loading -> {
+                            is InitialState.Loading -> {
                                 HY2LoadingScreen()
                             }
 
-                            is InitialUiState.Success -> {
+                            is InitialState.Success -> {
+                                val success = initialUiState as InitialState.Success
+
                                 CompositionLocalProvider(
                                     LocalTracker provides tracker,
                                     LocalShowSnackBar provides showSnackBar,
                                     LocalNavController provides navController,
                                     LocalShowToast provides showToast,
                                 ) {
-                                    LaunchedEffect(true) {
-                                        initialViewModel.errorFlow.collectLatest {
-                                            showSnackBar.showSnackBar(it.message)
+                                    initialViewModel.collectSideEffect { sideEffect ->
+                                        when (sideEffect) {
+                                            is InitialSideEffect.ShowError ->
+                                                showSnackBar.showSnackBar(sideEffect.throwable.message)
                                         }
                                     }
 
                                     HY2NavHost(
                                         navController = navController,
-                                        urls = (initialUiState as InitialUiState.Success).urls,
-                                        startDestination = (initialUiState as InitialUiState.Success).startDestination,
-                                        onLogoutOrWithdrawComplete = {
-                                            restartMainActivity()
-                                        },
+                                        urls = success.urls,
+                                        startDestination = success.startDestination,
+                                        onLogoutOrWithdrawComplete = ::restartMainActivity,
                                     )
                                 }
                             }
 
-                            is InitialUiState.NeedUpdate -> {
+                            is InitialState.NeedUpdate -> {
                                 NeedUpdateScreen(
-                                    onExitClick = { finish() },
+                                    onExitClick = ::finish,
                                     onUpdateClick = ::moveToPlayStoreForUpdate,
                                 )
                             }
@@ -195,6 +177,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    @Composable
+    private fun initLocalShowSnackBar(
+        scope: CoroutineScope,
+        snackBarHostState: SnackbarHostState,
+    ) = ShowSnackBar { message: String? ->
+        scope.launch {
+            snackBarHostState.showSnackbar(
+                message = message ?: "예기치 못한 오류가 발생하였습니다\n나중에 다시 시도해주세요",
+            )
+        }
+    }
+
+    @Composable
+    private fun initLocalShowToast() =
+        ShowToast { message: String? ->
+            if (!message.isNullOrBlank()) {
+                val inflater = LayoutInflater.from(this)
+                val layout = inflater.inflate(R.layout.custom_toast, null)
+                val textView = layout.findViewById<TextView>(R.id.custom_toast_text)
+                textView.text = message
+
+                Toast(this).apply {
+                    duration = Toast.LENGTH_SHORT
+                    view = layout
+                    show()
+                }
+            }
+        }
 
     private fun moveToPlayStoreForUpdate() {
         startActivity(
@@ -216,9 +227,4 @@ class MainActivity : AppCompatActivity() {
         private const val PLAY_STORE_URL =
             "http://play.google.com/store/apps/details?id=com.teamhy2.hongikyeolgong2"
     }
-}
-
-enum class BackgroundState {
-    GRADIENT,
-    DEFAULT,
 }

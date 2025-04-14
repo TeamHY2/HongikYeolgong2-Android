@@ -1,4 +1,4 @@
-package com.teamhy2.feature.home
+package com.teamhy2.feature.notification
 
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import dagger.Binds
