@@ -126,7 +126,7 @@ fun SettingScreen(
     state: SettingState,
     onClick: OnClick.() -> Unit = {},
 ) {
-    val onItemClick by remember { mutableStateOf(OnClick().apply(onClick)) }
+    val onItemClick = remember(onClick) { OnClick().apply(onClick) }
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
 
