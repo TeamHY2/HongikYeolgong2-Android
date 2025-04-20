@@ -13,7 +13,6 @@ import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.onboardingScreen
-import com.teamhy2.onboarding.navigation.popUpToOnboarding
 import com.teamhy2.onboarding.navigation.popUpToSignUp
 import com.teamhy2.onboarding.navigation.signUpScreen
 import com.teamhy2.ranking.navigation.rankingScreen
@@ -56,10 +55,9 @@ fun HY2NavHost(
 
             settingScreen(
                 noticeUrl = urls["notice"] ?: "",
-                onInquiryClick = navController::navigateToInquiry,
+                onNavigateToInquiry = navController::navigateToInquiry,
                 onLogoutOrWithdrawComplete = {
                     onLogoutOrWithdrawComplete()
-                    navController.popUpToOnboarding()
                 },
             )
 
