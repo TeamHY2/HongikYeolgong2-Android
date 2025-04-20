@@ -1,6 +1,7 @@
 package com.teamhy2.feature.setting.presentation
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.teamhy2.user.domain.model.UserInfo
 
 @Immutable
@@ -24,6 +25,7 @@ sealed interface SettingSideEffect {
     }
 }
 
+@Stable
 class OnClick {
     var logout: () -> Unit = {}
     var withdraw: () -> Unit = {}
