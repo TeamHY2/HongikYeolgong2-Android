@@ -19,14 +19,14 @@ fun NavController.navigateToProfileModification() {
 
 fun NavGraphBuilder.settingScreen(
     noticeUrl: String,
-    onInquiryClick: () -> Unit,
+    onNavigateToInquiry: () -> Unit,
     onLogoutOrWithdrawComplete: () -> Unit,
 ) {
     composable(route = ROUTE) {
         SettingRoute(
             noticeUrl = noticeUrl,
-            onInquiryClick = onInquiryClick,
-            onSignOutOrWithdrawComplete = onLogoutOrWithdrawComplete,
+            onNavigateToInquiry = onNavigateToInquiry,
+            onLogoutOrWithdrawComplete = onLogoutOrWithdrawComplete,
         )
     }
     composable(route = Setting.PROFILE_MODIFICATION_ROUTE) {
