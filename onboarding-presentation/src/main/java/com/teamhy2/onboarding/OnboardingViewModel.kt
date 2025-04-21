@@ -26,9 +26,7 @@ class OnboardingViewModel
                     }
                     .onFailure { throwable ->
                         postSideEffect(
-                            OnboardingSideEffect.ShowError(
-                                throwable.message ?: "알수 없는 문제가 생겼어요",
-                            ),
+                            OnboardingSideEffect.ShowError(throwable.message),
                         )
                     }
             }
@@ -44,9 +42,7 @@ class OnboardingViewModel
                     }
                     .onFailure { throwable ->
                         postSideEffect(
-                            OnboardingSideEffect.ShowError(
-                                throwable.message ?: "알수 없는 문제가 생겼어요",
-                            ),
+                            OnboardingSideEffect.ShowError(throwable.message),
                         )
                     }
             }
