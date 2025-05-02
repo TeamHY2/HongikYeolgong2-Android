@@ -2,8 +2,6 @@ package com.teamhy2.feature.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
@@ -16,7 +14,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.annotation.OrbitExperimental
@@ -24,6 +21,8 @@ import org.orbitmvi.orbit.viewmodel.container
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @OptIn(OrbitExperimental::class)
 @HiltViewModel
@@ -35,16 +34,15 @@ class HomeViewModel
         private val promotionRepository: PromotionRepository,
         private val userRepository: UserRepository,
     ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
-        override val container: Container<HomeState, HomeSideEffect> = container(HomeState.Loading)
+        override val container: Container<HomeState, HomeSideEffect> =
+            container(HomeState.Loading) {
+                loadHomeData()
+                loadPromotionData()
+                updateDeviceToken()
+            }
 
-        init {
-            loadPromotionData()
-            loadHomeData()
-            updateDeviceToken()
-        }
-
-        private fun loadHomeData() =
-            intent {
+        private suspend fun loadHomeData() =
+            subIntent {
                 runCatching {
                     coroutineScope {
                         val deferredWiseSaying =
@@ -66,8 +64,8 @@ class HomeViewModel
                     .onFailure { postSideEffect(HomeSideEffect.ShowError(it)) }
             }
 
-        private fun loadPromotionData() =
-            intent {
+        private suspend fun loadPromotionData() =
+            subIntent {
                 runCatching {
                     val promotion: Promotion = promotionRepository.fetchPromotionData().getOrThrow()
                     val isDismissedFlow: Flow<Boolean> = promotionRepository.isPromotionDismissed
@@ -120,27 +118,32 @@ class HomeViewModel
                 }
             }
 
-        private fun updateDeviceToken() {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(
-                OnCompleteListener { task ->
-                    if (task.isSuccessful.not()) {
-                        return@OnCompleteListener
-                    }
-
-                    val token = task.result
-
-                    viewModelScope.launch {
-                        userRepository.updateDeviceToken(token)
-                            .onSuccess {
-                                Log.d(TAG, "Device token updated successfully")
-                            }
-                            .onFailure { exception ->
-                                Log.e(TAG, "Failed to update device token", exception)
+        private suspend fun updateDeviceToken() =
+            subIntent {
+                val token =
+                    suspendCoroutine { continuation ->
+                        FirebaseMessaging
+                            .getInstance()
+                            .token
+                            .addOnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    continuation.resume(null)
+                                } else {
+                                    continuation.resume(task.result)
+                                }
                             }
                     }
-                },
-            )
-        }
+
+                if (token == null) return@subIntent
+
+                userRepository.updateDeviceToken(token)
+                    .onSuccess {
+                        Log.d(TAG, "Device token updated successfully")
+                    }
+                    .onFailure { exception ->
+                        Log.e(TAG, "Failed to update device token", exception)
+                    }
+            }
 
         companion object {
             private const val TAG = "HomeViewModel"
