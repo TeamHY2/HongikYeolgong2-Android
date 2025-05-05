@@ -36,8 +36,8 @@ class OnboardingViewModel
                 userRepository.signIn(idToken)
                     .onSuccess { isAlreadyExist ->
                         when (isAlreadyExist) {
-                            true -> postSideEffect(OnboardingSideEffect.Navigation.Home)
-                            false -> postSideEffect(OnboardingSideEffect.Navigation.SignIn)
+                            true -> postSideEffect(OnboardingSideEffect.NavigateToHome)
+                            false -> postSideEffect(OnboardingSideEffect.NavigateToSignIn)
                         }
                     }
                     .onFailure { throwable ->

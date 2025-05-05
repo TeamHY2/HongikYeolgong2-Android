@@ -50,10 +50,16 @@ fun OnboardingRoute(
 
     onboardingViewModel.collectSideEffect {
         when (it) {
-            is OnboardingSideEffect.Navigation.Home -> onUserSignedIn()
-            is OnboardingSideEffect.Navigation.SignIn -> onGuestSignedIn()
             is OnboardingSideEffect.ShowError -> {
                 localShowSnackBar.showSnackBar(it.errorMessage)
+            }
+
+            OnboardingSideEffect.NavigateToHome -> {
+                onUserSignedIn()
+            }
+
+            OnboardingSideEffect.NavigateToSignIn -> {
+                onGuestSignedIn()
             }
         }
     }
