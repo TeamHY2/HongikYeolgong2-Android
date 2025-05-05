@@ -5,9 +5,7 @@ data object OnboardingState
 sealed interface OnboardingSideEffect {
     data class ShowError(val errorMessage: String?) : OnboardingSideEffect
 
-    sealed interface Navigation : OnboardingSideEffect {
-        data object SignIn : Navigation
+    data object NavigateToSignIn : OnboardingSideEffect
 
-        data object Home : Navigation
-    }
+    data object NavigateToHome : OnboardingSideEffect
 }
