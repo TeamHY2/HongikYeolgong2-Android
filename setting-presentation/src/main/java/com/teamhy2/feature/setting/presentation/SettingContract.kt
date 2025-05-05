@@ -26,7 +26,7 @@ sealed interface SettingSideEffect {
 }
 
 @Stable
-internal class OnClick {
+internal class SettingOnClick {
     var logout: () -> Unit = {}
     var withdraw: () -> Unit = {}
     var notificationSwitch: (Boolean) -> Unit = {}
