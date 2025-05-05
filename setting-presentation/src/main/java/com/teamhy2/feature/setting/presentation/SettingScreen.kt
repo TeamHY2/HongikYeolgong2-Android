@@ -95,7 +95,7 @@ fun SettingRoute(
     SettingScreen(
         modifier = modifier,
         state = state,
-        onClick = {
+        settingOnClick = {
             logout = {
                 viewModel.logout()
                 tracker.trackEvent("LogoutButton")
@@ -121,12 +121,12 @@ fun SettingRoute(
 }
 
 @Composable
-fun SettingScreen(
+internal fun SettingScreen(
     modifier: Modifier = Modifier,
     state: SettingState,
-    onClick: OnClick.() -> Unit = {},
+    settingOnClick: SettingOnClick.() -> Unit = {},
 ) {
-    val onItemClick = remember(onClick) { OnClick().apply(onClick) }
+    val onItemClick = remember(settingOnClick) { SettingOnClick().apply(settingOnClick) }
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
 
@@ -314,7 +314,7 @@ private fun SettingScreenPreview() {
     HY2Theme {
         SettingScreen(
             state = state,
-            onClick = {},
+            settingOnClick = {},
             modifier = Modifier,
         )
     }
