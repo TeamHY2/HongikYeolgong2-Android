@@ -1,20 +1,13 @@
 package com.teamhy2.feature.setting.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
-import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,69 +16,92 @@ class SettingViewModel
     constructor(
         private val settingsRepository: SettingsRepository,
         private val userRepository: UserRepository,
-    ) : ViewModel() {
-        private val _settingUiState = MutableStateFlow<SettingUiState>(SettingUiState.Loading)
-        val settingUiState: StateFlow<SettingUiState> = _settingUiState.asStateFlow()
+    ) : ViewModel(), ContainerHost<SettingState, SettingSideEffect> {
+        override val container: Container<SettingState, SettingSideEffect> =
+            container(SettingState())
 
-        private val _errorFlow = MutableSharedFlow<Throwable>()
-        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
-
-        fun initSettingUiState() {
-            viewModelScope.launch {
-                val userInfoResult = userRepository.getUserInfo()
-                settingsRepository.notificationSwitchState.collectLatest { isNotificationSwitchChecked ->
-                    userInfoResult
-                        .onSuccess { userInfo ->
-                            _settingUiState.update {
-                                SettingUiState.Success(
-                                    isNotificationSwitchChecked = isNotificationSwitchChecked,
-                                    userInfo = userInfo,
-                                )
-                            }
-                        }
-                        .onFailure { throwable ->
-                            _errorFlow.emit(throwable)
-                        }
+        fun initSettingScreen() =
+            intent {
+                reduce {
+                    SettingState(
+                        isLoading = true,
+                    )
                 }
-            }
-        }
 
-        fun signOut() {
-            viewModelScope.launch {
+                userRepository.getUserInfo()
+                    .onSuccess { userInfo ->
+                        // Notification 구독
+                        settingsRepository.notificationSwitchState
+                            .collectLatest { isNotificationSwitchChecked ->
+                                reduce {
+                                    state.copy(
+                                        isLoading = false,
+                                        userInfo = userInfo,
+                                        isNotificationSwitchChecked = isNotificationSwitchChecked,
+                                    )
+                                }
+                            }
+                    }
+                    .onFailure { throwable ->
+                        reduce {
+                            state.copy(
+                                isLoading = false,
+                            )
+                        }
+
+                        postSideEffect(
+                            SettingSideEffect.ShowError(
+                                throwable.message ?: "알 수 없는 문제가 생겼어요",
+                            ),
+                        )
+                    }
+            }
+
+        fun logout() =
+            intent {
                 userRepository.signOut()
                     .onSuccess {
-                        _settingUiState.update { SettingUiState.Expired }
+                        postSideEffect(SettingSideEffect.LogoutOrWithdrawComplete)
                     }
                     .onFailure { throwable ->
-                        _errorFlow.emit(throwable)
+                        postSideEffect(
+                            SettingSideEffect.ShowError(
+                                throwable.message ?: "알수 없는 문제가 생겼어요",
+                            ),
+                        )
                     }
             }
-        }
 
-        fun withdraw() {
-            viewModelScope.launch {
+        fun withdraw() =
+            intent {
                 userRepository.withdraw()
                     .onSuccess {
-                        _settingUiState.update { SettingUiState.Expired }
+                        postSideEffect(SettingSideEffect.LogoutOrWithdrawComplete)
                     }
                     .onFailure { throwable ->
-                        _errorFlow.emit(throwable)
-                    }
-            }
-        }
-
-        fun updateNotificationSwitchState(isChecked: Boolean) {
-            viewModelScope.launch {
-                settingsRepository.saveNotificationSwitchState(isChecked)
-                _settingUiState.update { currentState ->
-                    if (currentState is SettingUiState.Success) {
-                        currentState.copy(
-                            isNotificationSwitchChecked = isChecked,
+                        SettingSideEffect.ShowError(
+                            throwable.message ?: "알수 없는 문제가 생겼어요",
                         )
-                    } else {
-                        currentState
                     }
-                }
             }
-        }
+
+        fun toggleNotificationSwitch(isChecked: Boolean) =
+            intent {
+                settingsRepository.saveNotificationSwitchState(isChecked)
+            }
+
+        fun onInquiryButtonClick() =
+            intent {
+                postSideEffect(SettingSideEffect.Navigation.Inquiry)
+            }
+
+        fun onNoticeButtonClick() =
+            intent {
+                postSideEffect(SettingSideEffect.Navigation.Notice)
+            }
+
+        fun onProfileModifyClick() =
+            intent {
+                postSideEffect(SettingSideEffect.Navigation.ProfileModification)
+            }
     }
