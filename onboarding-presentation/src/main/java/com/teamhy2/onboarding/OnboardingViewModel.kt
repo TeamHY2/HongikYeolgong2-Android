@@ -1,18 +1,12 @@
 package com.teamhy2.onboarding
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.teamhy2.core.auth.GoogleSignIn
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.Container
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,38 +14,36 @@ class OnboardingViewModel
     @Inject
     constructor(
         private val userRepository: UserRepository,
-    ) : ViewModel() {
-        private val _signInState: MutableStateFlow<SignInState> = MutableStateFlow(SignInState.Idle)
-        val signInState: StateFlow<SignInState> = _signInState.asStateFlow()
+    ) : ViewModel(), ContainerHost<OnboardingState, OnboardingSideEffect> {
+        override val container: Container<OnboardingState, OnboardingSideEffect> =
+            container(OnboardingState)
 
-        private val _errorFlow = MutableSharedFlow<Throwable>()
-        val errorFlow: SharedFlow<Throwable> = _errorFlow.asSharedFlow()
-
-        fun signInWithGoogleIdToken(googleSignIn: GoogleSignIn) {
-            viewModelScope.launch {
+        fun signInWithGoogleIdToken(googleSignIn: GoogleSignIn) =
+            intent {
                 googleSignIn.requestSignInWithIdToken()
                     .onSuccess { idToken: String ->
                         requestSignInToServerWithIdToken(idToken)
                     }
                     .onFailure { throwable ->
-                        _signInState.update { SignInState.Failure }
-                        _errorFlow.emit(throwable)
+                        postSideEffect(
+                            OnboardingSideEffect.ShowError(throwable.message),
+                        )
                     }
             }
-        }
 
-        private suspend fun requestSignInToServerWithIdToken(idToken: String) {
-            userRepository.signIn(idToken)
-                .onSuccess { isAlreadyExist ->
-                    if (isAlreadyExist) {
-                        _signInState.update { SignInState.SuccessfulSignedInUser }
-                        return@onSuccess
+        private fun requestSignInToServerWithIdToken(idToken: String) =
+            intent {
+                userRepository.signIn(idToken)
+                    .onSuccess { isAlreadyExist ->
+                        when (isAlreadyExist) {
+                            true -> postSideEffect(OnboardingSideEffect.NavigateToHome)
+                            false -> postSideEffect(OnboardingSideEffect.NavigateToSignIn)
+                        }
                     }
-                    _signInState.update { SignInState.SuccessfulSignedInGuest }
-                }
-                .onFailure { throwable ->
-                    _signInState.update { SignInState.Failure }
-                    _errorFlow.emit(throwable)
-                }
-        }
+                    .onFailure { throwable ->
+                        postSideEffect(
+                            OnboardingSideEffect.ShowError(throwable.message),
+                        )
+                    }
+            }
     }
