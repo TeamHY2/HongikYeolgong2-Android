@@ -2,6 +2,8 @@ plugins {
     id("hongikyeolgong2.android.application")
     alias(libs.plugins.google.services)
     id("com.google.firebase.crashlytics")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -84,4 +86,6 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
 
     implementation(libs.accompanist.permissions)
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
 }
