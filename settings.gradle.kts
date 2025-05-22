@@ -59,3 +59,4 @@ include(":record-domain")
 
 include(":user-data")
 include(":user-domain")
+include(":baselineprofile")
