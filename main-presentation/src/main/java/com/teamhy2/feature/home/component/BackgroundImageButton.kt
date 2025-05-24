@@ -25,9 +25,9 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R
 fun BackgroundImageButton(
     imageResId: Int,
     text: String,
-    textColor: Color = White,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    textColor: Color = White,
 ) {
     Box(
         modifier =
