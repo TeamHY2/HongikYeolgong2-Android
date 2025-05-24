@@ -45,12 +45,6 @@ android {
     }
 }
 
-tasks.configureEach {
-    if (name.contains("baselineProfile") && System.getenv("CI") == "true") {
-        enabled = false
-    }
-}
-
 dependencies {
     implementation(projects.core.notification)
     implementation(projects.core.designsystem)
