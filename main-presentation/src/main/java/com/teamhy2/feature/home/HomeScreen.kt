@@ -35,9 +35,9 @@ import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
-import com.teamhy2.feature.home.component.InitTimerComponent
+import com.teamhy2.feature.home.component.IdleTimer
 import com.teamhy2.feature.home.component.PromotionDialog
-import com.teamhy2.feature.home.component.RunningTimerComponent
+import com.teamhy2.feature.home.component.RunningTimer
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
@@ -286,7 +286,7 @@ private fun HomeBody(
     ) {
         when (timerUiState) {
             is TimerUiState.Running -> {
-                RunningTimerComponent(
+                RunningTimer(
                     timerUiState = timerUiState,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
@@ -295,11 +295,11 @@ private fun HomeBody(
             }
 
             is TimerUiState.Idle -> {
-                InitTimerComponent(
+                IdleTimer(
                     wiseSaying = wiseSaying,
                     onSeatingChartClick = onSeatingChartClick,
                     onStudyRoomStartClick = onStudyRoomStartClick,
-                    modifier = Modifier.weight(12f),
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
