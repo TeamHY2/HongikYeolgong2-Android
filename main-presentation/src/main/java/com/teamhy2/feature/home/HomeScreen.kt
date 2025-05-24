@@ -27,18 +27,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2TimePicker
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.home.component.IdleTimer
 import com.teamhy2.feature.home.component.PromotionDialog
 import com.teamhy2.feature.home.component.RunningTimer
 import com.teamhy2.feature.home.component.WeeklyStudyCalendar
+import com.teamhy2.feature.home.navigation.navigateToFocusMode
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
@@ -53,14 +54,15 @@ import java.time.LocalDate
 fun HomeRoute(
     seatingChartUrl: String,
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    timerViewModel: TimerViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel,
+    timerViewModel: TimerViewModel,
 ) {
     val homeState: HomeState by homeViewModel.collectAsState()
     val timerState by timerViewModel.timerState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val localShowSnackBar = LocalShowSnackBar.current
+    val localNavController = LocalNavController.current
     val tracker = LocalTracker.current
 
     var backPressedTime by remember {
@@ -88,7 +90,7 @@ fun HomeRoute(
         backPressedTime = System.currentTimeMillis()
     }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         tracker.trackEvent("Home")
         timerViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
@@ -115,6 +117,7 @@ fun HomeRoute(
                         timerViewModel.setTimer(
                             startDateTime = selectedDateTime,
                         )
+                        localNavController.navigateToFocusMode()
                         tracker.trackEvent("StudyStartButton")
                     },
                     onCancelled = {
