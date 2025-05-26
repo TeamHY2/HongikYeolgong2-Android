@@ -1,7 +1,19 @@
 package com.teamhy2.feature.home
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -10,21 +22,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamhy2.designsystem.common.HY2Button
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2LoadingScreen
 import com.teamhy2.designsystem.ui.theme.Gray100
+import com.teamhy2.designsystem.ui.theme.Gray300
+import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.HY2Typography
+import com.teamhy2.designsystem.ui.theme.Yellow100
 import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
-import com.teamhy2.feature.home.component.RunningTimer
 import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.hongikyeolgong2.main.presentation.R
+import com.teamhy2.hongikyeolgong2.timer.presentation.HY2Timer
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.LeftTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.Meridiem
@@ -97,11 +120,11 @@ fun FocusModeRoute(
         is TimerUiState.Running -> {
             FocusModeScreen(
                 timerUiState = timerState as TimerUiState.Running,
-                onStudyRoomExtendClick = {
-                    isStudyRoomExtendDialog = true
-                },
                 onStudyRoomEndClick = {
                     isStudyRoomEndDialog = true
+                },
+                onStudyRoomExtendClick = {
+                    isStudyRoomExtendDialog = true
                 },
                 onCloseClick = { localNavController.popBackStack() },
                 modifier = modifier,
@@ -119,18 +142,78 @@ fun FocusModeScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        IconButton(onClick = onCloseClick) {
-            Icon(
-                painter = painterResource(com.teamhy2.designsystem.R.drawable.ic_close),
-                contentDescription = "닫기",
-                tint = Gray100,
-            )
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            IconButton(onClick = onCloseClick) {
+                Icon(
+                    painter = painterResource(com.teamhy2.designsystem.R.drawable.ic_close),
+                    contentDescription = "닫기",
+                    tint = Gray100,
+                )
+            }
         }
-        RunningTimer(
-            timerUiState = timerUiState,
-            onStudyRoomEndClick = onStudyRoomEndClick,
-            onStudyRoomExtendClick = onStudyRoomExtendClick,
-        )
+        Column(
+            modifier =
+                Modifier
+                    .padding(horizontal = 32.dp)
+                    .offset(y = (-12).dp),
+        ) {
+            HY2Timer(
+                durationAsSecond = timerUiState.duration.seconds,
+                leftTime = timerUiState.leftTime.value,
+                startTime = timerUiState.startTime.formattedTime,
+                startTimeMeridiem = timerUiState.startTime.meridiem.label,
+                endTime = timerUiState.endTime.formattedTime,
+                endTimeMeridiem = timerUiState.endTime.meridiem.label,
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            Row {
+                HY2Button(
+                    text = "열람실 이용 종료",
+                    onClick = onStudyRoomEndClick,
+                    textColor = Gray100,
+                    backgroundColor = Gray600,
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                HY2Button(
+                    text = "열람실 이용 연장",
+                    onClick = onStudyRoomExtendClick,
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .alpha(if (timerUiState.leftTime.value <= "00:30:00") 1f else 0f),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(36.dp))
+            Text("전체", style = HY2Typography().body05, color = Gray100)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text =
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(color = Yellow100)) {
+                            append("10명") // TODO: 실데이터로 변경, 컬러도 변경
+                        }
+                        withStyle(SpanStyle(color = Gray300)) {
+                            append(" 공부중")
+                        }
+                    },
+                style = HY2Typography().body07,
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            LazyVerticalGrid(columns = GridCells.Fixed(4)) {
+                items(16) {
+                    // TODO: 실데이터로 변경
+                    Image(painter = painterResource(com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.bg_day_2), null)
+                }
+            }
+        }
     }
 }
 
