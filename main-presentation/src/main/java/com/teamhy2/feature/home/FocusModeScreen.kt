@@ -187,7 +187,7 @@ fun FocusModeScreen(
                     modifier =
                         Modifier
                             .weight(1f)
-                            .alpha(if (timerUiState.leftTime.value <= "00:30:00") 1f else 0f),
+                            .alpha(1f.takeIf { timerUiState.leftTime.value <= "00:30:00" } ?: 0f),
                 )
             }
 
@@ -210,7 +210,10 @@ fun FocusModeScreen(
             LazyVerticalGrid(columns = GridCells.Fixed(4)) {
                 items(16) {
                     // TODO: 실데이터로 변경
-                    Image(painter = painterResource(com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.bg_day_2), null)
+                    Image(
+                        painter = painterResource(com.teamhy2.hongikyeolgong2.calendar.presentation.R.drawable.bg_day_2),
+                        null,
+                    )
                 }
             }
         }
