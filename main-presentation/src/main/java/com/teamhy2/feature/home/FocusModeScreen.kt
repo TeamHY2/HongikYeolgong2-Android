@@ -68,14 +68,41 @@ fun FocusModeRoute(
     val localNavController = LocalNavController.current
     val localShowSnackBar = LocalShowSnackBar.current
 
-    var isStudyRoomExtendDialog by rememberSaveable { mutableStateOf(false) }
-    var isStudyRoomEndDialog by rememberSaveable { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         timerViewModel.errorFlow.collectLatest { throwable ->
             localShowSnackBar.showSnackBar(throwable.message)
         }
     }
+
+    FocusModeScreen(
+        timerUiState = timerState,
+        onStudyRoomExtendClick = {
+            homeViewModel.increaseTodayStudyCount()
+            timerViewModel.extendTime()
+            tracker.trackEvent("StudyExtendButton")
+        },
+        onStudyRoomEndClick = {
+            timerViewModel.stopTimer()
+            localNavController.popUpToHome()
+            tracker.trackEvent("StudyEndButton")
+        },
+        onCloseClick = {
+            localNavController.popUpToHome()
+        },
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun FocusModeScreen(
+    timerUiState: TimerUiState,
+    onStudyRoomExtendClick: () -> Unit,
+    onStudyRoomEndClick: () -> Unit,
+    onCloseClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var isStudyRoomExtendDialog by rememberSaveable { mutableStateOf(false) }
+    var isStudyRoomEndDialog by rememberSaveable { mutableStateOf(false) }
 
     if (isStudyRoomExtendDialog) {
         HY2Dialog(
@@ -85,9 +112,7 @@ fun FocusModeRoute(
             onLeftButtonClick = { isStudyRoomExtendDialog = false },
             onRightButtonClick = {
                 isStudyRoomExtendDialog = false
-                homeViewModel.increaseTodayStudyCount()
-                timerViewModel.extendTime()
-                tracker.trackEvent("StudyExtendButton")
+                onStudyRoomExtendClick()
             },
             onDismiss = {
                 isStudyRoomExtendDialog = false
@@ -105,9 +130,7 @@ fun FocusModeRoute(
             },
             onRightButtonClick = {
                 isStudyRoomEndDialog = false
-                timerViewModel.stopTimer()
-                localNavController.popUpToHome()
-                tracker.trackEvent("StudyEndButton")
+                onStudyRoomEndClick()
             },
             onDismiss = {
                 isStudyRoomEndDialog = false
@@ -115,18 +138,18 @@ fun FocusModeRoute(
         )
     }
 
-    when (timerState) {
+    when (timerUiState) {
         TimerUiState.Idle -> HY2LoadingScreen()
         is TimerUiState.Running -> {
-            FocusModeScreen(
-                timerUiState = timerState as TimerUiState.Running,
+            FocusModeTimerRunningScreen(
+                timerUiState = timerUiState,
                 onStudyRoomEndClick = {
                     isStudyRoomEndDialog = true
                 },
                 onStudyRoomExtendClick = {
                     isStudyRoomExtendDialog = true
                 },
-                onCloseClick = { localNavController.popBackStack() },
+                onCloseClick = onCloseClick,
                 modifier = modifier,
             )
         }
@@ -134,7 +157,7 @@ fun FocusModeRoute(
 }
 
 @Composable
-fun FocusModeScreen(
+fun FocusModeTimerRunningScreen(
     timerUiState: TimerUiState.Running,
     onStudyRoomEndClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
@@ -190,7 +213,6 @@ fun FocusModeScreen(
                             .alpha(1f.takeIf { timerUiState.leftTime.value <= "00:30:00" } ?: 0f),
                 )
             }
-
             Spacer(modifier = Modifier.height(36.dp))
             Text("전체", style = HY2Typography().body05, color = Gray100)
             Spacer(modifier = Modifier.height(4.dp))
@@ -222,7 +244,7 @@ fun FocusModeScreen(
 
 @Preview
 @Composable
-private fun FocusModeScreenPreview() {
+private fun FocusModeTimerRunningScreenPreview() {
     HY2Theme {
         val timerUiState =
             TimerUiState.Running(
@@ -243,7 +265,7 @@ private fun FocusModeScreenPreview() {
                 duration = Duration.ofSeconds(14400L),
             )
 
-        FocusModeScreen(
+        FocusModeTimerRunningScreen(
             timerUiState = timerUiState,
             onStudyRoomEndClick = {},
             onStudyRoomExtendClick = {},
