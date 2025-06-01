@@ -16,7 +16,7 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.HY2Typography
 
 @Composable
-fun WiseSayingComponent(
+fun WiseSaying(
     quote: String,
     author: String,
     modifier: Modifier = Modifier,
@@ -45,9 +45,9 @@ fun WiseSayingComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun WiseSayingComponentPreview() {
+fun WiseSayingPreview() {
     HY2Theme {
-        WiseSayingComponent(
+        WiseSaying(
             quote = "행동보다 빠르게 불안감을\n 없앨 수 있는 것은 없습니다.",
             author = "월터 앤더슨",
             modifier = Modifier,

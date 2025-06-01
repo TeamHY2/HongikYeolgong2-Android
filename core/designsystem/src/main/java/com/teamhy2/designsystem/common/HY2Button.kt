@@ -22,10 +22,10 @@ private const val BUTTON_HEIGHT = 44
 @Composable
 fun HY2Button(
     text: String,
-    backgroundColor: Color = Blue100,
-    textColor: Color = White,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    textColor: Color = White,
+    backgroundColor: Color = Blue100,
 ) {
     ThrottleButton(
         onClick = onClick,
@@ -54,7 +54,7 @@ private fun HY2ButtonPreview() {
     HY2Theme {
         HY2Button(
             text = "열람실 이용 연장",
-            onClick = { /* TODO */ },
+            onClick = {},
         )
     }
 }
@@ -67,7 +67,7 @@ private fun HY2ButtonDifferentColorPreview() {
             text = "커스텀 배경색 버튼",
             backgroundColor = Gray600,
             textColor = Gray100,
-            onClick = { /* TODO */ },
+            onClick = {},
         )
     }
 }

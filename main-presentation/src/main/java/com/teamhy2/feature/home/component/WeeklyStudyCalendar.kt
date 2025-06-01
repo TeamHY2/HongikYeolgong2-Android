@@ -35,7 +35,7 @@ fun WeeklyStudyCalendar(
         DAYS_OF_WEEK.forEachIndexed { index, dayOfWeek ->
             val isFutureDate = isDateInFuture(weeklyStudyDays[index].date, currentDate)
 
-            WeeklyDayComponent(
+            WeeklyStudyDay(
                 dayOfWeek = dayOfWeek,
                 studyCount = weeklyStudyDays[index].studyCount,
                 date = weeklyStudyDays[index].date,

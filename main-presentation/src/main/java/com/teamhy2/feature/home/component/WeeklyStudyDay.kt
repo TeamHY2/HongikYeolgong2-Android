@@ -23,7 +23,7 @@ import com.teamhy2.hongikyeolgong2.main.presentation.R.drawable.ic_star_3
 private const val STAR_IMAGE_SIZE = 28
 
 @Composable
-fun WeeklyDayComponent(
+fun WeeklyStudyDay(
     dayOfWeek: String,
     studyCount: Int,
     date: String,
@@ -71,8 +71,8 @@ private fun getStarDrawableId(studyCount: Int): Int {
 
 @Preview
 @Composable
-private fun PreviewWeeklyStudyDayComponent() {
-    WeeklyDayComponent(
+private fun WeeklyStudyDayPreview() {
+    WeeklyStudyDay(
         dayOfWeek = "월",
         studyCount = 3,
         date = "9/23",

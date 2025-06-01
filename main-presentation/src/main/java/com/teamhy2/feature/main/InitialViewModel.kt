@@ -67,7 +67,7 @@ class InitialViewModel
             val isValidToken = tokenValidator.validate().getOrNull() ?: return resetToken()
 
             return when (isValidToken.role) {
-                TokenRole.USER -> Home.ROUTE
+                TokenRole.USER -> Home.NAVIGATION_ROUTE
                 TokenRole.GUEST -> SignUp.ROUTE
                 TokenRole.ADMIN -> resetToken()
             }
