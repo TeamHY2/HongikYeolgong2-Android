@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,7 @@ import com.teamhy2.main.domain.model.WiseSaying
 private const val BUTTON_HEIGHT = 52
 
 @Composable
-fun InitTimerComponent(
+fun IdleTimer(
     wiseSaying: WiseSaying,
     onSeatingChartClick: () -> Unit,
     onStudyRoomStartClick: () -> Unit,
@@ -31,7 +32,7 @@ fun InitTimerComponent(
         modifier = modifier.padding(bottom = 36.dp),
     ) {
         Spacer(modifier = Modifier.weight(1f))
-        WiseSayingComponent(
+        WiseSaying(
             quote = wiseSaying.quote,
             author = wiseSaying.author,
             modifier = Modifier.fillMaxWidth(),
@@ -63,7 +64,7 @@ fun InitTimerComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun TimerScreenPreview() {
+fun IdleTimerPreview() {
     val dummyWiseSaying =
         WiseSaying(
             quote = "삶이 아무리 어려워 보일지라도\n항상 당신이 할 수 있고 성공할 수 있는 일이 있습니다.",
@@ -71,14 +72,14 @@ fun TimerScreenPreview() {
         )
 
     HY2Theme {
-        InitTimerComponent(
+        IdleTimer(
             wiseSaying = dummyWiseSaying,
             onSeatingChartClick = { },
             onStudyRoomStartClick = { },
             modifier =
                 Modifier
                     .background(Black)
-                    .height(308.dp),
+                    .fillMaxHeight(),
         )
     }
 }

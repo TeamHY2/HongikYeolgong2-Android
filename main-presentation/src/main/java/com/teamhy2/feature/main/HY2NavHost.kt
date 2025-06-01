@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.teamhy2.feature.home.navigation.homeScreen
+import com.teamhy2.feature.home.navigation.homeNavigation
 import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
@@ -46,8 +46,9 @@ fun HY2NavHost(
                 onSignUpButtonClicked = navController::popUpToHome,
             )
 
-            homeScreen(
-                seatingChartUrl = urls["seatingChart"] ?: "",
+            homeNavigation(
+                navController = navController,
+                urls = urls,
             )
 
             rankingScreen()

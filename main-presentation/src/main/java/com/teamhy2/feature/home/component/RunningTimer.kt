@@ -26,7 +26,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 
 @Composable
-fun RunningTimerComponent(
+fun RunningTimer(
     timerUiState: TimerUiState.Running,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
@@ -75,7 +75,7 @@ fun RunningTimerComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun TimerScreenPreview_LessThanExtendThreshold() {
+fun RunningTimerPreviewLessThanExtendThreshold() {
     val timerUiState =
         TimerUiState.Running(
             startDateTime = LocalDateTime.now(),
@@ -96,7 +96,7 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
         )
 
     HY2Theme {
-        RunningTimerComponent(
+        RunningTimer(
             timerUiState = timerUiState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
@@ -107,7 +107,7 @@ fun TimerScreenPreview_LessThanExtendThreshold() {
 
 @Preview(showBackground = true)
 @Composable
-fun TimerScreenPreview_MoreThanExtendThreshold() {
+fun RunningTimerPreviewMoreThanExtendThreshold() {
     val timerUiState =
         TimerUiState.Running(
             startDateTime = LocalDateTime.now(),
@@ -128,7 +128,7 @@ fun TimerScreenPreview_MoreThanExtendThreshold() {
         )
 
     HY2Theme {
-        RunningTimerComponent(
+        RunningTimer(
             timerUiState = timerUiState,
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
