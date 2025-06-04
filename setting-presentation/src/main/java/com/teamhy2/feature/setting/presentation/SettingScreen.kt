@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.ui.theme.Gray300
@@ -41,149 +42,138 @@ import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
+import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.feature.setting.presentation.navigation.navigateToProfileModification
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 import com.teamhy2.user.domain.model.UserInfo
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingRoute(
     noticeUrl: String,
-    onNavigateToInquiry: () -> Unit,
-    onLogoutOrWithdrawComplete: () -> Unit,
+    onInquiryClick: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
-    val state: SettingState by viewModel.collectAsState()
+    val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val tracker = LocalTracker.current
 
     val localShowSnackBar = LocalShowSnackBar.current
     val localNavController = LocalNavController.current
 
-    viewModel.collectSideEffect {
-        when (it) {
-            is SettingSideEffect.ShowError -> {
-                localShowSnackBar.showSnackBar(it.errorMessage)
-            }
-
-            is SettingSideEffect.LogoutOrWithdrawComplete -> {
-                onLogoutOrWithdrawComplete()
-            }
-
-            SettingSideEffect.Navigation.ProfileModification -> {
-                localNavController.navigateToProfileModification()
-            }
-
-            SettingSideEffect.Navigation.Inquiry -> {
-                onNavigateToInquiry()
-            }
-
-            SettingSideEffect.Navigation.Notice -> {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
-                context.startActivity(intent)
-            }
+    LaunchedEffect(true) {
+        tracker.trackEvent("Setting")
+        viewModel.initSettingUiState()
+        viewModel.errorFlow.collectLatest { throwable ->
+            localShowSnackBar.showSnackBar(throwable.message)
         }
     }
 
-    LaunchedEffect(true) {
-        tracker.trackEvent("Setting")
-        viewModel.initSettingScreen()
-    }
-
     SettingScreen(
-        modifier = modifier,
-        state = state,
-        settingOnClick = {
-            logout = {
-                viewModel.logout()
-                tracker.trackEvent("LogoutButton")
-            }
-            withdraw = {
-                viewModel.withdraw()
-                tracker.trackEvent("WithdrawButton")
-            }
-            notificationSwitch = { isChecked ->
-                viewModel.toggleNotificationSwitch(isChecked)
-            }
-            notice = {
-                viewModel.onNoticeButtonClick()
-            }
-            inquiry = {
-                viewModel.onInquiryButtonClick()
-            }
-            profileModify = {
-                viewModel.onProfileModifyClick()
-            }
+        settingUiState = settingUiState,
+        onLogoutClick = {
+            viewModel.signOut()
+            tracker.trackEvent("LogoutButton")
         },
+        onWithdrawClick = {
+            viewModel.withdraw()
+            tracker.trackEvent("WithdrawButton")
+        },
+        onNotificationSwitchClick = { isChecked ->
+            viewModel.updateNotificationSwitchState(isChecked)
+        },
+        onNoticeClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
+            context.startActivity(intent)
+        },
+        onInquiryClick = onInquiryClick,
+        onSignOutOrWithdrawComplete = onSignOutOrWithdrawComplete,
+        onProfileModifyClick = { localNavController.navigateToProfileModification() },
+        modifier = modifier,
     )
 }
 
 @Composable
-internal fun SettingScreen(
+fun SettingScreen(
+    settingUiState: SettingUiState,
+    onLogoutClick: () -> Unit,
+    onWithdrawClick: () -> Unit,
+    onNotificationSwitchClick: (Boolean) -> Unit,
+    onNoticeClick: () -> Unit,
+    onInquiryClick: () -> Unit,
+    onProfileModifyClick: () -> Unit,
+    onSignOutOrWithdrawComplete: () -> Unit,
     modifier: Modifier = Modifier,
-    state: SettingState,
-    settingOnClick: SettingOnClick.() -> Unit = {},
 ) {
-    val onItemClick = remember(settingOnClick) { SettingOnClick().apply(settingOnClick) }
     var showSignOutDialog by remember { mutableStateOf(false) }
     var showWithdrawDialog by remember { mutableStateOf(false) }
 
-    if (showSignOutDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.setting_logout_dialog_description),
-            leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
-            rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
-            onLeftButtonClick = {
-                showSignOutDialog = false
-                onItemClick.logout()
-            },
-            onRightButtonClick = {
-                showSignOutDialog = false
-            },
-            onDismiss = { showSignOutDialog = false },
-        )
-    }
+    when (settingUiState) {
+        is SettingUiState.Loading -> {
+            HY2CircularLoading()
+        }
 
-    if (showWithdrawDialog) {
-        HY2Dialog(
-            description = stringResource(R.string.setting_withdrawal_dialog_description),
-            leftButtonText = stringResource(R.string.setting_withdrawal_dialog_left_button_text),
-            rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
-            onLeftButtonClick = {
-                showWithdrawDialog = false
-                onItemClick.withdraw()
-            },
-            onRightButtonClick = {
-                showWithdrawDialog = false
-            },
-            onDismiss = { showWithdrawDialog = false },
-        )
-    }
+        is SettingUiState.Success -> {
+            if (showSignOutDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.setting_logout_dialog_description),
+                    leftButtonText = stringResource(R.string.setting_logout_dialog_left_button_text),
+                    rightButtonText = stringResource(R.string.setting_logout_dialog_right_button_text),
+                    onLeftButtonClick = {
+                        showSignOutDialog = false
+                        onLogoutClick()
+                    },
+                    onRightButtonClick = {
+                        showSignOutDialog = false
+                    },
+                    onDismiss = { showSignOutDialog = false },
+                )
+            }
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        SettingBody(
-            userInfo = state.userInfo,
-            isNotificationSwitchChecked = state.isNotificationSwitchChecked,
-            onNotificationSwitchClick = onItemClick.notificationSwitch,
-            onNoticeClick = onItemClick.notice,
-            onInquiryClick = onItemClick.inquiry,
-            onProfileClick = onItemClick.profileModify,
-        )
+            if (showWithdrawDialog) {
+                HY2Dialog(
+                    description = stringResource(R.string.setting_withdrawal_dialog_description),
+                    leftButtonText = stringResource(R.string.setting_withdrawal_dialog_left_button_text),
+                    rightButtonText = stringResource(R.string.setting_withdrawal_dialog_right_button_text),
+                    onLeftButtonClick = {
+                        showWithdrawDialog = false
+                        onWithdrawClick()
+                    },
+                    onRightButtonClick = {
+                        showWithdrawDialog = false
+                    },
+                    onDismiss = { showWithdrawDialog = false },
+                )
+            }
 
-        Spacer(modifier = Modifier.weight(1f))
+            Column(
+                modifier = modifier.fillMaxSize(),
+            ) {
+                SettingBody(
+                    userInfo = settingUiState.userInfo,
+                    isNotificationSwitchChecked = settingUiState.isNotificationSwitchChecked,
+                    onNotificationSwitchClick = onNotificationSwitchClick,
+                    onNoticeClick = onNoticeClick,
+                    onInquiryClick = onInquiryClick,
+                    onProfileClick = onProfileModifyClick,
+                )
 
-        SettingBottom(
-            showLogoutDialog = { showSignOutDialog = true },
-            showWithdrawDialog = { showWithdrawDialog = true },
-        )
-    }
+                Spacer(modifier = Modifier.weight(1f))
 
-    if (state.isLoading) {
-        HY2CircularLoading()
+                SettingBottom(
+                    showLogoutDialog = { showSignOutDialog = true },
+                    showWithdrawDialog = { showWithdrawDialog = true },
+                )
+            }
+        }
+
+        is SettingUiState.Expired -> {
+            onSignOutOrWithdrawComplete()
+        }
+
+        is SettingUiState.Error -> Unit
     }
 }
 
@@ -304,7 +294,7 @@ private fun SettingScreenPreview() {
 
     val state by remember {
         mutableStateOf(
-            SettingState(
+            SettingUiState.Success(
                 isNotificationSwitchChecked = true,
                 userInfo = sampleUserInfo,
             ),
@@ -313,8 +303,14 @@ private fun SettingScreenPreview() {
 
     HY2Theme {
         SettingScreen(
-            state = state,
-            settingOnClick = {},
+            settingUiState = state,
+            onLogoutClick = {},
+            onWithdrawClick = {},
+            onNotificationSwitchClick = {},
+            onNoticeClick = {},
+            onInquiryClick = {},
+            onSignOutOrWithdrawComplete = {},
+            onProfileModifyClick = {},
             modifier = Modifier,
         )
     }
