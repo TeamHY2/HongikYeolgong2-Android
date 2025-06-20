@@ -205,6 +205,9 @@ fun HomeRoute(
                 onStudyRoomEndClick = {
                     isStudyRoomEndDialog = true
                 },
+                onFocusModeClick = {
+                    localNavController.navigateToFocusMode()
+                },
                 modifier = modifier,
             )
         }
@@ -231,6 +234,7 @@ fun HomeScreen(
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
+    onFocusModeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -252,6 +256,7 @@ fun HomeScreen(
             onStudyRoomStartClick = onStudyRoomStartClick,
             onStudyRoomExtendClick = onStudyRoomExtendClick,
             onStudyRoomEndClick = onStudyRoomEndClick,
+            onFocusModeClick = onFocusModeClick,
             modifier = Modifier.padding(horizontal = 24.dp),
         )
     }
@@ -279,6 +284,7 @@ private fun HomeBody(
     onStudyRoomStartClick: () -> Unit,
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
+    onFocusModeClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -293,6 +299,7 @@ private fun HomeBody(
                     timerUiState = timerUiState,
                     onStudyRoomExtendClick = onStudyRoomExtendClick,
                     onStudyRoomEndClick = onStudyRoomEndClick,
+                    onFocusModeClick = onFocusModeClick,
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -321,6 +328,7 @@ private fun HomeScreenPreview() {
             onStudyRoomStartClick = { },
             onStudyRoomExtendClick = { },
             onStudyRoomEndClick = { },
+            onFocusModeClick = { },
         )
     }
 }
