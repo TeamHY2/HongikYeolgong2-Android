@@ -10,12 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -45,6 +47,7 @@ import com.teamhy2.designsystem.ui.theme.Yellow100
 import com.teamhy2.designsystem.util.compositionlocal.LocalNavController
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
+import com.teamhy2.designsystem.util.modifier.throttleClickable
 import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.timer.presentation.HY2Timer
@@ -169,14 +172,23 @@ fun FocusModeTimerRunningScreen(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(52.dp)
+                    .padding(horizontal = 20.dp),
             contentAlignment = Alignment.CenterEnd,
         ) {
-            IconButton(onClick = onCloseClick) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .throttleClickable(onClick = onCloseClick),
+            ) {
                 Icon(
                     painter = painterResource(com.teamhy2.designsystem.R.drawable.ic_close),
                     contentDescription = "닫기",
                     tint = Gray100,
+                    modifier = Modifier.size(24.dp),
                 )
             }
         }
