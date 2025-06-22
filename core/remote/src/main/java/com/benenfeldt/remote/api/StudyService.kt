@@ -6,6 +6,8 @@ import com.benenfeldt.remote.dto.RankingResponse
 import com.benenfeldt.remote.dto.StudyDayRequest
 import com.benenfeldt.remote.dto.StudyDayResponse
 import com.benenfeldt.remote.dto.StudyDurationResponse
+import com.benenfeldt.remote.dto.StudyStartRequest
+import com.benenfeldt.remote.dto.StudyStartResponse
 import com.benenfeldt.remote.dto.WeeklyStudyDayResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,4 +35,9 @@ interface StudyService {
     suspend fun getStudyDuration(
         @Query("date") date: String? = null,
     ): Result<BaseResponse<StudyDurationResponse>>
+
+    @POST("/api/v1/study/start")
+    suspend fun postStudyStart(
+        @Body studyStartRequest: StudyStartRequest,
+    ): Result<BaseResponse<StudyStartResponse>>
 }
