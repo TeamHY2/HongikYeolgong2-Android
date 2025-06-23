@@ -6,11 +6,15 @@ import com.benenfeldt.remote.dto.RankingResponse
 import com.benenfeldt.remote.dto.StudyDayRequest
 import com.benenfeldt.remote.dto.StudyDayResponse
 import com.benenfeldt.remote.dto.StudyDurationResponse
+import com.benenfeldt.remote.dto.StudyEndRequest
+import com.benenfeldt.remote.dto.StudyEndResponse
 import com.benenfeldt.remote.dto.StudyStartRequest
 import com.benenfeldt.remote.dto.StudyStartResponse
+import com.benenfeldt.remote.dto.StudyingUserResponse
 import com.benenfeldt.remote.dto.WeeklyStudyDayResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -40,4 +44,12 @@ interface StudyService {
     suspend fun postStudyStart(
         @Body studyStartRequest: StudyStartRequest,
     ): Result<BaseResponse<StudyStartResponse>>
+
+    @PATCH("/api/v1/study/end")
+    suspend fun patchStudyEnd(
+        @Body studyEndRequest: StudyEndRequest,
+    ): Result<BaseResponse<StudyEndResponse>>
+
+    @GET("/api/v1/study")
+    suspend fun getStudyingUsers(): Result<BaseResponse<List<StudyingUserResponse>>>
 }
