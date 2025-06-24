@@ -29,6 +29,7 @@ include(":core:auth")
 include(":core:notification")
 include(":core:tracker")
 include(":core:fcm")
+include(":core:testing")
 
 include(":calendar-domain")
 include(":calendar-presentation")
