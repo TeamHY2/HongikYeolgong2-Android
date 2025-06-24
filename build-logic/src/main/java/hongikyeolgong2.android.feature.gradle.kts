@@ -15,8 +15,9 @@ android {
 configureHiltAndroid()
 
 dependencies {
-	// TODO: 사용하는 core 모듈의 의존성 추가
+	// 사용하는 core 모듈의 의존성 추가
 	implementation(project(":core:designsystem"))
+    testImplementation(project(":core:testing"))
 
 	val libs = project.extensions.libs
 	implementation(libs.findLibrary("hilt.navigation.compose").get())
@@ -31,4 +32,5 @@ dependencies {
     implementation(libs.findLibrary("orbit.viewmodel").get())
     implementation(libs.findLibrary("orbit.compose").get())
     implementation(libs.findLibrary("orbit.test").get())
+
 }
