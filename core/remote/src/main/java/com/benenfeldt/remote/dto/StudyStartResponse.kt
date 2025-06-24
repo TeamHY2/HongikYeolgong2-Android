@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class StudyStartResponse(
-    val id: Int,
+    val id: Long,
     val startTime: String,
-    val userId: Int,
+    val userId: Long,
 )

@@ -5,9 +5,15 @@ interface TimerRepository {
 
     suspend fun getCurrentTimerDuration(): TimerDuration?
 
+    suspend fun getCurrentStudySessionId(): Long?
+
     suspend fun setCurrentTimerDuration(timerDuration: TimerDuration)
 
+    suspend fun setCurrentStudySessionId(studySessionId: Long)
+
     suspend fun clearCurrentTimerDuration()
+
+    suspend fun clearCurrentStudySessionId()
 
     companion object {
         const val MINIMUM_STUDY_ROOM_HOUR_DURATION = 4

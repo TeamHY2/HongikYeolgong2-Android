@@ -7,9 +7,15 @@ interface TimerDataSource {
 
     suspend fun getEndTime(): LocalDateTime?
 
+    suspend fun getCurrentStudySessionId(): Long?
+
     suspend fun saveStartTime(startTime: String)
 
     suspend fun saveEndTime(endTime: String)
 
+    suspend fun saveCurrentStudySessionId(studySessionId: Long)
+
     suspend fun clearTimes()
+
+    suspend fun clearCurrentStudySessionId()
 }
