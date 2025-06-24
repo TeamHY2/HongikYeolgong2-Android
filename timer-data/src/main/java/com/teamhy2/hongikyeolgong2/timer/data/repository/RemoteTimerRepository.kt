@@ -35,12 +35,24 @@ class RemoteTimerRepository
             return TimerDuration(startTime, endTime)
         }
 
+        override suspend fun getCurrentStudySessionId(): Long? {
+            return timerDataSource.getCurrentStudySessionId()
+        }
+
         override suspend fun setCurrentTimerDuration(timerDuration: TimerDuration) {
             timerDataSource.saveStartTime(timerDuration.startTime.toString())
             timerDataSource.saveEndTime(timerDuration.endTime.toString())
         }
 
+        override suspend fun setCurrentStudySessionId(studySessionId: Long) {
+            timerDataSource.saveCurrentStudySessionId(studySessionId)
+        }
+
         override suspend fun clearCurrentTimerDuration() {
             timerDataSource.clearTimes()
+        }
+
+        override suspend fun clearCurrentStudySessionId() {
+            timerDataSource.clearCurrentStudySessionId()
         }
     }

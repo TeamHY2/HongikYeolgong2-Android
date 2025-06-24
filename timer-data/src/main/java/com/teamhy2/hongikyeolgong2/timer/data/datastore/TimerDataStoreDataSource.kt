@@ -1,6 +1,5 @@
 package com.teamhy2.hongikyeolgong2.timer.data.datastore
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -22,7 +21,6 @@ class TimerDataStoreDataSource
                 dataStore.data.map { preferences ->
                     preferences[startTimeKey]
                 }.firstOrNull() ?: return null
-            Log.d("bandal", "getStartTime: $startTime")
             return startTime.toLocalDateTimeIso()
         }
 
@@ -31,9 +29,15 @@ class TimerDataStoreDataSource
                 dataStore.data.map { preferences ->
                     preferences[endTimeKey]
                 }.firstOrNull() ?: return null
-            Log.d("bandal", "getEndTime: $endTime")
-
             return endTime.toLocalDateTimeIso()
+        }
+
+        override suspend fun getCurrentStudySessionId(): Long? {
+            val currentStudySessionId: String =
+                dataStore.data.map { preferences ->
+                    preferences[currentStudySessionIdKey]
+                }.firstOrNull() ?: return null
+            return currentStudySessionId.toLong()
         }
 
         override suspend fun saveStartTime(startTime: String) {
@@ -48,10 +52,22 @@ class TimerDataStoreDataSource
             }
         }
 
+        override suspend fun saveCurrentStudySessionId(studySessionId: Long) {
+            dataStore.edit { preferences ->
+                preferences[currentStudySessionIdKey] = studySessionId.toString()
+            }
+        }
+
         override suspend fun clearTimes() {
             dataStore.edit { preferences ->
                 preferences.remove(startTimeKey)
                 preferences.remove(endTimeKey)
+            }
+        }
+
+        override suspend fun clearCurrentStudySessionId() {
+            dataStore.edit { preferences ->
+                preferences.remove(currentStudySessionIdKey)
             }
         }
 
@@ -62,8 +78,10 @@ class TimerDataStoreDataSource
         companion object {
             private const val START_TIME_KEY = "start_time"
             private const val END_TIME_KEY = "end_time"
+            private const val CURRENT_STUDY_SESSION_ID_KEY_NAME = "current_study_session_id"
 
             private val startTimeKey = stringPreferencesKey(START_TIME_KEY)
             private val endTimeKey = stringPreferencesKey(END_TIME_KEY)
+            private val currentStudySessionIdKey = stringPreferencesKey(CURRENT_STUDY_SESSION_ID_KEY_NAME)
         }
     }
