@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2Button
 import com.teamhy2.designsystem.common.HY2Dialog
 import com.teamhy2.designsystem.common.HY2LoadingScreen
+import com.teamhy2.designsystem.common.HY2Spacer
 import com.teamhy2.designsystem.ui.theme.Blue50
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray300
@@ -216,7 +216,7 @@ fun FocusModeTimerRunningScreen(
                     endTime = timerUiState.endTime.formattedTime,
                     endTimeMeridiem = timerUiState.endTime.meridiem.label,
                 )
-                Spacer(modifier = Modifier.height(28.dp))
+                HY2Spacer(28)
                 Row {
                     HY2Button(
                         text = "열람실 이용 종료",
@@ -225,7 +225,7 @@ fun FocusModeTimerRunningScreen(
                         backgroundColor = Gray600,
                         modifier = Modifier.weight(1f),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
+                    HY2Spacer(12)
                     HY2Button(
                         text = "열람실 이용 연장",
                         onClick = onStudyRoomExtendClick,
@@ -238,9 +238,9 @@ fun FocusModeTimerRunningScreen(
                                 ),
                     )
                 }
-                Spacer(modifier = Modifier.height(36.dp))
+                HY2Spacer(36)
                 Text("전체", style = HY2Typography().body05, color = Gray100)
-                Spacer(modifier = Modifier.height(4.dp))
+                HY2Spacer(4)
                 Text(
                     text =
                         buildAnnotatedString {
@@ -253,7 +253,7 @@ fun FocusModeTimerRunningScreen(
                         },
                     style = HY2Typography().body07,
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                HY2Spacer(20)
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -311,7 +311,7 @@ fun StudyLamp(
                     .fillMaxWidth()
                     .aspectRatio(1f),
         )
-        Spacer(Modifier.height(4.dp))
+        HY2Spacer(4)
         Text(
             text = username,
             style = HY2Typography().body07,
