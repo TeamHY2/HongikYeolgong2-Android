@@ -1,11 +1,7 @@
-package com.teamhy2.feature.setting
+package com.teamhy2.feature.setting.presentation
 
 import app.cash.turbine.test
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
-import com.teamhy2.feature.setting.presentation.SettingSideEffect
-import com.teamhy2.feature.setting.presentation.SettingUiIntent
-import com.teamhy2.feature.setting.presentation.SettingUiState
-import com.teamhy2.feature.setting.presentation.SettingViewModel
 import com.teamhy2.testing.MainDispatcherRule
 import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.UserRepository
