@@ -3,6 +3,7 @@ package com.teamhy2.feature.setting.presentation
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.designsystem.util.mvi.MviViewModel
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
+import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -26,21 +27,22 @@ class SettingViewModel
 
         fun initSettingUiState() {
             viewModelScope.launch {
-                val userInfoResult = userRepository.getUserInfo()
-                settingsRepository.notificationSwitchState.collectLatest { isNotificationSwitchChecked ->
-                    userInfoResult
-                        .onSuccess { userInfo ->
+                val userInfoResult: Result<UserInfo> = userRepository.getUserInfo()
+
+                userInfoResult
+                    .onSuccess { userInfo ->
+                        settingsRepository.notificationSwitchState.collectLatest { isSwitchChecked ->
                             reduce {
                                 SettingUiState.Success(
-                                    isNotificationSwitchChecked = isNotificationSwitchChecked,
+                                    isNotificationSwitchChecked = isSwitchChecked,
                                     userInfo = userInfo,
                                 )
                             }
                         }
-                        .onFailure { throwable ->
-                            postSideEffect(SettingSideEffect.ShowSnackBar(throwable))
-                        }
-                }
+                    }
+                    .onFailure { throwable ->
+                        postSideEffect(SettingSideEffect.ShowSnackBar(throwable))
+                    }
             }
         }
 
