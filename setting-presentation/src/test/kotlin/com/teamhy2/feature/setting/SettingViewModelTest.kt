@@ -3,12 +3,14 @@ package com.teamhy2.feature.setting
 import app.cash.turbine.test
 import com.teamhy2.feature.setting.domain.repository.SettingsRepository
 import com.teamhy2.feature.setting.presentation.SettingSideEffect
+import com.teamhy2.feature.setting.presentation.SettingUiIntent
 import com.teamhy2.feature.setting.presentation.SettingUiState
 import com.teamhy2.feature.setting.presentation.SettingViewModel
 import com.teamhy2.testing.MainDispatcherRule
 import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.UserRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -104,6 +106,45 @@ class SettingViewModelTest {
                     expected = SettingSideEffect.ShowSnackBar(throwable),
                     actual = actual,
                 )
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `로그아웃 요청이 성공적이라면 State는 Expired로 변경된다`() =
+        runTest {
+            // given
+            coEvery { userRepository.signOut() } returns Result.success(Unit)
+            viewModel = SettingViewModel(settingsRepository, userRepository)
+
+            // when
+            viewModel.sendIntent(SettingUiIntent.SignOut)
+
+            // then
+            coVerify(exactly = 1) { userRepository.signOut() }
+            viewModel.uiState.test {
+                val actual: SettingUiState = awaitItem()
+                assertEquals(expected = SettingUiState.Expired, actual = actual)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `로그아웃 요청이 실패하였다면 에러 안내 스낵바를 표시한다`() =
+        runTest {
+            // given
+            val throwable = UnknownHostException()
+            coEvery { userRepository.signOut() } returns Result.failure(throwable)
+            viewModel = SettingViewModel(settingsRepository, userRepository)
+
+            // when
+            viewModel.sendIntent(SettingUiIntent.SignOut)
+
+            // then
+            coVerify(exactly = 1) { userRepository.signOut() }
+            viewModel.sideEffect.test {
+                val actual: SettingSideEffect = awaitItem()
+                assertEquals(expected = SettingSideEffect.ShowSnackBar(throwable), actual = actual)
                 cancelAndIgnoreRemainingEvents()
             }
         }
