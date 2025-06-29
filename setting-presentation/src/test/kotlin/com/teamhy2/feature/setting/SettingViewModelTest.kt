@@ -11,7 +11,9 @@ import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -190,5 +192,18 @@ class SettingViewModelTest {
                 assertEquals(expected = SettingSideEffect.ShowSnackBar(throwable), actual = actual)
                 cancelAndIgnoreRemainingEvents()
             }
+        }
+
+    @Test
+    fun `알림 스위치 상태 변경 요청을 할 수 있다`() =
+        runTest {
+            // given
+
+            coEvery { settingsRepository.saveNotificationSwitchState(true) } just runs
+            viewModel = SettingViewModel(settingsRepository, userRepository)
+
+            // when
+            viewModel.sendIntent(SettingUiIntent.UpdateNotificationSwitchState(true))
+            coVerify(exactly = 1) { settingsRepository.saveNotificationSwitchState(true) }
         }
 }
