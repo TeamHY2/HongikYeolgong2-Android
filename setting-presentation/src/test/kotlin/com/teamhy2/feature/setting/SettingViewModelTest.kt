@@ -75,6 +75,8 @@ class SettingViewModelTest {
                 )
                 cancelAndIgnoreRemainingEvents()
             }
+            coVerify(exactly = 1) { userRepository.getUserInfo() }
+            coVerify(exactly = 1) { settingsRepository.notificationSwitchState }
         }
 
     @Test
@@ -94,6 +96,8 @@ class SettingViewModelTest {
                 // when
                 viewModel.initSettingUiState()
                 val actual: SettingUiState = viewModel.uiState.value
+                coVerify(exactly = 1) { userRepository.getUserInfo() }
+                coVerify(exactly = 0) { settingsRepository.notificationSwitchState }
 
                 // then
                 assertEquals(expected = SettingUiState.Loading, actual = actual)
@@ -119,9 +123,9 @@ class SettingViewModelTest {
 
             // when
             viewModel.sendIntent(SettingUiIntent.SignOut)
+            coVerify(exactly = 1) { userRepository.signOut() }
 
             // then
-            coVerify(exactly = 1) { userRepository.signOut() }
             viewModel.uiState.test {
                 val actual: SettingUiState = awaitItem()
                 assertEquals(expected = SettingUiState.Expired, actual = actual)
@@ -139,9 +143,9 @@ class SettingViewModelTest {
 
             // when
             viewModel.sendIntent(SettingUiIntent.SignOut)
+            coVerify(exactly = 1) { userRepository.signOut() }
 
             // then
-            coVerify(exactly = 1) { userRepository.signOut() }
             viewModel.sideEffect.test {
                 val actual: SettingSideEffect = awaitItem()
                 assertEquals(expected = SettingSideEffect.ShowSnackBar(throwable), actual = actual)
