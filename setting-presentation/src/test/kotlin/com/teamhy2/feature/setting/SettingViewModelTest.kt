@@ -152,4 +152,43 @@ class SettingViewModelTest {
                 cancelAndIgnoreRemainingEvents()
             }
         }
+
+    @Test
+    fun `회원탈퇴 요청이 성공적이라면 State는 Expired로 변경된다`() =
+        runTest {
+            // given
+            coEvery { userRepository.withdraw() } returns Result.success(Unit)
+            viewModel = SettingViewModel(settingsRepository, userRepository)
+
+            // when
+            viewModel.sendIntent(SettingUiIntent.Withdraw)
+            coVerify(exactly = 1) { userRepository.withdraw() }
+
+            // then
+            viewModel.uiState.test {
+                val actual: SettingUiState = awaitItem()
+                assertEquals(expected = SettingUiState.Expired, actual = actual)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `회원탈퇴 요청이 실패했다면 에러 안내 스낵바를 표시한다`() =
+        runTest {
+            // given
+            val throwable = UnknownHostException()
+            coEvery { userRepository.withdraw() } returns Result.failure(throwable)
+            viewModel = SettingViewModel(settingsRepository, userRepository)
+
+            // when
+            viewModel.sendIntent(SettingUiIntent.Withdraw)
+            coVerify(exactly = 1) { userRepository.withdraw() }
+
+            // then
+            viewModel.sideEffect.test {
+                val actual: SettingSideEffect = awaitItem()
+                assertEquals(expected = SettingSideEffect.ShowSnackBar(throwable), actual = actual)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 }
