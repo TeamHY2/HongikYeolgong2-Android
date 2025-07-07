@@ -33,7 +33,7 @@ class MainNotificationHandler
             settingsRepository.notificationSwitchState
                 .stateIn(
                     scope = coroutineScope,
-                    started = SharingStarted.WhileSubscribed(5000),
+                    started = SharingStarted.Eagerly,
                     initialValue = false,
                 )
 
