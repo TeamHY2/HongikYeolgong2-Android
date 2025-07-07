@@ -22,7 +22,8 @@
         <service
             android:name=".timer.presentation.TimerForegroundService"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            android:foregroundServiceType="dataSync"
+            tools:ignore="Instantiatable" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
