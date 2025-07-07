@@ -30,9 +30,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-            
-      - name: Check Gradle Version
-        run: ./gradlew --version
         
       - name: set up JDK 17
         uses: actions/setup-java@v4
@@ -53,9 +50,6 @@ jobs:
        
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Clean Build
-        run: ./gradlew clean
 
       - name: Build with Gradle
         run: ./gradlew build
