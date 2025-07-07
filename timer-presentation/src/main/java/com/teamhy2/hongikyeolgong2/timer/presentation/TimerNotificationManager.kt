@@ -10,13 +10,13 @@ class TimerNotificationManager(
     fun showNotificationByLeftTime(notificationTimerFlag: NotificationTimeFlag) {
         when (notificationTimerFlag) {
             NotificationTimeFlag.FINISH_TIME ->
-                notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
+                notificationHandler.notifyGeneralNotification(PushText.ZERO_MINUTES.id)
 
             NotificationTimeFlag.TEN_MINUTES_MS ->
-                notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
+                notificationHandler.notifyGeneralNotification(PushText.TEN_MINUTES.id)
 
             NotificationTimeFlag.THIRTY_MINUTES_MS ->
-                notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
+                notificationHandler.notifyGeneralNotification(PushText.THIRTY_MINUTES.id)
         }
     }
 }

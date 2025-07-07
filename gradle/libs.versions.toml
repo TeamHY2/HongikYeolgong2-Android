@@ -1,10 +1,10 @@
 [versions]
 versionCode = "10202"
 versionName = "1.2.2"
-targetSdk = "34"
+targetSdk = "35"
 
 accompanistPermissions = "0.31.1-alpha"
-agp = "8.3.2"
+agp = "8.6.0"
 firebaseBom = "33.1.2"
 kotlin = "1.9.0"
 ksp = "1.9.0-1.0.13"
