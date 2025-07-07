@@ -1,6 +1,5 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LifecycleService
@@ -8,10 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlag
 import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlags
-import com.teamhy2.hongikyeolgong2.timer.model.TimerService
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,11 +20,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TimerForegroundService
     @Inject
-    constructor() : LifecycleService(), TimerService {
-        @Inject
-        @ApplicationContext
-        lateinit var context: Context
-
+    constructor() : LifecycleService() {
         @Inject
         lateinit var notificationHandler: NotificationHandler
 
@@ -48,39 +41,46 @@ class TimerForegroundService
             flags: Int,
             startId: Int,
         ): Int {
-            if (intent == null) return START_STICKY
+            if (intent?.action == null) return START_STICKY
 
-            val startTimeMillis: Long =
-                intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
-            val endTimeMillis: Long =
-                intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOURS_MILLIS)
+            when (intent.action) {
+                TimerServiceManager.ACTION_START -> {
+                    val startTimeMillis: Long =
+                        intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
+                    val endTimeMillis: Long =
+                        intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOURS_MILLIS)
 
+                    startService(startTimeMillis, endTimeMillis)
+                }
+                TimerServiceManager.ACTION_STOP -> {
+                    stopService()
+                }
+            }
+
+            return super.onStartCommand(intent, flags, startId)
+        }
+
+        private fun startService(
+            startTimeMillis: Long,
+            endTimeMillis: Long,
+        ) {
             val startTime: LocalDateTime = startTimeMillis.toLocalDateTime()
             val endTime: LocalDateTime = endTimeMillis.toLocalDateTime()
 
-            Log.i("TimerForegroundService", "startTime: $startTime / endTime: $endTime")
+            startTimeState = startTime
+
+            Log.i("TimerForegroundService", "startTime: $startTime | endTime: $endTime")
 
             startForeground(
                 TIMER_NOTIFICATION_ID,
                 notificationHandler.buildServiceNotification(),
             )
             startTimer(
-                startTime = startTime,
                 endTime = endTime,
             )
-
-            return super.onStartCommand(intent, flags, startId)
         }
 
-        override fun onDestroy() {
-            timerJob?.cancel()
-            super.onDestroy()
-        }
-
-        private fun startTimer(
-            startTime: LocalDateTime,
-            endTime: LocalDateTime,
-        ) {
+        private fun startTimer(endTime: LocalDateTime) {
             timerJob?.cancel()
             timerJob =
                 lifecycleScope.launch {
@@ -95,8 +95,7 @@ class TimerForegroundService
                         }
 
                         if (currentReachedNotificationTimeFlag == NotificationTimeFlag.FINISH_TIME) {
-                            saveStudyDayWhenTimerFinished(startTime, endTime)
-                            stopSelf()
+                            stopService()
                             break
                         }
                         delay(ONE_SECOND)
@@ -104,51 +103,26 @@ class TimerForegroundService
                 }
         }
 
-        private suspend fun saveStudyDayWhenTimerFinished(
-            startTime: LocalDateTime,
-            endTime: LocalDateTime,
-        ) {
-            studyDayRepository.saveStudyDay(startTime, endTime)
-                .onFailure {
-                    // TODO: 서버 API 변경 후 처리 (로컬 DB로 기록 임시 저장)
-                    Log.d(
-                        "TimerForegroundService",
-                        "checkAndNotifyIfTimeReached: ${it.message}",
-                    )
-                }
-        }
-
-        override fun startService(
-            startDateTime: LocalDateTime,
-            endDateTime: LocalDateTime,
-        ) {
-            val appContext: Context = context.applicationContext
-
-            startTimeState = startDateTime
-
-            val startTimeMillis: Long = startDateTime.toEpochMillis()
-            val endTimeMillis: Long = endDateTime.toEpochMillis()
-
-            val startIntent: Intent =
-                Intent(appContext, TimerForegroundService::class.java).apply {
-                    putExtra(EXTRA_START_TIME, startTimeMillis)
-                    putExtra(EXTRA_END_TIME, endTimeMillis)
-                }
-
-            appContext.startForegroundService(startIntent)
-        }
-
-        override fun stopService() {
+        private fun stopService() {
             lifecycleScope.launch {
-                studyDayRepository.saveStudyDay(
-                    startDateTime = startTimeState,
-                    endDateTime = LocalDateTime.now(),
-                )
-                    .onFailure {
-                        Log.d("TimerForegroundService", "stopService: ${it.message}")
-                    }
+                if (::startTimeState.isInitialized) {
+                    studyDayRepository.saveStudyDay(
+                        startDateTime = startTimeState,
+                        endDateTime = LocalDateTime.now(),
+                    )
+                        .onFailure {
+                            Log.d("TimerForegroundService", "stopService: ${it.message}")
+                        }
+                }
                 stopSelf()
             }
+        }
+
+        override fun onDestroy() {
+            timerJob?.cancel()
+            timerJob = null
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            super.onDestroy()
         }
 
         private fun Long.toLocalDateTime(): LocalDateTime = LocalDateTime.ofInstant(ofEpochMilli(this), ZoneId.systemDefault())
