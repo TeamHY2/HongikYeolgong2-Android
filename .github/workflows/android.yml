@@ -6,7 +6,6 @@ on:
       - "main"
       - "develop"
       - "Release/*"
-
   pull_request:
     branches:
       - "main"
@@ -15,7 +14,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -38,6 +36,42 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Install Android SDK, Emulator & system image
+        run: |
+          yes | sdkmanager --licenses
+          yes | sdkmanager --update
+          yes | sdkmanager \
+            "platform-tools" \
+            "emulator" \
+            "system-images;android-34;google_apis;x86_64"
+
+      - name: Create AVD
+        run: |
+          echo "no" | avdmanager create avd \
+            --force \
+            -n pixel_6_api_34 \
+            -k "system-images;android-34;google_apis;x86_64" \
+            --device "pixel"
+
+      - name: Start Emulator (headless)
+        run: |
+          nohup emulator -avd pixel_6_api_34 \
+            -no-window \
+            -no-audio \
+            -no-boot-anim > /dev/null 2>&1 &
+          adb wait-for-device
+
+      - name: Wait for emulator to boot
+        run: |
+          timeout=0
+          until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+            sleep 5
+            timeout=$((timeout + 5))
+            if [ $timeout -gt 300 ]; then
+              echo "Emulator failed to boot in 5 minutes" && exit 1
+            fi
+          done
+
       - name: Load Google Service file
         env:
           DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
@@ -47,15 +81,21 @@ jobs:
         env:
           LOCAL_PROPERTIES_CONTENTS: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
         run: echo "${LOCAL_PROPERTIES_CONTENTS}" > local.properties
-       
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Execute test
+      - name: Execute unit tests
         run: ./gradlew test
+
+      - name: Execute instrumentation tests on Pixel 6 API 34
+        run: |
+          ./gradlew pixel6Api34Setup \
+                     pixel6Api34AndroidTest \
+                     pixel6Api34Shutdown
 
       - name: Execute ktlintCheck
         run: ./gradlew ktlintCheck
