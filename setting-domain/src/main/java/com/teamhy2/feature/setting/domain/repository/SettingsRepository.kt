@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface SettingsRepository {
     val notificationSwitchState: Flow<Boolean>
 
-    suspend fun saveNotificationSwitchState(isChecked: Boolean)
+    suspend fun saveNotificationSwitchState(isChecked: Boolean): Result<Unit>
 }

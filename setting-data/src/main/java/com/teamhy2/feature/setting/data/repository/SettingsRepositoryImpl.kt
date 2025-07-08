@@ -13,7 +13,9 @@ class SettingsRepositoryImpl
         override val notificationSwitchState: Flow<Boolean>
             get() = localDataSource.notificationSwitchState
 
-        override suspend fun saveNotificationSwitchState(isChecked: Boolean) {
-            localDataSource.saveNotificationSwitchState(isChecked)
+        override suspend fun saveNotificationSwitchState(isChecked: Boolean): Result<Unit> {
+            return runCatching {
+                localDataSource.saveNotificationSwitchState(isChecked)
+            }
         }
     }
