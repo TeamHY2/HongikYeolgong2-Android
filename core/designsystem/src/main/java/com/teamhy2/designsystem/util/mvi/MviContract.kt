@@ -1,9 +1,7 @@
 package com.teamhy2.designsystem.util.mvi
 
-sealed interface MviContract {
-    interface UiIntent : MviContract
+interface UiIntent
 
-    interface SideEffect : MviContract
+interface SideEffect
 
-    interface UiState : MviContract
-}
+interface UiState
