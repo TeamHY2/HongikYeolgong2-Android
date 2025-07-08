@@ -2,11 +2,13 @@ package com.teamhy2.feature.setting.presentation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.teamhy2.designsystem.util.mvi.MviContract
+import com.teamhy2.designsystem.util.mvi.SideEffect
+import com.teamhy2.designsystem.util.mvi.UiIntent
+import com.teamhy2.designsystem.util.mvi.UiState
 import com.teamhy2.user.domain.model.UserInfo
 
 @Stable
-sealed interface SettingUiState : MviContract.UiState {
+sealed interface SettingUiState : UiState {
     @Immutable
     data object Loading : SettingUiState
 
@@ -20,14 +22,16 @@ sealed interface SettingUiState : MviContract.UiState {
     data object Expired : SettingUiState
 }
 
-sealed interface SettingUiIntent : MviContract.UiIntent {
-    data object Withdraw : SettingUiIntent
+sealed interface SettingUiIntent : UiIntent {
+    data object EnterSettingScreen : SettingUiIntent
 
-    data object SignOut : SettingUiIntent
+    data object RequestWithdraw : SettingUiIntent
 
-    data class UpdateNotificationSwitchState(val isChecked: Boolean) : SettingUiIntent
+    data object RequestSignOut : SettingUiIntent
+
+    data class ToggleNotificationPermission(val isChecked: Boolean) : SettingUiIntent
 }
 
-sealed interface SettingSideEffect : MviContract.SideEffect {
+sealed interface SettingSideEffect : SideEffect {
     data class ShowSnackBar(val throwable: Throwable) : SettingSideEffect
 }

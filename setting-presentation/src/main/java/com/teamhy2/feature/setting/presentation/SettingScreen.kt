@@ -63,7 +63,7 @@ fun SettingRoute(
 
     LaunchedEffect(true) {
         tracker.trackEvent("Setting")
-        viewModel.initSettingUiState()
+        viewModel.sendIntent(SettingUiIntent.EnterSettingScreen)
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
                 is SettingSideEffect.ShowSnackBar -> localShowSnackBar.showSnackBar(sideEffect.throwable.message)
@@ -74,15 +74,15 @@ fun SettingRoute(
     SettingScreen(
         settingUiState = settingUiState,
         onLogoutClick = {
-            viewModel.sendIntent(SettingUiIntent.SignOut)
+            viewModel.sendIntent(SettingUiIntent.RequestSignOut)
             tracker.trackEvent("LogoutButton")
         },
         onWithdrawClick = {
-            viewModel.sendIntent(SettingUiIntent.Withdraw)
+            viewModel.sendIntent(SettingUiIntent.RequestWithdraw)
             tracker.trackEvent("WithdrawButton")
         },
         onNotificationSwitchClick = { isChecked ->
-            viewModel.sendIntent(SettingUiIntent.UpdateNotificationSwitchState(isChecked))
+            viewModel.sendIntent(SettingUiIntent.ToggleNotificationPermission(isChecked))
         },
         onNoticeClick = {
             val intent = Intent(Intent.ACTION_VIEW, noticeUrl.toUri())

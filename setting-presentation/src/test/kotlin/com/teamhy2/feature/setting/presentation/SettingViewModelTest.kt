@@ -7,9 +7,7 @@ import com.teamhy2.user.domain.model.UserInfo
 import com.teamhy2.user.domain.repository.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -59,7 +57,7 @@ class SettingViewModelTest {
                 assertEquals(expected = SettingUiState.Loading, actual = initState)
 
                 // when
-                viewModel.initSettingUiState()
+                viewModel.sendIntent(SettingUiIntent.EnterSettingScreen)
                 val actual: SettingUiState = awaitItem()
 
                 // then
@@ -92,10 +90,10 @@ class SettingViewModelTest {
                 assertEquals(expected = SettingUiState.Loading, actual = initState)
 
                 // when
-                viewModel.initSettingUiState()
+                viewModel.sendIntent(SettingUiIntent.EnterSettingScreen)
                 val actual: SettingUiState = viewModel.uiState.value
                 coVerify(exactly = 1) { userRepository.getUserInfo() }
-                coVerify(exactly = 0) { settingsRepository.notificationSwitchState }
+                coVerify(exactly = 1) { settingsRepository.notificationSwitchState }
 
                 // then
                 assertEquals(expected = SettingUiState.Loading, actual = actual)
@@ -120,7 +118,7 @@ class SettingViewModelTest {
             viewModel = SettingViewModel(settingsRepository, userRepository)
 
             // when
-            viewModel.sendIntent(SettingUiIntent.SignOut)
+            viewModel.sendIntent(SettingUiIntent.RequestSignOut)
             coVerify(exactly = 1) { userRepository.signOut() }
 
             // then
@@ -140,7 +138,7 @@ class SettingViewModelTest {
             viewModel = SettingViewModel(settingsRepository, userRepository)
 
             // when
-            viewModel.sendIntent(SettingUiIntent.SignOut)
+            viewModel.sendIntent(SettingUiIntent.RequestSignOut)
             coVerify(exactly = 1) { userRepository.signOut() }
 
             // then
@@ -159,7 +157,7 @@ class SettingViewModelTest {
             viewModel = SettingViewModel(settingsRepository, userRepository)
 
             // when
-            viewModel.sendIntent(SettingUiIntent.Withdraw)
+            viewModel.sendIntent(SettingUiIntent.RequestWithdraw)
             coVerify(exactly = 1) { userRepository.withdraw() }
 
             // then
@@ -179,7 +177,7 @@ class SettingViewModelTest {
             viewModel = SettingViewModel(settingsRepository, userRepository)
 
             // when
-            viewModel.sendIntent(SettingUiIntent.Withdraw)
+            viewModel.sendIntent(SettingUiIntent.RequestWithdraw)
             coVerify(exactly = 1) { userRepository.withdraw() }
 
             // then
@@ -194,12 +192,11 @@ class SettingViewModelTest {
     fun `알림 스위치 상태 변경 요청을 할 수 있다`() =
         runTest {
             // given
-
-            coEvery { settingsRepository.saveNotificationSwitchState(true) } just runs
+            coEvery { settingsRepository.saveNotificationSwitchState(true) } returns Result.success(Unit)
             viewModel = SettingViewModel(settingsRepository, userRepository)
 
             // when
-            viewModel.sendIntent(SettingUiIntent.UpdateNotificationSwitchState(true))
+            viewModel.sendIntent(SettingUiIntent.ToggleNotificationPermission(true))
             coVerify(exactly = 1) { settingsRepository.saveNotificationSwitchState(true) }
         }
 }
