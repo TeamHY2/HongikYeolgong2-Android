@@ -4,45 +4,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-abstract class MviViewModel<INTENT : MviContract.UiIntent, STATE : MviContract.UiState, SIDE_EFFECT : MviContract.SideEffect>(
+abstract class MviViewModel<INTENT : UiIntent, STATE : UiState, SIDE_EFFECT : SideEffect>(
     initialState: STATE,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<STATE> = MutableStateFlow(initialState)
-    val uiState: StateFlow<STATE> = _uiState.asStateFlow()
-
-    protected val state: STATE
-        get() = _uiState.value
-
-    private val _sideEffect: Channel<SIDE_EFFECT> = Channel(capacity = Channel.BUFFERED)
-    val sideEffect: Flow<SIDE_EFFECT> = _sideEffect.receiveAsFlow()
-
     private val intents = Channel<INTENT>()
 
-    init {
+    val uiState: StateFlow<STATE> =
         intents.receiveAsFlow()
-            .onEach(::handleIntent)
-            .launchIn(viewModelScope)
-    }
+            .runningFold(initialState, ::reduceState)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, initialState)
 
-    protected abstract fun handleIntent(intent: INTENT)
+    protected val state: STATE
+        get() = uiState.value
+
+    private val _sideEffect: Channel<SIDE_EFFECT> = Channel(capacity = Channel.BUFFERED)
+
+    val sideEffect: Flow<SIDE_EFFECT> = _sideEffect.receiveAsFlow()
+
+    protected abstract suspend fun reduceState(
+        current: STATE,
+        intent: INTENT,
+    ): STATE
 
     fun sendIntent(intent: INTENT) {
         viewModelScope.launch {
             intents.send(intent)
         }
-    }
-
-    protected fun reduce(block: STATE.() -> STATE) {
-        _uiState.update(block)
     }
 
     protected fun postSideEffect(vararg effects: SIDE_EFFECT) {
@@ -53,7 +47,10 @@ abstract class MviViewModel<INTENT : MviContract.UiIntent, STATE : MviContract.U
         }
     }
 
-    protected inline fun <reified T : STATE> runOn(block: (T) -> Unit) {
-        (state as? T)?.let { block(it) }
+    protected inline fun <reified T : STATE> runOn(
+        current: STATE,
+        block: T.() -> STATE,
+    ): STATE {
+        return (current as? T)?.run(block) ?: current
     }
 }
