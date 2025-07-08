@@ -21,11 +21,7 @@ abstract class MviViewModel<INTENT : UiIntent, STATE : UiState, SIDE_EFFECT : Si
             .runningFold(initialState, ::reduceState)
             .stateIn(viewModelScope, SharingStarted.Eagerly, initialState)
 
-    protected val state: STATE
-        get() = uiState.value
-
     private val _sideEffect: Channel<SIDE_EFFECT> = Channel(capacity = Channel.BUFFERED)
-
     val sideEffect: Flow<SIDE_EFFECT> = _sideEffect.receiveAsFlow()
 
     protected abstract suspend fun reduceState(
