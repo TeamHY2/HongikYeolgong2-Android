@@ -1,7 +1,6 @@
 package com.teamhy2.feature.setting.presentation
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
@@ -42,11 +42,9 @@ import com.teamhy2.designsystem.util.compositionlocal.LocalTracker
 import com.teamhy2.feature.setting.presentation.components.SettingButton
 import com.teamhy2.feature.setting.presentation.components.SettingButtonWithSwitch
 import com.teamhy2.feature.setting.presentation.components.SettingUserProfile
-import com.teamhy2.feature.setting.presentation.model.SettingUiState
 import com.teamhy2.feature.setting.presentation.navigation.navigateToProfileModification
 import com.teamhy2.hongikyeolgong2.setting.presentation.R
 import com.teamhy2.user.domain.model.UserInfo
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingRoute(
@@ -56,7 +54,7 @@ fun SettingRoute(
     modifier: Modifier = Modifier,
     viewModel: SettingViewModel = hiltViewModel(),
 ) {
-    val settingUiState by viewModel.settingUiState.collectAsStateWithLifecycle()
+    val settingUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val tracker = LocalTracker.current
 
@@ -65,27 +63,29 @@ fun SettingRoute(
 
     LaunchedEffect(true) {
         tracker.trackEvent("Setting")
-        viewModel.initSettingUiState()
-        viewModel.errorFlow.collectLatest { throwable ->
-            localShowSnackBar.showSnackBar(throwable.message)
+        viewModel.sendIntent(SettingUiIntent.EnterSettingScreen)
+        viewModel.sideEffect.collect { sideEffect ->
+            when (sideEffect) {
+                is SettingSideEffect.ShowSnackBar -> localShowSnackBar.showSnackBar(sideEffect.throwable.message)
+            }
         }
     }
 
     SettingScreen(
         settingUiState = settingUiState,
         onLogoutClick = {
-            viewModel.signOut()
+            viewModel.sendIntent(SettingUiIntent.RequestSignOut)
             tracker.trackEvent("LogoutButton")
         },
         onWithdrawClick = {
-            viewModel.withdraw()
+            viewModel.sendIntent(SettingUiIntent.RequestWithdraw)
             tracker.trackEvent("WithdrawButton")
         },
         onNotificationSwitchClick = { isChecked ->
-            viewModel.updateNotificationSwitchState(isChecked)
+            viewModel.sendIntent(SettingUiIntent.ToggleNotificationPermission(isChecked))
         },
         onNoticeClick = {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(noticeUrl))
+            val intent = Intent(Intent.ACTION_VIEW, noticeUrl.toUri())
             context.startActivity(intent)
         },
         onInquiryClick = onInquiryClick,
@@ -172,8 +172,6 @@ fun SettingScreen(
         is SettingUiState.Expired -> {
             onSignOutOrWithdrawComplete()
         }
-
-        is SettingUiState.Error -> Unit
     }
 }
 
