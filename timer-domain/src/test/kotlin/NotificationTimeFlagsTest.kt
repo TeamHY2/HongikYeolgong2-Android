@@ -46,4 +46,18 @@ class NotificationTimeFlagsTest : ShouldSpec({
         // when & then
         notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES.millis - 1) shouldBe null
     }
+
+    should("인자로 받은 남은시간(밀리세컨드) 값이 0보다 작고 이미 플래그를 true로 설정했다면 null을 반환한다") {
+        // given
+        val notificationTimeFlags = NotificationTimeFlags()
+
+        // 이전시간 플래그 true 처리
+        notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES.millis)
+        notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.TEN_MINUTES.millis)
+        val actualNotificationTimeFlag = notificationTimeFlags.getFlagByLeftTimeMillis(0)
+        actualNotificationTimeFlag shouldBe NotificationTimeFlag.FINISH_TIME
+
+        // when & then
+        notificationTimeFlags.getFlagByLeftTimeMillis(-1) shouldBe null
+    }
 })
