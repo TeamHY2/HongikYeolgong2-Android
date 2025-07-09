@@ -40,10 +40,10 @@ class NotificationTimeFlagsTest : ShouldSpec({
         // given
         val notificationTimeFlags = NotificationTimeFlags()
         val actualNotificationTimeFlag =
-            notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES_MS.millis)
-        actualNotificationTimeFlag shouldBe NotificationTimeFlag.THIRTY_MINUTES_MS
+            notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES.millis)
+        actualNotificationTimeFlag shouldBe NotificationTimeFlag.THIRTY_MINUTES
 
         // when & then
-        notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES_MS.millis - 1) shouldBe null
+        notificationTimeFlags.getFlagByLeftTimeMillis(NotificationTimeFlag.THIRTY_MINUTES.millis - 1) shouldBe null
     }
 })

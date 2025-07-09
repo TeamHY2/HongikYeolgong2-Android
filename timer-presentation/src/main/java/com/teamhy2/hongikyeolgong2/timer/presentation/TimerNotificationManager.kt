@@ -12,10 +12,10 @@ class TimerNotificationManager(
             NotificationTimeFlag.FINISH_TIME ->
                 notificationHandler.notifyGeneralNotification(PushText.ZERO_MINUTES.id)
 
-            NotificationTimeFlag.TEN_MINUTES_MS ->
+            NotificationTimeFlag.TEN_MINUTES ->
                 notificationHandler.notifyGeneralNotification(PushText.TEN_MINUTES.id)
 
-            NotificationTimeFlag.THIRTY_MINUTES_MS ->
+            NotificationTimeFlag.THIRTY_MINUTES ->
                 notificationHandler.notifyGeneralNotification(PushText.THIRTY_MINUTES.id)
         }
     }
