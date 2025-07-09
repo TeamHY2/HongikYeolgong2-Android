@@ -12,17 +12,10 @@ class NotificationTimeFlags {
             ?: throw IllegalArgumentException("유효하지 않은 NotificationTimeFlag: $notificationTimeFlag")
     }
 
-    private operator fun set(
-        notificationTimeFlag: NotificationTimeFlag,
-        value: Boolean,
-    ) {
-        notificationTimerFlags[notificationTimeFlag] = value
-    }
-
     fun getFlagByLeftTimeMillis(leftTimeMillis: Long): NotificationTimeFlag? {
         notificationTimerFlags.forEach { (notificationTimeFlag, _) ->
             if (leftTimeMillis <= notificationTimeFlag.millis && this[notificationTimeFlag].not()) {
-                this[notificationTimeFlag] = true
+                notificationTimerFlags[notificationTimeFlag] = true
                 return notificationTimeFlag
             }
         }
