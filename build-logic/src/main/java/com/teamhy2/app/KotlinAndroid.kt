@@ -11,7 +11,7 @@ internal fun Project.configureKotlinAndroid() {
 
 	// Android
 	androidExtension.apply {
-		compileSdk = 34
+		compileSdk = 35
 		defaultConfig {
 			minSdk = 30
 			testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -32,6 +32,8 @@ internal fun Project.configureKotlinAndroid() {
 		}
 		packaging {
 			resources {
+                excludes += "/META-INF/LICENSE.md"
+                excludes += "/META-INF/LICENSE-notice.md"
 				excludes += "/META-INF/{AL2.0,LGPL2.1}"
 			}
 		}

@@ -10,4 +10,5 @@ dependencies {
     implementation(projects.timerDomain)
     implementation(projects.mainDomain)
     implementation(projects.core.notification)
+    implementation(libs.androidx.lifecycle.service)
 }
