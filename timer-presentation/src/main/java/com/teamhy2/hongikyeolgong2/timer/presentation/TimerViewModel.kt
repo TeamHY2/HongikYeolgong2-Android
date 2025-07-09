@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.teamhy2.hongikyeolgong2.timer.model.Timer
 import com.teamhy2.hongikyeolgong2.timer.model.TimerDuration
 import com.teamhy2.hongikyeolgong2.timer.model.TimerRepository
-import com.teamhy2.hongikyeolgong2.timer.model.TimerService
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.LeftTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
@@ -28,7 +27,7 @@ class TimerViewModel
     @Inject
     constructor(
         private val timerRepository: TimerRepository,
-        private val timerService: TimerService,
+        private val timerServiceManager: TimerServiceManager,
     ) : ViewModel() {
         private var timer: Timer = Timer.IDLE
         private var timerJob: Job? = null
@@ -100,7 +99,7 @@ class TimerViewModel
             startTimer()
 
             if (isAlreadyRunning.not()) {
-                timerService.startService(
+                timerServiceManager.startTimer(
                     startDateTime = startDateTime,
                     endDateTime = startDateTime.plus(duration),
                 )
@@ -156,7 +155,7 @@ class TimerViewModel
         }
 
         fun stopTimer() {
-            timerService.stopService()
+            timerServiceManager.stopTimer()
             timerJob?.cancel()
             timerJob = null
             timer = Timer.IDLE
@@ -192,8 +191,8 @@ class TimerViewModel
                 )
             }
 
-            timerService.stopService()
-            timerService.startService(
+            timerServiceManager.stopTimer()
+            timerServiceManager.startTimer(
                 startDateTime = startTime,
                 endDateTime = timer.endTime,
             )

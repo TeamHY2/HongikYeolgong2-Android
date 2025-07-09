@@ -1,10 +1,10 @@
 [versions]
 versionCode = "10202"
 versionName = "1.2.2"
-targetSdk = "34"
+targetSdk = "35"
 
 accompanistPermissions = "0.31.1-alpha"
-agp = "8.3.2"
+agp = "8.6.0"
 firebaseBom = "33.1.2"
 kotlin = "1.9.0"
 ksp = "1.9.0-1.0.13"
@@ -24,6 +24,7 @@ kotest = "5.6.2"
 coroutine = "1.7.2"
 androidxComposeNavigation = "2.7.0"
 androidxLifecycle = "2.6.1"
+lifecycleService = "2.9.1"
 hilt = "2.49"
 hiltNavigationCompose = "1.2.0"
 activity = "1.9.0"
@@ -115,6 +116,7 @@ androidx-compose-navigation-test = { group = "androidx.navigation", name = "navi
 #lifecycle-compose
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 
 # hilt
 hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }

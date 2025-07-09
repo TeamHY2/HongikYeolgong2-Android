@@ -1,182 +1,137 @@
 package com.teamhy2.hongikyeolgong2.timer.presentation
 
-import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.os.IBinder
 import android.util.Log
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
-import com.teamhy2.hongikyeolgong2.notification.PushText
-import com.teamhy2.hongikyeolgong2.timer.model.TimerService
+import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlag
+import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlags
 import com.teamhy2.main.domain.repository.StudyDayRepository
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
 import java.time.Instant.ofEpochMilli
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TimerForegroundService
+class TimerForegroundService : LifecycleService() {
     @Inject
-    constructor() : Service(), TimerService {
-        @Inject
-        lateinit var notificationHandler: NotificationHandler
+    lateinit var notificationHandler: NotificationHandler
 
-        @Inject
-        @ApplicationContext
-        lateinit var context: Context
+    private val timerNotificationManager: TimerNotificationManager
+        by lazy { TimerNotificationManager(notificationHandler) }
 
-        @Inject
-        lateinit var studyDayRepository: StudyDayRepository
+    private val notificationTimeFlags = NotificationTimeFlags()
 
-        private val serviceScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
-        private var timerJob: Job? = null
+    @Inject
+    lateinit var studyDayRepository: StudyDayRepository
 
-        private val startTimeState = MutableStateFlow(LocalDateTime.now())
+    private var timerJob: Job? = null
 
-        private var hasNotified30Min: Boolean = false
-        private var hasNotified10Min: Boolean = false
-        private var hasNotified0Min: Boolean = false
+    private lateinit var startTimeState: LocalDateTime
 
-        override fun onBind(intent: Intent?): IBinder? = null
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
+        if (intent?.action == null) return START_STICKY
 
-        override fun onStartCommand(
-            intent: Intent?,
-            flags: Int,
-            startId: Int,
-        ): Int {
-            if (intent == null) return START_STICKY
+        when (intent.action) {
+            TimerServiceManager.ACTION_START -> {
+                val startTimeMillis: Long =
+                    intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
+                val endTimeMillis: Long =
+                    intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOURS_MILLIS)
 
-            val startTimeMillis: Long =
-                intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
-            val endTimeMillis: Long =
-                intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOUR_MILLIS)
-
-            val startTime: LocalDateTime =
-                LocalDateTime.ofInstant(
-                    ofEpochMilli(startTimeMillis),
-                    ZoneId.systemDefault(),
-                )
-
-            val endTime: LocalDateTime =
-                LocalDateTime.ofInstant(
-                    ofEpochMilli(endTimeMillis),
-                    ZoneId.systemDefault(),
-                )
-
-            Log.i("TimerForegroundService", "startTime: $startTime / endTime: $endTime")
-
-            startForeground(
-                TIMER_NOTIFICATION_ID,
-                notificationHandler.buildServiceNotification(),
-            )
-            startTimer(
-                startTime = startTime,
-                endTime = endTime,
-            )
-
-            return START_NOT_STICKY
+                startService(startTimeMillis, endTimeMillis)
+            }
+            TimerServiceManager.ACTION_STOP -> {
+                stopService()
+            }
         }
 
-        override fun onDestroy() {
-            timerJob?.cancel()
-            super.onDestroy()
-        }
+        return super.onStartCommand(intent, flags, startId)
+    }
 
-        private fun startTimer(
-            startTime: LocalDateTime,
-            endTime: LocalDateTime,
-        ) {
-            timerJob?.cancel()
+    private fun startService(
+        startTimeMillis: Long,
+        endTimeMillis: Long,
+    ) {
+        val startTime: LocalDateTime = startTimeMillis.toLocalDateTime()
+        val endTime: LocalDateTime = endTimeMillis.toLocalDateTime()
 
-            timerJob =
-                serviceScope.launch {
-                    while (true) {
-                        val leftTime: Long =
-                            endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() -
-                                LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        startTimeState = startTime
 
-                        Log.i("TimerForegroundService", "remainingTimeMillis: $leftTime")
+        Log.i("TimerForegroundService", "startTime: $startTime | endTime: $endTime")
 
-                        if (leftTime <= 0 && hasNotified0Min.not()) {
-                            studyDayRepository.saveStudyDay(
-                                startDateTime = startTime,
-                                endDateTime = endTime,
-                            )
-                            notificationHandler.showSimpleNotification(PushText.ZERO_MINUTES)
-                            hasNotified0Min = true
-                            stopSelf()
-                            break
-                        }
+        startForeground(
+            TIMER_NOTIFICATION_ID,
+            notificationHandler.buildServiceNotification(),
+        )
+        startTimer(
+            endTime = endTime,
+        )
+    }
 
-                        when {
-                            leftTime <= 600000 && hasNotified10Min.not() -> {
-                                notificationHandler.showSimpleNotification(PushText.TEN_MINUTES)
-                                hasNotified10Min = true
-                                continue
-                            }
+    private fun startTimer(endTime: LocalDateTime) {
+        timerJob?.cancel()
+        timerJob =
+            lifecycleScope.launch {
+                while (true) {
+                    val leftTime = endTime.toEpochMillis() - LocalDateTime.now().toEpochMillis()
 
-                            leftTime <= 1800000 && hasNotified30Min.not() -> {
-                                notificationHandler.showSimpleNotification(PushText.THIRTY_MINUTES)
-                                hasNotified30Min = true
-                                continue
-                            }
-                        }
+                    val currentReachedNotificationTimeFlag: NotificationTimeFlag? =
+                        notificationTimeFlags.getFlagByLeftTimeMillis(leftTime)
 
-                        delay(1000L)
+                    currentReachedNotificationTimeFlag?.let {
+                        timerNotificationManager.showNotificationByLeftTime(it)
                     }
-                }
-        }
 
-        override fun startService(
-            startDateTime: LocalDateTime,
-            endDateTime: LocalDateTime,
-        ) {
-            val appContext: Context = context.applicationContext
-
-            startTimeState.update { startDateTime }
-
-            val startTimeMillis: Long =
-                startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            val endTimeMillis: Long =
-                endDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-            val startIntent: Intent =
-                Intent(appContext, TimerForegroundService::class.java).apply {
-                    putExtra(EXTRA_START_TIME, startTimeMillis)
-                    putExtra(EXTRA_END_TIME, endTimeMillis)
-                }
-
-            appContext.startForegroundService(startIntent)
-        }
-
-        override fun stopService() {
-            val stopIntent = Intent(context, TimerForegroundService::class.java)
-            runBlocking {
-                withTimeout(ANR_TIMEOUT) {
-                    studyDayRepository.saveStudyDay(startDateTime = startTimeState.value, endDateTime = LocalDateTime.now())
-                }.onFailure {
-                    Log.d("TimerForegroundService", "stopService: ${it.message}")
+                    if (currentReachedNotificationTimeFlag == NotificationTimeFlag.FINISH_TIME) {
+                        stopService()
+                        break
+                    }
+                    delay(ONE_SECOND)
                 }
             }
-            context.stopService(stopIntent)
-        }
+    }
 
-        companion object {
-            private const val FOUR_HOUR_MILLIS = 1000 * 60 * 60 * 4
-            private const val ANR_TIMEOUT = 4000L
-            const val TIMER_NOTIFICATION_ID: Int = 1
-            const val EXTRA_START_TIME: String = "extra_start_time"
-            const val EXTRA_END_TIME: String = "extra_end_time"
+    private fun stopService() {
+        lifecycleScope.launch {
+            if (::startTimeState.isInitialized) {
+                studyDayRepository.saveStudyDay(
+                    startDateTime = startTimeState,
+                    endDateTime = LocalDateTime.now(),
+                )
+                    .onFailure {
+                        Log.d("TimerForegroundService", "stopService: ${it.message}")
+                    }
+            }
+            stopSelf()
         }
     }
+
+    override fun onDestroy() {
+        timerJob?.cancel()
+        timerJob = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        super.onDestroy()
+    }
+
+    private fun Long.toLocalDateTime(): LocalDateTime = LocalDateTime.ofInstant(ofEpochMilli(this), ZoneId.systemDefault())
+
+    private fun LocalDateTime.toEpochMillis(): Long = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+    companion object {
+        private const val ONE_SECOND = 1000L
+        private const val FOUR_HOURS_MILLIS = ONE_SECOND * 60 * 60 * 4
+        const val TIMER_NOTIFICATION_ID: Int = 1
+        const val EXTRA_START_TIME: String = "extra_start_time"
+        const val EXTRA_END_TIME: String = "extra_end_time"
+    }
+}
