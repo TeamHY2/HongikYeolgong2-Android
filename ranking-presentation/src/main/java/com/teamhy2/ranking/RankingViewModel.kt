@@ -15,11 +15,9 @@ class RankingViewModel
     constructor(
         private val rankingRepository: RankingRepository,
     ) : ViewModel(), ContainerHost<RankingState, RankingSideEffect> {
-        override val container: Container<RankingState, RankingSideEffect> =
-            container(RankingState())
+        override val container: Container<RankingState, RankingSideEffect> = container(RankingState())
 
-        private var currentWeekNumber: Int =
-            WeekNumberCalculator.calculateWeekNumber(LocalDate.now())
+        private var currentWeekNumber: Int = WeekNumberCalculator.calculateWeekNumber(LocalDate.now())
         private val latestWeekNumber: Int = currentWeekNumber
 
         init {
