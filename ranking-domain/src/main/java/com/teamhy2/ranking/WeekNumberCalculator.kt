@@ -3,7 +3,14 @@ package com.teamhy2.ranking
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 
-object WeekNumberCalculator {
+class WeekNumberCalculator(now: LocalDate) {
+    var currentWeekNumber: Int = calculateWeekNumber(now)
+        private set
+    val latestWeekNumber: Int = currentWeekNumber
+
+    val isSameCurrentWeekAndLatestWeek: Boolean
+        get() = currentWeekNumber == latestWeekNumber
+
     /**
      * 주어진 날짜에 대해 weekNumber를 계산한다.
      *
@@ -15,29 +22,35 @@ object WeekNumberCalculator {
      * 반환 형식: year * 100 + weekIndex
      * 예) 2025년 9번째 주 → 202509
      */
-    fun calculateWeekNumber(date: LocalDate): Int {
+    private fun calculateWeekNumber(date: LocalDate): Int {
         val weekFields: WeekFields = WeekFields.ISO
         val weekOfYear: Int = date.get(weekFields.weekOfWeekBasedYear())
         val year: Int = date.get(weekFields.weekBasedYear())
         return year * 100 + weekOfYear
     }
 
-    fun shiftWeekNumber(
-        weekNumber: Int,
-        offset: Int,
-    ): Int {
+    fun shiftWeekNumber(offset: Int) {
         val weekFields: WeekFields = WeekFields.ISO
-        val year: Int = weekNumber / 100
-        val weekOfYear: Int = weekNumber % 100
+        val year: Int = currentWeekNumber / 100
+        val weekOfYear: Int = currentWeekNumber % 100
 
         val firstWeekMondayOfYear: LocalDate =
             LocalDate.of(year, 1, 1)
                 .with(weekFields.dayOfWeek(), 1L)
 
-        val currentWeekMonday: LocalDate = firstWeekMondayOfYear.plusWeeks((weekOfYear - 1).toLong())
+        val currentWeekMonday: LocalDate =
+            firstWeekMondayOfYear.plusWeeks((weekOfYear - 1).toLong())
 
         val newWeekMonday: LocalDate = currentWeekMonday.plusWeeks(offset.toLong())
 
-        return calculateWeekNumber(newWeekMonday)
+        currentWeekNumber = calculateWeekNumber(newWeekMonday)
+    }
+
+    fun moveToPreviousWeek() {
+        shiftWeekNumber(-1)
+    }
+
+    fun moveToNextWeek() {
+        shiftWeekNumber(1)
     }
 }
