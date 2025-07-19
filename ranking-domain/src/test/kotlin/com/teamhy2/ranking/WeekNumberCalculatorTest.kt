@@ -90,4 +90,57 @@ class WeekNumberCalculatorTest : BehaviorSpec({
             }
         }
     }
+
+    Given("날짜가 2024년 1월 1일로 주 번호가 202401이고") {
+        val date: LocalDate = LocalDate.of(2024, 1, 1)
+        val weekNumberCalculator = WeekNumberCalculator(date)
+
+        When("현재 최소 주 번호인지 확인하면") {
+            val actual = weekNumberCalculator.isMinimumWeekNumber
+
+            Then("true이다") {
+                actual shouldBe true
+            }
+        }
+    }
+
+    Given("날짜가 2024년 1월 8일로 주 번호가 202402이고") {
+        val date: LocalDate = LocalDate.of(2024, 1, 8)
+        val weekNumberCalculator = WeekNumberCalculator(date)
+
+        When("현재 최소 주 번호인지 확인하면") {
+            val actual = weekNumberCalculator.isMinimumWeekNumber
+
+            Then("false이다") {
+                actual shouldBe false
+            }
+        }
+    }
+
+    Given("현재 날짜가 주어지고") {
+        val date: LocalDate = LocalDate.now()
+        val weekNumberCalculator = WeekNumberCalculator(date)
+
+        When("현재 주 번호가 최대 주 번호인지 확인하면") {
+            val actual = weekNumberCalculator.isMaximumWeekNumber
+
+            Then("true이다") {
+                actual shouldBe true
+            }
+        }
+    }
+
+    Given("현재 날짜에서 이전 주로 이동하고") {
+        val date: LocalDate = LocalDate.now()
+        val weekNumberCalculator = WeekNumberCalculator(date)
+        weekNumberCalculator.moveToPreviousWeek()
+
+        When("현재 주 번호가 최대 주 번호인지 확인하면") {
+            val actual = weekNumberCalculator.isMaximumWeekNumber
+
+            Then("true이다") {
+                actual shouldBe false
+            }
+        }
+    }
 })
