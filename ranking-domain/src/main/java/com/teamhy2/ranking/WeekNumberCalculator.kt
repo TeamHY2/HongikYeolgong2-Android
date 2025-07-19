@@ -3,12 +3,15 @@ package com.teamhy2.ranking
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 
-class WeekNumberCalculator(now: LocalDate) {
+class WeekNumberCalculator(now: LocalDate = LocalDate.now()) {
     var currentWeekNumber: Int = calculateWeekNumber(now)
         private set
     val latestWeekNumber: Int = currentWeekNumber
 
-    val isSameCurrentWeekAndLatestWeek: Boolean
+    val isMinimumWeekNumber: Boolean
+        get() = currentWeekNumber == MINIMUM_WEEK_NUMBER
+
+    val isMaximumWeekNumber: Boolean
         get() = currentWeekNumber == latestWeekNumber
 
     /**
@@ -52,5 +55,9 @@ class WeekNumberCalculator(now: LocalDate) {
 
     fun moveToNextWeek() {
         shiftWeekNumber(1)
+    }
+
+    companion object {
+        private const val MINIMUM_WEEK_NUMBER = 202401
     }
 }
