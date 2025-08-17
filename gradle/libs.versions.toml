@@ -1,6 +1,6 @@
 [versions]
-versionCode = "10202"
-versionName = "1.2.2"
+versionCode = "10203"
+versionName = "1.2.3"
 targetSdk = "35"
 
 accompanistPermissions = "0.31.1-alpha"
