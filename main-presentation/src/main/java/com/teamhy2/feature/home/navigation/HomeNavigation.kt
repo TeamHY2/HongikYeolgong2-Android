@@ -7,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.teamhy2.feature.home.FocusModeRoute
+import com.teamhy2.feature.focus.FocusModeRoute
 import com.teamhy2.feature.home.HomeRoute
 import com.teamhy2.feature.home.HomeViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
