@@ -24,32 +24,33 @@ interface StudyService {
         @Query("yearWeek") weekNumber: Int,
     ): Result<BaseResponse<RankingResponse>>
 
-    @GET("/api/v1/study/week")
+    @GET("/api/v1/study/record/week")
     suspend fun getWeeklyStudyDay(): Result<BaseResponse<List<WeeklyStudyDayResponse>>>
 
+    // TODO: 추후 폐기
     @POST("/api/v1/study")
     suspend fun postStudyDay(
         @Body studyDayRequest: StudyDayRequest,
     ): Result<BaseResponse<StudyDayResponse>>
 
-    @GET("/api/v1/study/count-all")
+    @GET("/api/v1/study/record/count-all")
     suspend fun getCalendarStudyDay(): Result<BaseResponse<List<CalendarStudyDayResponse>>>
 
-    @GET("/api/v1/study/duration")
+    @GET("/api/v1/study/record/duration")
     suspend fun getStudyDuration(
         @Query("date") date: String? = null,
     ): Result<BaseResponse<StudyDurationResponse>>
 
-    @POST("/api/v1/study/start")
+    @POST("/api/v1/study/session/start")
     suspend fun postStudyStart(
         @Body studyStartRequest: StudyStartRequest,
     ): Result<BaseResponse<StudyStartResponse>>
 
-    @PATCH("/api/v1/study/end")
+    @PATCH("/api/v1/study/session/end")
     suspend fun patchStudyEnd(
         @Body studyEndRequest: StudyEndRequest,
     ): Result<BaseResponse<StudyEndResponse>>
 
-    @GET("/api/v1/study")
+    @GET("/api/v1/study/session")
     suspend fun getStudyingUsers(): Result<BaseResponse<List<StudyingUserResponse>>>
 }
