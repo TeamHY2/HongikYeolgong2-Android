@@ -71,7 +71,7 @@ fun RankingRoute(
 }
 
 @Composable
-fun RankingContent(
+private fun RankingContent(
     state: RankingUiState,
     onPreviousWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
@@ -94,7 +94,7 @@ fun RankingContent(
 }
 
 @Composable
-fun RankingScreen(
+private fun RankingScreen(
     state: RankingUiState.Loaded,
     onPreviousWeekClick: () -> Unit,
     onNextWeekClick: () -> Unit,
@@ -116,7 +116,7 @@ fun RankingScreen(
 }
 
 @Composable
-fun WeekController(
+private fun WeekController(
     currentWeek: String,
     previousWeekEnabled: Boolean,
     nextWeekEnabled: Boolean,
@@ -157,7 +157,7 @@ fun WeekController(
 }
 
 @Composable
-fun Ranking(
+private fun Ranking(
     departmentRankings: ImmutableList<DepartmentRanking>,
     modifier: Modifier = Modifier,
 ) {
@@ -180,7 +180,7 @@ fun Ranking(
 
 @Preview(showBackground = true)
 @Composable
-fun RankingScreenPreview() {
+private fun RankingScreenPreview() {
     val sampleDepartmentRankings =
         listOf(
             DepartmentRanking(
