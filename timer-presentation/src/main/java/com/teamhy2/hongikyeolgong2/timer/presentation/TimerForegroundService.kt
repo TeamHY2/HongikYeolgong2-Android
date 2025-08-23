@@ -7,10 +7,12 @@ import androidx.lifecycle.lifecycleScope
 import com.teamhy2.hongikyeolgong2.notification.NotificationHandler
 import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlag
 import com.teamhy2.hongikyeolgong2.timer.model.NotificationTimeFlags
-import com.teamhy2.main.domain.repository.StudyDayRepository
+import com.teamhy2.main.domain.repository.StudyRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant.ofEpochMilli
 import java.time.LocalDateTime
@@ -28,11 +30,11 @@ class TimerForegroundService : LifecycleService() {
     private val notificationTimeFlags = NotificationTimeFlags()
 
     @Inject
-    lateinit var studyDayRepository: StudyDayRepository
+    lateinit var studyRepository: StudyRepository
 
     private var timerJob: Job? = null
 
-    private lateinit var startTimeState: LocalDateTime
+    private val studySessionId: MutableStateFlow<Long> = MutableStateFlow(-1L)
 
     override fun onStartCommand(
         intent: Intent?,
@@ -46,10 +48,14 @@ class TimerForegroundService : LifecycleService() {
                 val startTimeMillis: Long =
                     intent.getLongExtra(EXTRA_START_TIME, System.currentTimeMillis())
                 val endTimeMillis: Long =
-                    intent.getLongExtra(EXTRA_END_TIME, System.currentTimeMillis() + FOUR_HOURS_MILLIS)
+                    intent.getLongExtra(
+                        EXTRA_END_TIME,
+                        System.currentTimeMillis() + FOUR_HOURS_MILLIS,
+                    )
 
                 startService(startTimeMillis, endTimeMillis)
             }
+
             TimerServiceManager.ACTION_STOP -> {
                 stopService()
             }
@@ -65,8 +71,6 @@ class TimerForegroundService : LifecycleService() {
         val startTime: LocalDateTime = startTimeMillis.toLocalDateTime()
         val endTime: LocalDateTime = endTimeMillis.toLocalDateTime()
 
-        startTimeState = startTime
-
         Log.i("TimerForegroundService", "startTime: $startTime | endTime: $endTime")
 
         startForeground(
@@ -74,11 +78,28 @@ class TimerForegroundService : LifecycleService() {
             notificationHandler.buildServiceNotification(),
         )
         startTimer(
+            startTime = startTime,
             endTime = endTime,
         )
     }
 
-    private fun startTimer(endTime: LocalDateTime) {
+    private fun startTimer(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+    ) {
+        lifecycleScope.launch {
+            studyRepository.startStudy(
+                startTime = startTime.toString(),
+            )
+                .onSuccess { studyStartResult ->
+                    studySessionId.update { studyStartResult.studySessionId }
+                }
+        }
+
+        initTimerJob(endTime)
+    }
+
+    private fun initTimerJob(endTime: LocalDateTime) {
         timerJob?.cancel()
         timerJob =
             lifecycleScope.launch {
@@ -102,16 +123,19 @@ class TimerForegroundService : LifecycleService() {
     }
 
     private fun stopService() {
+        if (studySessionId.value == -1L) return
+
         lifecycleScope.launch {
-            if (::startTimeState.isInitialized) {
-                studyDayRepository.saveStudyDay(
-                    startDateTime = startTimeState,
-                    endDateTime = LocalDateTime.now(),
-                )
-                    .onFailure {
-                        Log.d("TimerForegroundService", "stopService: ${it.message}")
-                    }
-            }
+            studyRepository.endStudy(
+                studySessionId = studySessionId.value,
+                endTime = LocalDateTime.now().toString(),
+            )
+                .onSuccess {
+                    studySessionId.update { -1L }
+                }
+                .onFailure {
+                    Log.d("TimerForegroundService", "stopService: ${it.message}")
+                }
             stopSelf()
         }
     }

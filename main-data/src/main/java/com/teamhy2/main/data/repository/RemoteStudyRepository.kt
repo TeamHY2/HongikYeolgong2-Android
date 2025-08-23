@@ -9,6 +9,7 @@ import com.teamhy2.main.data.mapper.toDomain
 import com.teamhy2.main.domain.model.StudyEndResult
 import com.teamhy2.main.domain.model.StudyStartResult
 import com.teamhy2.main.domain.model.StudyingUser
+import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.repository.StudyRepository
 import javax.inject.Inject
 
@@ -16,6 +17,12 @@ class RemoteStudyRepository
     @Inject
     constructor(private val studyService: StudyService) :
     StudyRepository {
+        override suspend fun fetchWeeklyStudyDay(): Result<List<WeeklyStudyDay>> {
+            return studyService.getWeeklyStudyDay().toResult {
+                it.data.toDomain()
+            }
+        }
+
         override suspend fun startStudy(startTime: String): Result<StudyStartResult> {
             return studyService.postStudyStart(StudyStartRequest(startTime)).toResult {
                 it.data.toDomain()
