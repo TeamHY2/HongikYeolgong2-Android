@@ -18,6 +18,7 @@ class FocusModeViewModel
         private val studyRepository: StudyRepository,
     ) : MviViewModel<FocusModeUiIntent, FocusModeUiState, FocusModeSideEffect>(FocusModeUiState.Loading) {
         private var timerJob: Job? = null
+        private var studyingUsersRefreshCounter = 0
 
         override suspend fun reduceState(
             current: FocusModeUiState,
@@ -47,16 +48,19 @@ class FocusModeViewModel
         }
 
         private fun tick(current: FocusModeUiState): FocusModeUiState {
-            if (current !is FocusModeUiState.Loaded) return current
+            if (++studyingUsersRefreshCounter % TEN_SECONDS == 0) {
+                sendIntent(FocusModeUiIntent.EnterFocusModeScreen)
+            }
 
-            val updatedUsers =
-                current.studyingUsers.map { user ->
-                    val totalSeconds = parseTimeToSeconds(user.studyDuration) + 1
-                    val newDuration = formatSecondsToTime(totalSeconds)
-                    user.copy(studyDuration = newDuration)
-                }
-
-            return current.copy(studyingUsers = updatedUsers)
+            return runOn<FocusModeUiState.Loaded>(current) {
+                val updatedUsers =
+                    studyingUsers.map { user ->
+                        val totalSeconds = parseTimeToSeconds(user.studyDuration) + 1
+                        val newDuration = formatSecondsToTime(totalSeconds)
+                        user.copy(studyDuration = newDuration)
+                    }
+                copy(studyingUsers = updatedUsers)
+            }
         }
 
         private fun startTimer() {
@@ -70,7 +74,12 @@ class FocusModeViewModel
         }
 
         private fun stopTimer() {
+            studyingUsersRefreshCounter = 0
             timerJob?.cancel()
             timerJob = null
+        }
+
+        companion object {
+            private const val TEN_SECONDS = 10
         }
     }
