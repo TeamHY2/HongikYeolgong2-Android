@@ -107,6 +107,87 @@ class RankingViewModelTest {
         }
 
     @Test
+    fun `현재 주에서 이전 주로 이동할 수 있다`() =
+        runTest {
+            // given: 2024년 6월 1일이 현재라 가정할때 주 번호는 202422
+            weekNumberCalculator = WeekNumberCalculator(LocalDate.of(2024, 6, 1))
+            viewModel = RankingViewModel(rankingRepository, weekNumberCalculator)
+
+            // 이전 주의 주번호는 202421
+            coEvery { rankingRepository.fetchRanking(202421) } returns
+                Result.success(Ranking("5월 4주차", mockDepartmentRankings))
+
+            viewModel.uiState.test {
+                val initState: RankingUiState = awaitItem()
+                assertEquals(expected = RankingUiState.Loading, actual = initState)
+
+                // when
+                viewModel.sendIntent(RankingIntent.MoveToPreviousMonth)
+
+                // then
+                val actual = awaitItem()
+                assertEquals(
+                    expected =
+                        RankingUiState.Loaded(
+                            currentWeek = "5월 4주차",
+                            departmentRankings = mockDepartmentRankings.toImmutableList(),
+                            canMoveToPreviousWeek = true,
+                            canMoveToNextWeek = true,
+                        ),
+                    actual = actual,
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            coVerify(exactly = 1) { rankingRepository.fetchRanking(202421) }
+        }
+
+    @Test
+    fun `현재 주에서 다음 주로 이동할 수 있다`() =
+        runTest {
+            // given: 2024년 6월 1일이 현재라 가정할때 주 번호는 202422
+            weekNumberCalculator = WeekNumberCalculator(LocalDate.of(2024, 6, 1))
+            viewModel = RankingViewModel(rankingRepository, weekNumberCalculator)
+
+            // 현재 주가 바로 Maximum 주라 다음 주로 이동이 불가능하기 때문에 테스트를 위해 이전 주로 두번 이동 필요
+            coEvery { rankingRepository.fetchRanking(202421) } returns
+                Result.success(Ranking("5월 4주차", mockDepartmentRankings))
+            coEvery { rankingRepository.fetchRanking(202420) } returns
+                Result.success(Ranking("5월 3주차", mockDepartmentRankings))
+
+            viewModel.uiState.test {
+                val initState: RankingUiState = awaitItem()
+                assertEquals(expected = RankingUiState.Loading, actual = initState)
+
+                viewModel.sendIntent(RankingIntent.MoveToPreviousMonth)
+                viewModel.sendIntent(RankingIntent.MoveToPreviousMonth)
+                awaitItem()
+                awaitItem()
+
+                // when: 다음 주로 이동하려고 시도한다면
+                viewModel.sendIntent(RankingIntent.MoveToNextMonth)
+                assertEquals(weekNumberCalculator.currentWeekNumber, 202421)
+
+                // then: 이전 주로 두번 이동하고 다음 주로 한 번 이동하기 때문에 결과적으로 5월 4주차 데이터 방출
+                val actual = awaitItem()
+                assertEquals(
+                    expected =
+                        RankingUiState.Loaded(
+                            currentWeek = "5월 4주차",
+                            departmentRankings = mockDepartmentRankings.toImmutableList(),
+                            canMoveToPreviousWeek = true,
+                            canMoveToNextWeek = true,
+                        ),
+                    actual = actual,
+                )
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            coVerify(exactly = 2) { rankingRepository.fetchRanking(202421) }
+            coVerify(exactly = 1) { rankingRepository.fetchRanking(202420) }
+        }
+
+    @Test
     fun `현재 주 번호가 최소 주 번호라면 이전 주로 이동하려 할 때 최근 상태를 그대로 유지한다`() =
         runTest {
             // given
