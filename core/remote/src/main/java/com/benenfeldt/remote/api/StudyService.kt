@@ -3,8 +3,6 @@ package com.benenfeldt.remote.api
 import com.benenfeldt.remote.dto.BaseResponse
 import com.benenfeldt.remote.dto.CalendarStudyDayResponse
 import com.benenfeldt.remote.dto.RankingResponse
-import com.benenfeldt.remote.dto.StudyDayRequest
-import com.benenfeldt.remote.dto.StudyDayResponse
 import com.benenfeldt.remote.dto.StudyDurationResponse
 import com.benenfeldt.remote.dto.StudyEndRequest
 import com.benenfeldt.remote.dto.StudyEndResponse
@@ -26,12 +24,6 @@ interface StudyService {
 
     @GET("/api/v1/study/record/week")
     suspend fun getWeeklyStudyDay(): Result<BaseResponse<List<WeeklyStudyDayResponse>>>
-
-    // TODO: 추후 폐기
-    @POST("/api/v1/study")
-    suspend fun postStudyDay(
-        @Body studyDayRequest: StudyDayRequest,
-    ): Result<BaseResponse<StudyDayResponse>>
 
     @GET("/api/v1/study/record/count-all")
     suspend fun getCalendarStudyDay(): Result<BaseResponse<List<CalendarStudyDayResponse>>>

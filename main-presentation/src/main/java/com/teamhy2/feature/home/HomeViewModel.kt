@@ -6,7 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.teamhy2.main.domain.model.Promotion
 import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.repository.PromotionRepository
-import com.teamhy2.main.domain.repository.StudyDayRepository
+import com.teamhy2.main.domain.repository.StudyRepository
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import com.teamhy2.user.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +30,7 @@ class HomeViewModel
     @Inject
     constructor(
         private val wiseSayingRepository: WiseSayingRepository,
-        private val studyDayRepository: StudyDayRepository,
+        private val studyRepository: StudyRepository,
         private val promotionRepository: PromotionRepository,
         private val userRepository: UserRepository,
     ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
@@ -48,7 +48,7 @@ class HomeViewModel
                         val deferredWiseSaying =
                             async { wiseSayingRepository.fetchWiseSaying().getOrThrow() }
                         val deferredWeeklyStudyDays =
-                            async { studyDayRepository.fetchWeeklyStudyDay().getOrThrow() }
+                            async { studyRepository.fetchWeeklyStudyDay().getOrThrow() }
 
                         deferredWiseSaying.await() to deferredWeeklyStudyDays.await()
                     }
