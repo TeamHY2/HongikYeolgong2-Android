@@ -71,7 +71,7 @@ class TimerForegroundService : LifecycleService() {
         val startTime: LocalDateTime = startTimeMillis.toLocalDateTime()
         val endTime: LocalDateTime = endTimeMillis.toLocalDateTime()
 
-        Log.i("TimerForegroundService", "startTime: $startTime | endTime: $endTime")
+        Log.i(TAG, "startTime: $startTime | endTime: $endTime")
 
         startForeground(
             TIMER_NOTIFICATION_ID,
@@ -93,6 +93,9 @@ class TimerForegroundService : LifecycleService() {
             )
                 .onSuccess { studyStartResult ->
                     studySessionId.update { studyStartResult.studySessionId }
+                }
+                .onFailure {
+                    Log.d(TAG, "startStudy: startStudyFail: ${it.message}")
                 }
         }
 
@@ -132,11 +135,12 @@ class TimerForegroundService : LifecycleService() {
             )
                 .onSuccess {
                     studySessionId.update { -1L }
+                    stopSelf()
                 }
                 .onFailure {
-                    Log.d("TimerForegroundService", "stopService: ${it.message}")
+                    Log.d(TAG, "stopService: ${it.message}")
+                    // TODO: DB에 저장해두었다가 추후 리트라이 하는 방법 계획중
                 }
-            stopSelf()
         }
     }
 
@@ -152,6 +156,7 @@ class TimerForegroundService : LifecycleService() {
     private fun LocalDateTime.toEpochMillis(): Long = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
     companion object {
+        private const val TAG = "TimerForegroundService"
         private const val ONE_SECOND = 1000L
         private const val FOUR_HOURS_MILLIS = ONE_SECOND * 60 * 60 * 4
         const val TIMER_NOTIFICATION_ID: Int = 1
