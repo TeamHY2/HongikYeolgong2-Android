@@ -1,4 +1,4 @@
-package com.teamhy2.feature.focus.util
+package com.teamhy2.main.domain.util
 
 import java.util.Locale
 import java.util.concurrent.TimeUnit
