@@ -2,8 +2,6 @@ package com.teamhy2.feature.focus
 
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.designsystem.util.mvi.MviViewModel
-import com.teamhy2.feature.focus.util.formatSecondsToTime
-import com.teamhy2.feature.focus.util.parseTimeToSeconds
 import com.teamhy2.main.domain.repository.StudyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -33,12 +31,9 @@ class FocusModeViewModel
         private suspend fun getStudyingUsers(current: FocusModeUiState): FocusModeUiState {
             stopTimer()
             return studyRepository.getStudyingUsers().fold(
-                onSuccess = {
+                onSuccess = { studyingUsers ->
                     startTimer()
-                    FocusModeUiState.Loaded(
-                        studyingUserCount = it.size,
-                        studyingUsers = it,
-                    )
+                    FocusModeUiState.Loaded(studyingUsers = studyingUsers)
                 },
                 onFailure = {
                     postSideEffect(FocusModeSideEffect.ShowSnackBar(it))
@@ -53,13 +48,7 @@ class FocusModeViewModel
             }
 
             return runOn<FocusModeUiState.Loaded>(current) {
-                val updatedUsers =
-                    studyingUsers.map { user ->
-                        val totalSeconds = parseTimeToSeconds(user.studyDuration) + 1
-                        val newDuration = formatSecondsToTime(totalSeconds)
-                        user.copy(studyDuration = newDuration)
-                    }
-                copy(studyingUsers = updatedUsers)
+                copy(studyingUsers = studyingUsers.updateStudyDurationsByOneSecond())
             }
         }
 
