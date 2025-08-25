@@ -65,6 +65,7 @@ import com.teamhy2.hongikyeolgong2.timer.presentation.model.Meridiem
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerTime
 import com.teamhy2.hongikyeolgong2.timer.presentation.model.TimerUiState
 import com.teamhy2.main.domain.model.StudyingUser
+import com.teamhy2.main.domain.model.StudyingUsers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -123,7 +124,7 @@ fun FocusModeRoute(
 }
 
 @Composable
-fun FocusModeContent(
+private fun FocusModeContent(
     focusModeState: FocusModeUiState,
     timerState: TimerUiState,
     onStudyRoomExtendClick: () -> Unit,
@@ -189,7 +190,7 @@ fun FocusModeContent(
 }
 
 @Composable
-fun FocusModeTimerRunningScreen(
+private fun FocusModeTimerRunningScreen(
     focusModeState: FocusModeUiState.Loaded,
     timerUiState: TimerUiState.Running,
     onStudyRoomEndClick: () -> Unit,
@@ -266,7 +267,7 @@ fun FocusModeTimerRunningScreen(
                     text =
                         buildAnnotatedString {
                             withStyle(SpanStyle(color = Blue50)) {
-                                append("${focusModeState.studyingUserCount}명")
+                                append("${focusModeState.studyingUsers.studyingUsersCount}명")
                             }
                             withStyle(SpanStyle(color = Gray300)) {
                                 append(" 공부중")
@@ -281,7 +282,7 @@ fun FocusModeTimerRunningScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier.weight(1f),
                 ) {
-                    items(focusModeState.studyingUsers, key = { it.userId }) {
+                    items(focusModeState.studyingUsers.values, key = { it.userId }) {
                         StudyLamp(
                             isOn = it.studyStatus,
                             username = it.userName,
@@ -316,38 +317,39 @@ private fun FocusModeTimerRunningScreenPreview() {
     HY2Theme {
         val focusModeState =
             FocusModeUiState.Loaded(
-                studyingUserCount = 4,
                 studyingUsers =
-                    listOf(
-                        StudyingUser(
-                            userId = 1,
-                            userName = "매우긴닉네임입니다",
-                            studyDuration = "10:00:00",
-                            studyStatus = true,
-                        ),
-                        StudyingUser(
-                            userId = 2,
-                            userName = "닉네임",
-                            studyDuration = "11:00:00",
-                            studyStatus = true,
-                        ),
-                        StudyingUser(
-                            userId = 3,
-                            userName = "매우긴123",
-                            studyDuration = "09:00:00",
-                            studyStatus = false,
-                        ),
-                        StudyingUser(
-                            userId = 4,
-                            userName = "닉네임입니다",
-                            studyDuration = "8:00:00",
-                            studyStatus = true,
-                        ),
-                        StudyingUser(
-                            userId = 5,
-                            userName = "반달",
-                            studyDuration = "8:00:00",
-                            studyStatus = false,
+                    StudyingUsers(
+                        listOf(
+                            StudyingUser(
+                                userId = 1,
+                                userName = "매우긴닉네임입니다",
+                                studyDuration = "10:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 2,
+                                userName = "닉네임",
+                                studyDuration = "11:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 3,
+                                userName = "매우긴123",
+                                studyDuration = "09:00:00",
+                                studyStatus = false,
+                            ),
+                            StudyingUser(
+                                userId = 4,
+                                userName = "닉네임입니다",
+                                studyDuration = "8:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 5,
+                                userName = "반달",
+                                studyDuration = "8:00:00",
+                                studyStatus = false,
+                            ),
                         ),
                     ),
             )
