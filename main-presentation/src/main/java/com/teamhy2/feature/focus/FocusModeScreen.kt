@@ -119,6 +119,9 @@ fun FocusModeRoute(
         onCloseClick = {
             localNavController.popUpToHome()
         },
+        onTimerStopped = {
+            localNavController.popUpToHome()
+        },
         modifier = modifier,
     )
 }
@@ -130,10 +133,17 @@ private fun FocusModeContent(
     onStudyRoomExtendClick: () -> Unit,
     onStudyRoomEndClick: () -> Unit,
     onCloseClick: () -> Unit,
+    onTimerStopped: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var isStudyRoomExtendDialog by rememberSaveable { mutableStateOf(false) }
     var isStudyRoomEndDialog by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(timerState) {
+        if (timerState is TimerUiState.Idle) {
+            onTimerStopped()
+        }
+    }
 
     if (isStudyRoomExtendDialog) {
         HY2Dialog(
