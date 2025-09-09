@@ -243,11 +243,7 @@ fun HomeScreen(
                 .fillMaxSize(),
     ) {
         Spacer(modifier = Modifier.height(34.dp))
-        HomeHeader(
-            weeklyStudyDays = weeklyStudyDays,
-            modifier =
-            Modifier,
-        )
+        HomeHeader(weeklyStudyDays = weeklyStudyDays)
         Spacer(modifier = Modifier.height(36.dp))
         HomeBody(
             wiseSaying = wiseSaying,
