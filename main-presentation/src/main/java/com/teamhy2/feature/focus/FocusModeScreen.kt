@@ -84,7 +84,7 @@ fun FocusModeRoute(
     val localNavController = LocalNavController.current
     val localShowSnackBar = LocalShowSnackBar.current
 
-    LaunchedEffect(focusModeViewModel) {
+    LaunchedEffect(Unit) {
         focusModeViewModel.sendIntent(FocusModeUiIntent.EnterFocusModeScreen)
         launch {
             focusModeViewModel.sideEffect.collect { sideEffect ->
