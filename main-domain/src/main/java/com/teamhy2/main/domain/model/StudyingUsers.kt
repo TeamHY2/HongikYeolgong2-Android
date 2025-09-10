@@ -7,6 +7,8 @@ data class StudyingUsers(val values: List<StudyingUser>) {
     val studyingUsersCount: Int = values.count { it.studyStatus }
 
     fun updateStudyDurationsByOneSecond(): StudyingUsers {
+        if (studyingUsersCount == 0) return this
+
         val updated: List<StudyingUser> =
             values
                 .map { user ->
@@ -19,7 +21,7 @@ data class StudyingUsers(val values: List<StudyingUser>) {
                     }
                 }
 
-        return StudyingUsers(updated).takeIf { studyingUsersCount != 0 } ?: this
+        return StudyingUsers(updated)
     }
 
     companion object {
