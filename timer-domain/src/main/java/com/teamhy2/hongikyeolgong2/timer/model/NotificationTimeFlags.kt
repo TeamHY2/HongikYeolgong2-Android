@@ -21,4 +21,10 @@ class NotificationTimeFlags {
         }
         return null
     }
+
+    fun reset() {
+        notificationTimerFlags.keys.forEach {
+            notificationTimerFlags[it] = false
+        }
+    }
 }
