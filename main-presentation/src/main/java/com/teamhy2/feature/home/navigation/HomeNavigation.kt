@@ -7,7 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.teamhy2.feature.home.FocusModeRoute
+import com.teamhy2.feature.focus.FocusModeRoute
 import com.teamhy2.feature.home.HomeRoute
 import com.teamhy2.feature.home.HomeViewModel
 import com.teamhy2.hongikyeolgong2.timer.presentation.TimerViewModel
@@ -18,24 +18,13 @@ fun NavController.navigateToHome() {
 
 fun NavController.popUpToHome() {
     navigate(Home.ROUTE) {
-        popUpTo(graph.startDestinationId) {
-            inclusive = true
-        }
+        popUpTo(Home.ROUTE)
         launchSingleTop = true
     }
 }
 
 fun NavController.navigateToFocusMode() {
     navigate(FocusMode.ROUTE)
-}
-
-fun NavController.popUpToFocusMode() {
-    navigate(FocusMode.ROUTE) {
-        popUpTo(graph.startDestinationId) {
-            inclusive = true
-        }
-        launchSingleTop = true
-    }
 }
 
 fun NavGraphBuilder.homeNavigation(
@@ -46,30 +35,44 @@ fun NavGraphBuilder.homeNavigation(
         composable(route = Home.ROUTE) { backStackEntry ->
             val parentEntry =
                 remember(backStackEntry) {
-                    navController.getBackStackEntry(Home.NAVIGATION_ROUTE)
+                    try {
+                        navController.getBackStackEntry(Home.NAVIGATION_ROUTE)
+                    } catch (_: IllegalArgumentException) {
+                        null
+                    }
                 }
-            val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-            val timerViewModel: TimerViewModel = hiltViewModel(parentEntry)
 
-            HomeRoute(
-                seatingChartUrl = urls["seatingChart"] ?: "",
-                homeViewModel = homeViewModel,
-                timerViewModel = timerViewModel,
-            )
+            if (parentEntry != null) {
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+                val timerViewModel: TimerViewModel = hiltViewModel(parentEntry)
+
+                HomeRoute(
+                    seatingChartUrl = urls["seatingChart"] ?: "",
+                    homeViewModel = homeViewModel,
+                    timerViewModel = timerViewModel,
+                )
+            }
         }
 
         composable(route = FocusMode.ROUTE) { backStackEntry ->
             val parentEntry =
                 remember(backStackEntry) {
-                    navController.getBackStackEntry(Home.NAVIGATION_ROUTE)
+                    try {
+                        navController.getBackStackEntry(Home.NAVIGATION_ROUTE)
+                    } catch (_: IllegalArgumentException) {
+                        null
+                    }
                 }
-            val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-            val timerViewModel: TimerViewModel = hiltViewModel(parentEntry)
 
-            FocusModeRoute(
-                homeViewModel = homeViewModel,
-                timerViewModel = timerViewModel,
-            )
+            if (parentEntry != null) {
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+                val timerViewModel: TimerViewModel = hiltViewModel(parentEntry)
+
+                FocusModeRoute(
+                    homeViewModel = homeViewModel,
+                    timerViewModel = timerViewModel,
+                )
+            }
         }
     }
 }

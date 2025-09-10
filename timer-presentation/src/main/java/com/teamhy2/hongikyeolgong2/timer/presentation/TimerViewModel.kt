@@ -189,12 +189,7 @@ class TimerViewModel
                         endTime = timer.endTime,
                     ),
                 )
+                timerServiceManager.extendTimer(timer.endTime)
             }
-
-            timerServiceManager.stopTimer()
-            timerServiceManager.startTimer(
-                startDateTime = startTime,
-                endDateTime = timer.endTime,
-            )
         }
     }
