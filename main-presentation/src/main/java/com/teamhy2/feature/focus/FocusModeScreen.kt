@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -209,15 +208,25 @@ private fun FocusModeTimerRunningScreen(
     modifier: Modifier = Modifier,
 ) {
     Box {
-        Column(modifier = modifier) {
-            Box(
+        Column(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+        ) {
+            Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(52.dp)
-                        .padding(horizontal = 20.dp),
-                contentAlignment = Alignment.CenterEnd,
+                        .height(52.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                Text(
+                    text = "포커스모드",
+                    style = HY2Typography().head,
+                    color = Gray100,
+                )
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier =
@@ -230,80 +239,74 @@ private fun FocusModeTimerRunningScreen(
                         painter = painterResource(com.teamhy2.designsystem.R.drawable.ic_close),
                         contentDescription = "닫기",
                         tint = Gray100,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(28.dp),
                     )
                 }
             }
-            Column(
-                modifier =
-                    Modifier
-                        .padding(horizontal = 32.dp)
-                        .offset(y = (-12).dp),
-            ) {
-                HY2Timer(
-                    durationAsSecond = timerUiState.duration.seconds,
-                    leftTime = timerUiState.leftTime.value,
-                    startTime = timerUiState.startTime.formattedTime,
-                    startTimeMeridiem = timerUiState.startTime.meridiem.label,
-                    endTime = timerUiState.endTime.formattedTime,
-                    endTimeMeridiem = timerUiState.endTime.meridiem.label,
-                )
-                HY2Spacer(28)
-                Row {
-                    HY2Button(
-                        text = "열람실 이용 종료",
-                        onClick = onStudyRoomEndClick,
-                        textColor = Gray100,
-                        backgroundColor = Gray600,
-                        modifier = Modifier.weight(1f),
-                    )
-                    HY2Spacer(12)
-                    HY2Button(
-                        text = "열람실 이용 연장",
-                        onClick = onStudyRoomExtendClick,
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .alpha(
-                                    1f.takeIf { timerUiState.leftTime.value <= "00:30:00" }
-                                        ?: 0f,
-                                ),
-                    )
-                }
-                HY2Spacer(36)
-                Text("전체", style = HY2Typography().body05, color = Gray100)
-                HY2Spacer(4)
-                Text(
-                    text =
-                        buildAnnotatedString {
-                            withStyle(SpanStyle(color = Blue50)) {
-                                append("${focusModeState.studyingUsers.studyingUsersCount}명")
-                            }
-                            withStyle(SpanStyle(color = Gray300)) {
-                                append(" 공부중")
-                            }
-                        },
-                    style = HY2Typography().body07,
-                )
-                HY2Spacer(20)
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+            HY2Spacer(12)
+            HY2Timer(
+                durationAsSecond = timerUiState.duration.seconds,
+                leftTime = timerUiState.leftTime.value,
+                startTime = timerUiState.startTime.formattedTime,
+                startTimeMeridiem = timerUiState.startTime.meridiem.label,
+                endTime = timerUiState.endTime.formattedTime,
+                endTimeMeridiem = timerUiState.endTime.meridiem.label,
+            )
+            HY2Spacer(28)
+            Row {
+                HY2Button(
+                    text = "열람실 이용 종료",
+                    onClick = onStudyRoomEndClick,
+                    textColor = Gray100,
+                    backgroundColor = Gray600,
                     modifier = Modifier.weight(1f),
-                ) {
-                    items(focusModeState.studyingUsers.values, key = { it.userId }) {
-                        StudyLamp(
-                            isOn = it.studyStatus,
-                            username = it.userName,
-                            studyTime = it.studyDuration,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
+                )
+                HY2Spacer(12)
+                HY2Button(
+                    text = "열람실 이용 연장",
+                    onClick = onStudyRoomExtendClick,
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .alpha(
+                                1f.takeIf { timerUiState.leftTime.value <= "00:30:00" }
+                                    ?: 0f,
+                            ),
+                )
+            }
+            HY2Spacer(36)
+            Text("전체", style = HY2Typography().body05, color = Gray100)
+            HY2Spacer(4)
+            Text(
+                text =
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(color = Blue50)) {
+                            append("${focusModeState.studyingUsers.studyingUsersCount}명")
+                        }
+                        withStyle(SpanStyle(color = Gray300)) {
+                            append(" 공부중")
+                        }
+                    },
+                style = HY2Typography().body07,
+            )
+            HY2Spacer(20)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.weight(1f),
+            ) {
+                items(focusModeState.studyingUsers.values, key = { it.userId }) {
+                    StudyLamp(
+                        isOn = it.studyStatus,
+                        username = it.userName,
+                        studyTime = it.studyDuration,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
         }
-        Box(
+        DimSpace(
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
