@@ -311,17 +311,25 @@ private fun FocusModeTimerRunningScreen(
                 Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .fillMaxHeight(0.25f)
-                    .background(
-                        brush =
-                            Brush.linearGradient(
-                                colors = listOf(Color(0x0C0D1100), Color(0xFF0C0D11)),
-                                start = Offset.Zero,
-                                end = Offset(0f, Float.POSITIVE_INFINITY),
-                            ),
-                    ),
+                    .fillMaxHeight(0.25f),
         )
     }
+}
+
+@Composable
+private fun DimSpace(modifier: Modifier = Modifier) {
+    Box(
+        modifier =
+            modifier
+                .background(
+                    brush =
+                        Brush.linearGradient(
+                            colors = listOf(Color(0x0C0D1100), Color(0xFF0C0D11)),
+                            start = Offset.Zero,
+                            end = Offset(0f, Float.POSITIVE_INFINITY),
+                        ),
+                ),
+    )
 }
 
 @Preview
@@ -359,6 +367,66 @@ private fun FocusModeTimerRunningScreenPreview() {
                             ),
                             StudyingUser(
                                 userId = 5,
+                                userName = "반달",
+                                studyDuration = "8:00:00",
+                                studyStatus = false,
+                            ),
+                            StudyingUser(
+                                userId = 6,
+                                userName = "매우긴닉네임입니다",
+                                studyDuration = "10:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 7,
+                                userName = "닉네임",
+                                studyDuration = "11:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 8,
+                                userName = "매우긴123",
+                                studyDuration = "09:00:00",
+                                studyStatus = false,
+                            ),
+                            StudyingUser(
+                                userId = 9,
+                                userName = "닉네임입니다",
+                                studyDuration = "8:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 10,
+                                userName = "반달",
+                                studyDuration = "8:00:00",
+                                studyStatus = false,
+                            ),
+                            StudyingUser(
+                                userId = 11,
+                                userName = "매우긴닉네임입니다",
+                                studyDuration = "10:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 12,
+                                userName = "닉네임",
+                                studyDuration = "11:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 13,
+                                userName = "매우긴123",
+                                studyDuration = "09:00:00",
+                                studyStatus = false,
+                            ),
+                            StudyingUser(
+                                userId = 14,
+                                userName = "닉네임입니다",
+                                studyDuration = "8:00:00",
+                                studyStatus = true,
+                            ),
+                            StudyingUser(
+                                userId = 15,
                                 userName = "반달",
                                 studyDuration = "8:00:00",
                                 studyStatus = false,
