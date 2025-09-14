@@ -262,10 +262,11 @@ private fun FocusModeTimerRunningScreen(
                     onClick = onStudyRoomEndClick,
                     textColor = Gray100,
                     backgroundColor = Gray600,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(52.dp)
-                        .width(148.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .width(148.dp),
                 )
                 HY2Spacer(12)
                 HY2Button(
