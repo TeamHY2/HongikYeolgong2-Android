@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -261,7 +262,11 @@ private fun FocusModeTimerRunningScreen(
                     onClick = onStudyRoomEndClick,
                     textColor = Gray100,
                     backgroundColor = Gray600,
-                    modifier = Modifier.weight(1f),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .width(148.dp),
                 )
                 HY2Spacer(12)
                 HY2Button(
@@ -270,13 +275,15 @@ private fun FocusModeTimerRunningScreen(
                     modifier =
                         Modifier
                             .weight(1f)
+                            .height(52.dp)
+                            .width(148.dp)
                             .alpha(
                                 1f.takeIf { timerUiState.leftTime.value <= "00:30:00" }
                                     ?: 0f,
                             ),
                 )
             }
-            HY2Spacer(36)
+            HY2Spacer(40)
             Text("전체", style = HY2Typography().body05, color = Gray100)
             HY2Spacer(4)
             Text(
