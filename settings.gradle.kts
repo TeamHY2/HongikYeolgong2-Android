@@ -60,3 +60,7 @@ include(":record-domain")
 
 include(":user-data")
 include(":user-domain")
+
+include(":friend-domain")
+include(":friend-data")
+include(":friend-presentation")

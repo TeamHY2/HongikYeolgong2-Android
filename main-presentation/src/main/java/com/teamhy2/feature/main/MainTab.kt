@@ -23,17 +23,17 @@ enum class MainTab(
         contentDescription = "홈",
         route = "home",
     ),
-    RECORD(
-        iconResId = ic_record,
-        selectedIconResId = ic_record_selected,
-        contentDescription = "기록",
-        route = "record",
-    ),
     FRIEND(
         iconResId = R.drawable.ic_friend,
         selectedIconResId = R.drawable.ic_friend_selected,
         contentDescription = "친구",
         route = "friend",
+    ),
+    RECORD(
+        iconResId = ic_record,
+        selectedIconResId = ic_record_selected,
+        contentDescription = "기록",
+        route = "record",
     ),
     RANKING(
         iconResId = ic_ranking,
@@ -53,6 +53,7 @@ enum class MainTab(
         fun fromRoute(route: String?): MainTab =
             when (route) {
                 HOME.route -> HOME
+                FRIEND.route -> FRIEND
                 RECORD.route -> RECORD
                 RANKING.route -> RANKING
                 SETTING.route -> SETTING
