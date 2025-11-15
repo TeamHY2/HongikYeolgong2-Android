@@ -8,7 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,7 +57,11 @@ fun MainBottomBar(
                     )
                 },
                 label = {
-                    Text(text = tab.contentDescription)
+                    Text(
+                        text = tab.contentDescription,
+                        style = HY2Theme.typography.cpation10,
+                        color = if (tab == currentTab) Gray100 else Gray300,
+                    )
                 },
                 selected = tab == currentTab,
                 selectedContentColor = Gray100,
