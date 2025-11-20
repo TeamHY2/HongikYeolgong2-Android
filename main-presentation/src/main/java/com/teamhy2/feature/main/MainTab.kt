@@ -1,6 +1,7 @@
 package com.teamhy2.feature.main
 
 import androidx.annotation.DrawableRes
+import com.teamhy2.hongikyeolgong2.main.presentation.R
 import com.teamhy2.hongikyeolgong2.main.presentation.R.drawable.ic_home
 import com.teamhy2.hongikyeolgong2.main.presentation.R.drawable.ic_home_selected
 import com.teamhy2.hongikyeolgong2.main.presentation.R.drawable.ic_ranking
@@ -21,6 +22,12 @@ enum class MainTab(
         selectedIconResId = ic_home_selected,
         contentDescription = "홈",
         route = "home",
+    ),
+    FRIEND(
+        iconResId = R.drawable.ic_friend,
+        selectedIconResId = R.drawable.ic_friend_selected,
+        contentDescription = "친구",
+        route = "friend",
     ),
     RECORD(
         iconResId = ic_record,
@@ -46,6 +53,7 @@ enum class MainTab(
         fun fromRoute(route: String?): MainTab =
             when (route) {
                 HOME.route -> HOME
+                FRIEND.route -> FRIEND
                 RECORD.route -> RECORD
                 RANKING.route -> RANKING
                 SETTING.route -> SETTING
