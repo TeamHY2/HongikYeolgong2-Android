@@ -35,7 +35,7 @@ class HY2Typography(
     body06: TextStyle,
     body07: TextStyle,
     caption: TextStyle,
-    cpation10: TextStyle,
+    caption02: TextStyle,
 ) {
     var head: TextStyle by mutableStateOf(head)
         private set
@@ -61,7 +61,7 @@ class HY2Typography(
         private set
     var caption: TextStyle by mutableStateOf(caption)
         private set
-    var cpation10: TextStyle by mutableStateOf(cpation10)
+    var caption02: TextStyle by mutableStateOf(caption02)
         private set
 
     fun copy(
@@ -77,7 +77,7 @@ class HY2Typography(
         body06: TextStyle = this.body06,
         body07: TextStyle = this.body07,
         caption: TextStyle = this.caption,
-        cpation10: TextStyle = this.cpation10,
+        caption02: TextStyle = this.caption02,
     ): HY2Typography =
         HY2Typography(
             head,
@@ -92,7 +92,7 @@ class HY2Typography(
             body06,
             body07,
             caption,
-            cpation10,
+            caption02,
         )
 
     fun update(other: HY2Typography) {
@@ -108,7 +108,7 @@ class HY2Typography(
         body06 = other.body06
         body07 = other.body07
         caption = other.caption
-        cpation10 = other.cpation10
+        caption02 = other.caption02
     }
 }
 
@@ -187,7 +187,7 @@ fun HY2Typography(): HY2Typography {
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
             ),
-        cpation10 =
+        caption02 =
             TextStyle(
                 fontFamily = PretendardMedium,
                 fontSize = 10.sp,

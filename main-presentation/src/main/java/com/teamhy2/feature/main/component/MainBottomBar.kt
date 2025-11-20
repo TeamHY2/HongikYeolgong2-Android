@@ -59,7 +59,7 @@ fun MainBottomBar(
                 label = {
                     Text(
                         text = tab.contentDescription,
-                        style = HY2Theme.typography.cpation10,
+                        style = HY2Theme.typography.caption02,
                         color = if (tab == currentTab) Gray100 else Gray300,
                     )
                 },
