@@ -11,6 +11,7 @@ import com.teamhy2.feature.home.navigation.popUpToHome
 import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
+import com.teamhy2.friend.navigation.friendScreen
 import com.teamhy2.onboarding.navigation.Onboarding
 import com.teamhy2.onboarding.navigation.onboardingScreen
 import com.teamhy2.onboarding.navigation.popUpToOnboarding
@@ -50,6 +51,8 @@ fun HY2NavHost(
                 navController = navController,
                 urls = urls,
             )
+
+            friendScreen()
 
             rankingScreen()
 

@@ -54,6 +54,10 @@ dependencies {
     implementation(projects.mainData)
     implementation(projects.mainDomain)
 
+    implementation(projects.friendPresentation)
+    implementation(projects.friendData)
+    implementation(projects.friendDomain)
+
     implementation(projects.onboardingPresentation)
     implementation(projects.onboardingData)
     implementation(projects.onboardingDomain)

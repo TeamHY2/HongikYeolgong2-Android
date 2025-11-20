@@ -32,6 +32,9 @@ dependencies {
     implementation(projects.recordDomain)
     implementation(projects.recordPresentation)
 
+    implementation(projects.friendDomain)
+    implementation(projects.friendPresentation)
+
     implementation(projects.userDomain)
 
     implementation(libs.androidx.core.ktx)

@@ -18,6 +18,7 @@ val SuiteMedium = FontFamily(Font(R.font.suite_medium, FontWeight.Medium))
 val SuiteExtraBold = FontFamily(Font(R.font.suite_extra_bold, FontWeight.ExtraBold))
 
 val PretendardSemiBold = FontFamily(Font(R.font.pretendard_semi_bold, FontWeight.SemiBold))
+val PretendardMedium = FontFamily(Font(R.font.pretendard_medium, FontWeight.Medium))
 val PretendardRegular = FontFamily(Font(R.font.pretendard_regular, FontWeight.Normal))
 
 @Stable
@@ -34,6 +35,7 @@ class HY2Typography(
     body06: TextStyle,
     body07: TextStyle,
     caption: TextStyle,
+    caption02: TextStyle,
 ) {
     var head: TextStyle by mutableStateOf(head)
         private set
@@ -59,6 +61,8 @@ class HY2Typography(
         private set
     var caption: TextStyle by mutableStateOf(caption)
         private set
+    var caption02: TextStyle by mutableStateOf(caption02)
+        private set
 
     fun copy(
         head: TextStyle = this.head,
@@ -73,6 +77,7 @@ class HY2Typography(
         body06: TextStyle = this.body06,
         body07: TextStyle = this.body07,
         caption: TextStyle = this.caption,
+        caption02: TextStyle = this.caption02,
     ): HY2Typography =
         HY2Typography(
             head,
@@ -87,6 +92,7 @@ class HY2Typography(
             body06,
             body07,
             caption,
+            caption02,
         )
 
     fun update(other: HY2Typography) {
@@ -102,6 +108,7 @@ class HY2Typography(
         body06 = other.body06
         body07 = other.body07
         caption = other.caption
+        caption02 = other.caption02
     }
 }
 
@@ -179,6 +186,12 @@ fun HY2Typography(): HY2Typography {
                 fontFamily = PretendardRegular,
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
+            ),
+        caption02 =
+            TextStyle(
+                fontFamily = PretendardMedium,
+                fontSize = 10.sp,
+                lineHeight = 12.sp,
             ),
     )
 }
