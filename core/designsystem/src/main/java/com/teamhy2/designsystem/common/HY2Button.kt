@@ -16,7 +16,7 @@ import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.ui.theme.White
 
-private const val BUTTON_ROUNDED_CORNER_SIZE = 8
+private const val BUTTON_ROUNDED_CORNER_SIZE = 4
 private const val BUTTON_HEIGHT = 44
 
 @Composable
@@ -26,6 +26,7 @@ fun HY2Button(
     modifier: Modifier = Modifier,
     textColor: Color = White,
     backgroundColor: Color = Blue100,
+    roundedCornerSize: Int = BUTTON_ROUNDED_CORNER_SIZE,
 ) {
     ThrottleButton(
         onClick = onClick,
@@ -34,7 +35,7 @@ fun HY2Button(
                 containerColor = backgroundColor,
                 contentColor = textColor,
             ),
-        shape = RoundedCornerShape(BUTTON_ROUNDED_CORNER_SIZE),
+        shape = RoundedCornerShape(roundedCornerSize.dp),
         modifier =
             modifier
                 .fillMaxWidth()
