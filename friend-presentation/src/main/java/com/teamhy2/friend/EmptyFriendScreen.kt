@@ -28,7 +28,7 @@ import com.teamhy2.friend.component.NotificationButton
 import com.teamhy2.hongikyeolgong2.friend.presentation.R
 
 @Composable
-fun EmptyFriendScreen(
+internal fun EmptyFriendScreen(
     isNotificationOn: Boolean,
     onNotificationClick: () -> Unit,
     onAddFriendClick: () -> Unit,
