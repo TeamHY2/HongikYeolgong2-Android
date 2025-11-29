@@ -32,6 +32,7 @@ fun FriendRoute(
     FriendContent(
         state = friendState,
         modifier = modifier,
+        friendViewModel = friendViewModel,
     )
 }
 
@@ -39,18 +40,30 @@ fun FriendRoute(
 fun FriendContent(
     state: FriendUiState,
     modifier: Modifier = Modifier,
+    friendViewModel: FriendViewModel = hiltViewModel(),
 ) {
     when (state) {
         FriendUiState.Loading -> HY2CircularLoading()
         is FriendUiState.Loaded ->
-            FriendScreen(
-                friends = state.friends,
-                selectedRecordFilterType = state.selectedRecordFilterType,
-                isNotificationOn = state.isNotificationOn,
-                onAddFriendClick = {},
-                onNotificationButtonClick = {},
-                onRecordFilterClick = {},
-                modifier = modifier,
-            )
+            if (state.friends.isEmpty()) {
+                EmptyFriendScreen(
+                    isNotificationOn = state.isNotificationOn,
+                    onNotificationClick = {},
+                    onAddFriendClick = {},
+                    modifier = modifier,
+                )
+            } else {
+                FriendScreen(
+                    friends = state.friends,
+                    selectedRecordFilterType = state.selectedRecordFilterType,
+                    isNotificationOn = state.isNotificationOn,
+                    onAddFriendClick = {},
+                    onNotificationButtonClick = {},
+                    onRecordFilterClick = { recordFilterType ->
+                        friendViewModel.sendIntent(FriendUiIntent.ChangeRecordFilterType(recordFilterType))
+                    },
+                    modifier = modifier,
+                )
+            }
     }
 }
