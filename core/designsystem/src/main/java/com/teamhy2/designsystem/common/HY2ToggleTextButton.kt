@@ -77,7 +77,7 @@ fun HY2ToggleTextButton(
                             color =
                                 Blue100.takeIf { activatedButton == ActivatedToggleButton.RIGHT }
                                     ?: Color.Transparent,
-                            shape = RoundedCornerShape(2.dp),
+                            shape = RoundedCornerShape(4.dp),
                         )
                         .weight(1f)
                         .fillMaxHeight(),
