@@ -4,7 +4,6 @@ import com.teamhy2.designsystem.util.mvi.MviViewModel
 import com.teamhy2.friend.domain.model.DateType
 import com.teamhy2.friend.domain.model.Friend
 import com.teamhy2.friend.domain.repository.FriendRepository
-import com.teamhy2.notification.domain.model.Notification
 import com.teamhy2.notification.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
@@ -54,6 +53,10 @@ class FriendViewModel
                         dateType = intent.recordFilterType.toDateType(),
                     )
                 }
+
+                FriendUiIntent.MarkNotificationsAsRead -> {
+                    markNotificationsAsRead(current)
+                }
             }
         }
 
@@ -65,12 +68,11 @@ class FriendViewModel
                 runCatching {
                     val friendsDeferred: Deferred<List<Friend>> =
                         async { friendRepository.fetchFriends(dateType).getOrThrow() }
-                    val notificationsDeferred: Deferred<List<Notification>> =
-                        async { notificationRepository.getNotifications().getOrThrow() }
+                    val hasUnreadNotificationsDeferred: Deferred<Boolean> =
+                        async { notificationRepository.hasUnreadNotifications().getOrThrow() }
 
                     val friends: List<Friend> = friendsDeferred.await()
-                    val notifications: List<Notification> = notificationsDeferred.await()
-                    val isNotificationOn = notifications.isNotEmpty()
+                    val isNotificationOn = hasUnreadNotificationsDeferred.await()
 
                     when (current) {
                         is FriendUiState.Loaded -> current.copy(isNotificationOn = isNotificationOn)
@@ -120,5 +122,26 @@ class FriendViewModel
                         current
                     },
                 )
+        }
+
+        private suspend fun markNotificationsAsRead(current: FriendUiState): FriendUiState {
+            return runCatching {
+                notificationRepository.markNotificationsAsRead().getOrThrow()
+
+                when (current) {
+                    is FriendUiState.Loaded -> current.copy(isNotificationOn = false)
+                    FriendUiState.Loading -> current
+                }
+            }.fold(
+                onSuccess = { it },
+                onFailure = {
+                    postSideEffect(
+                        FriendSideEffect.ShowSnackBar(
+                            it.message ?: "알 수 없는 오류가 발생했습니다.",
+                        ),
+                    )
+                    current
+                },
+            )
         }
     }
