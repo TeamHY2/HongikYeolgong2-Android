@@ -32,7 +32,7 @@ fun FriendRoute(
     FriendContent(
         state = friendState,
         modifier = modifier,
-        friendViewModel = friendViewModel,
+        onEvent = friendViewModel::sendIntent,
     )
 }
 
@@ -40,7 +40,7 @@ fun FriendRoute(
 fun FriendContent(
     state: FriendUiState,
     modifier: Modifier = Modifier,
-    friendViewModel: FriendViewModel = hiltViewModel(),
+    onEvent: (FriendUiIntent) -> Unit,
 ) {
     when (state) {
         FriendUiState.Loading -> HY2CircularLoading()
@@ -60,7 +60,7 @@ fun FriendContent(
                     onAddFriendClick = {},
                     onNotificationButtonClick = {},
                     onRecordFilterClick = { recordFilterType ->
-                        friendViewModel.sendIntent(FriendUiIntent.ChangeRecordFilterType(recordFilterType))
+                        onEvent(FriendUiIntent.ChangeRecordFilterType(recordFilterType))
                     },
                     modifier = modifier,
                 )
