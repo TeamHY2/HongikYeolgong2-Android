@@ -5,6 +5,6 @@ import com.benenfeldt.remote.dto.NotificationResponse
 import retrofit2.http.GET
 
 interface NotificationService {
-    @GET("/api/v2/notification")
+    @GET("/api/v2/notifications")
     suspend fun getNotifications(): Result<BaseResponse<List<NotificationResponse>>>
 }
