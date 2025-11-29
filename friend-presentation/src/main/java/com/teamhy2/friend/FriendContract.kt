@@ -8,7 +8,11 @@ import com.teamhy2.friend.domain.model.Friend
 sealed interface FriendUiState : UiState {
     data object Loading : FriendUiState
 
-    data class Loaded(val friends: List<Friend>) : FriendUiState
+    data class Loaded(
+        val selectedRecordFilterType: RecordFilterType,
+        val isNotificationOn: Boolean,
+        val friends: List<Friend>,
+    ) : FriendUiState
 }
 
 sealed interface FriendUiIntent : UiIntent {
@@ -17,4 +21,17 @@ sealed interface FriendUiIntent : UiIntent {
 
 sealed interface FriendSideEffect : SideEffect {
     data class ShowSnackBar(val message: String) : FriendSideEffect
+}
+
+enum class RecordFilterType {
+    MONTHLY,
+    DAILY,
+    ;
+
+    fun toggled(): RecordFilterType {
+        return when (this) {
+            MONTHLY -> DAILY
+            DAILY -> MONTHLY
+        }
+    }
 }

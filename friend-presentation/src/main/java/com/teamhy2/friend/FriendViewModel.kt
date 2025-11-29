@@ -23,7 +23,7 @@ class FriendViewModel
         private suspend fun fetchFriends(current: FriendUiState): FriendUiState {
             return friendRepository.fetchFriends()
                 .fold(
-                    onSuccess = { friends -> FriendUiState.Loaded(friends) },
+                    onSuccess = { friends -> FriendUiState.Loading },
                     onFailure = {
                         postSideEffect(FriendSideEffect.ShowSnackBar(it.message ?: "알 수 없는 오류가 발생했습니다."))
                         current
