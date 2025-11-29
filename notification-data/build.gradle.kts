@@ -9,4 +9,6 @@ android {
 dependencies {
     implementation(projects.notificationDomain)
     implementation(projects.core.remote)
+
+    implementation(libs.datastore.preferences)
 }
