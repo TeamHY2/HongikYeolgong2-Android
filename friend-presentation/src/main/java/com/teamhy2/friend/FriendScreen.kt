@@ -48,7 +48,9 @@ fun FriendContent(
             if (state.friends.isEmpty()) {
                 EmptyFriendScreen(
                     isNotificationOn = state.isNotificationOn,
-                    onNotificationClick = {},
+                    onNotificationClick = {
+                        onEvent(FriendUiIntent.MarkNotificationsAsRead)
+                    },
                     onAddFriendClick = {},
                     modifier = modifier,
                 )
@@ -58,7 +60,9 @@ fun FriendContent(
                     selectedRecordFilterType = state.selectedRecordFilterType,
                     isNotificationOn = state.isNotificationOn,
                     onAddFriendClick = {},
-                    onNotificationButtonClick = {},
+                    onNotificationButtonClick = {
+                        onEvent(FriendUiIntent.MarkNotificationsAsRead)
+                    },
                     onRecordFilterClick = { recordFilterType ->
                         onEvent(FriendUiIntent.ChangeRecordFilterType(recordFilterType))
                     },

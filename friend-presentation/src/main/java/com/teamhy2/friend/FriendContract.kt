@@ -20,6 +20,8 @@ sealed interface FriendUiIntent : UiIntent {
     data object EnterFriendScreen : FriendUiIntent
 
     data class ChangeRecordFilterType(val recordFilterType: RecordFilterType) : FriendUiIntent
+
+    data object MarkNotificationsAsRead : FriendUiIntent
 }
 
 sealed interface FriendSideEffect : SideEffect {
