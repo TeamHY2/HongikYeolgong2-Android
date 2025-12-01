@@ -9,6 +9,5 @@ android {
 dependencies {
     implementation(projects.friendDomain)
     implementation(projects.core.remote)
-    implementation(libs.retrofit.core)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(projects.mainDomain)
 }

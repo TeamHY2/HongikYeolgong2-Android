@@ -64,3 +64,6 @@ include(":user-domain")
 include(":friend-domain")
 include(":friend-data")
 include(":friend-presentation")
+
+include(":notification-domain")
+include(":notification-data")

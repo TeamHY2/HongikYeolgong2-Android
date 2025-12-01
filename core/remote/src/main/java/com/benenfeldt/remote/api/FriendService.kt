@@ -19,4 +19,9 @@ interface FriendService {
     suspend fun addFriend(
         @Body request: AddFriendRequest,
     ): Result<BaseResponse<AddFriendResponse>>
+
+    @GET("/api/v2/friends/study")
+    suspend fun getFriendsStudyTime(
+        @Query("dateType") dateType: String,
+    ): Result<BaseResponse<List<FriendStudyResponse>>>
 }
