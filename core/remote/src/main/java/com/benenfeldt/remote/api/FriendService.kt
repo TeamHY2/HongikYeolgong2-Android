@@ -4,6 +4,7 @@ import com.benenfeldt.remote.dto.AddFriendRequest
 import com.benenfeldt.remote.dto.AddFriendResponse
 import com.benenfeldt.remote.dto.BaseResponse
 import com.benenfeldt.remote.dto.FriendSearchResponse
+import com.benenfeldt.remote.dto.FriendStudyResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

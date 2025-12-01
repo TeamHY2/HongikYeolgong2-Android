@@ -1,6 +1,7 @@
 package com.teamhy2.friend.data.repository
 
 import com.benenfeldt.remote.api.FriendService
+import com.benenfeldt.remote.dto.AddFriendRequest
 import com.benenfeldt.remote.dto.FriendStudyResponse
 import com.benenfeldt.remote.mapper.toResult
 import com.teamhy2.friend.data.mapper.toDomain
