@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListItemInfo
+import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -56,45 +58,7 @@ internal fun FriendScreen(
     val listState = rememberLazyListState()
     val bottomDimAlpha by remember(listState) {
         derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItemsCount = layoutInfo.totalItemsCount
-            if (totalItemsCount == 0) {
-                0f
-            } else {
-                val lastVisibleItem =
-                    layoutInfo.visibleItemsInfo.lastOrNull() ?: return@derivedStateOf 0f
-                val maxIndex = totalItemsCount - 1
-                val viewportEnd = layoutInfo.viewportEndOffset
-
-                val isLastItemFullyVisible =
-                    lastVisibleItem.index == maxIndex &&
-                        lastVisibleItem.offset + lastVisibleItem.size <= viewportEnd
-                if (isLastItemFullyVisible) {
-                    0f
-                } else {
-                    val remainingItems = (maxIndex - lastVisibleItem.index).coerceAtLeast(0)
-                    val fadeThresholdItems = 3f
-                    val partialRemaining =
-                        if (lastVisibleItem.index == maxIndex) {
-                            val visibleHeight =
-                                (viewportEnd - lastVisibleItem.offset).coerceIn(
-                                    0,
-                                    lastVisibleItem.size,
-                                )
-                            val visibleFraction =
-                                if (lastVisibleItem.size == 0) {
-                                    1f
-                                } else {
-                                    visibleHeight / lastVisibleItem.size.toFloat()
-                                }
-                            (1f - visibleFraction).coerceIn(0f, 1f)
-                        } else {
-                            1f
-                        }
-                    val effectiveRemaining = remainingItems.toFloat() + partialRemaining
-                    (effectiveRemaining / fadeThresholdItems).coerceIn(0f, 1f)
-                }
-            }
+            calculateBottomDimAlpha(listState.layoutInfo)
         }
     }
 
@@ -184,6 +148,39 @@ internal fun FriendScreen(
                     .fillMaxWidth(),
         )
     }
+}
+
+private fun calculateBottomDimAlpha(layoutInfo: LazyListLayoutInfo): Float {
+    val totalItemsCount: Int = layoutInfo.totalItemsCount
+    if (totalItemsCount == 0) return 0f
+
+    val lastVisibleItem: LazyListItemInfo = layoutInfo.visibleItemsInfo.lastOrNull() ?: return 0f
+    val maxIndex = totalItemsCount - 1
+    val viewportEnd: Int = layoutInfo.viewportEndOffset
+
+    val isLastItemFullyVisible =
+        lastVisibleItem.index == maxIndex && lastVisibleItem.offset + lastVisibleItem.size <= viewportEnd
+    if (isLastItemFullyVisible) return 0f
+
+    val remainingItems: Int = (maxIndex - lastVisibleItem.index).coerceAtLeast(0)
+    val fadeThresholdItems = 3f
+    val partialRemaining =
+        if (lastVisibleItem.index == maxIndex) {
+            val visibleHeight =
+                (viewportEnd - lastVisibleItem.offset).coerceIn(0, lastVisibleItem.size)
+            val visibleFraction =
+                if (lastVisibleItem.size == 0) {
+                    1f
+                } else {
+                    visibleHeight / lastVisibleItem.size.toFloat()
+                }
+            (1f - visibleFraction).coerceIn(0f, 1f)
+        } else {
+            1f
+        }
+
+    val effectiveRemaining = remainingItems.toFloat() + partialRemaining
+    return (effectiveRemaining / fadeThresholdItems).coerceIn(0f, 1f)
 }
 
 private class FriendScreenPreviewParameterProvider : PreviewParameterProvider<List<Friend>> {
