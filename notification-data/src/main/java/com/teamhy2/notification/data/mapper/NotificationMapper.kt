@@ -20,9 +20,6 @@ fun NotificationResponse.toDomain(): Notification {
 private fun String.toNotificationType(): NotificationType {
     return when (uppercase()) {
         "REQUEST" -> NotificationType.REQUEST
-        "ACCEPT" -> NotificationType.ACCEPT
-        "REJECT" -> NotificationType.REJECT
-        "CANCEL" -> NotificationType.CANCEL
         else -> NotificationType.REQUEST
     }
 }
