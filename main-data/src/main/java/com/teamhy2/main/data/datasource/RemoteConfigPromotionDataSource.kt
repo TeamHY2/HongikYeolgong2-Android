@@ -12,38 +12,36 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
-class RemoteConfigPromotionDataSource
-    @Inject
-    constructor() : PromotionDataSource {
-        private val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+class RemoteConfigPromotionDataSource @Inject constructor() : PromotionDataSource {
+    private val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
 
-        init {
-            remoteConfig.setDefaultsAsync(DEFAULTS)
-        }
+    init {
+        remoteConfig.setDefaultsAsync(DEFAULTS)
+    }
 
-        override suspend fun fetchPromotionData(): Result<Promotion> {
-            return runCatching {
-                remoteConfig.fetchAndActivate().await()
-                val promotionDataJson: String = remoteConfig.getString(PROMOTION_POPUP_KEY)
-                val promotionDto: PromotionDto = Json.decodeFromString(promotionDataJson)
-                promotionDto.copy(
-                    isActive =
-                        DateUtil.isTodayWithinDateRange(
-                            startDateString = promotionDto.startDate,
-                            endDateString = promotionDto.endDate,
-                        ),
-                ).toDomain()
-            }
-        }
-
-        companion object {
-            const val PROMOTION_POPUP_KEY = "promotionPopup"
-            const val DEFAULT_PROMOTION_JSON =
-                """{"imageUrl":"","detailUrl":"","startDate":"","endDate":""}"""
-
-            val DEFAULTS =
-                mapOf(
-                    PROMOTION_POPUP_KEY to DEFAULT_PROMOTION_JSON,
-                )
+    override suspend fun fetchPromotionData(): Result<Promotion> {
+        return runCatching {
+            remoteConfig.fetchAndActivate().await()
+            val promotionDataJson: String = remoteConfig.getString(PROMOTION_POPUP_KEY)
+            val promotionDto: PromotionDto = Json.decodeFromString(promotionDataJson)
+            promotionDto.copy(
+                isActive =
+                    DateUtil.isTodayWithinDateRange(
+                        startDateString = promotionDto.startDate,
+                        endDateString = promotionDto.endDate,
+                    ),
+            ).toDomain()
         }
     }
+
+    companion object {
+        const val PROMOTION_POPUP_KEY = "promotionPopup"
+        const val DEFAULT_PROMOTION_JSON =
+            """{"imageUrl":"","detailUrl":"","startDate":"","endDate":""}"""
+
+        val DEFAULTS =
+            mapOf(
+                PROMOTION_POPUP_KEY to DEFAULT_PROMOTION_JSON,
+            )
+    }
+}

@@ -10,32 +10,30 @@ import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
-class RemoteCalendarStudyDayRepository
-    @Inject
-    constructor(
-        private val studyService: StudyService,
-    ) : CalendarStudyDayRepository {
-        private val cachedStudyDays: MutableMap<YearMonth, List<StudyDay>> = mutableMapOf()
-        private val cacheMutex: Mutex = Mutex()
+class RemoteCalendarStudyDayRepository @Inject constructor(
+    private val studyService: StudyService,
+) : CalendarStudyDayRepository {
+    private val cachedStudyDays: MutableMap<YearMonth, List<StudyDay>> = mutableMapOf()
+    private val cacheMutex: Mutex = Mutex()
 
-        override suspend fun updateCalendarStudyDay(): Result<Unit> {
-            return studyService.getCalendarStudyDay().map { response ->
-                val studyDays: List<StudyDay> = response.data.map { it.toDomain() }
-                cacheMutex.withLock {
-                    cachedStudyDays.clear()
-                    studyDays.forEach { studyDay ->
-                        val yearMonth: YearMonth = YearMonth.from(studyDay.date)
-                        cachedStudyDays[yearMonth] =
-                            cachedStudyDays.getOrDefault(yearMonth, emptyList()) + studyDay
-                    }
+    override suspend fun updateCalendarStudyDay(): Result<Unit> {
+        return studyService.getCalendarStudyDay().map { response ->
+            val studyDays: List<StudyDay> = response.data.map { it.toDomain() }
+            cacheMutex.withLock {
+                cachedStudyDays.clear()
+                studyDays.forEach { studyDay ->
+                    val yearMonth: YearMonth = YearMonth.from(studyDay.date)
+                    cachedStudyDays[yearMonth] =
+                        cachedStudyDays.getOrDefault(yearMonth, emptyList()) + studyDay
                 }
             }
         }
+    }
 
-        override suspend fun fetchStudyDaysForYearMonth(date: LocalDate): Result<List<StudyDay>> {
-            val yearMonth: YearMonth = YearMonth.from(date)
-            return cacheMutex.withLock {
-                Result.success(cachedStudyDays[yearMonth] ?: emptyList())
-            }
+    override suspend fun fetchStudyDaysForYearMonth(date: LocalDate): Result<List<StudyDay>> {
+        val yearMonth: YearMonth = YearMonth.from(date)
+        return cacheMutex.withLock {
+            Result.success(cachedStudyDays[yearMonth] ?: emptyList())
         }
     }
+}
