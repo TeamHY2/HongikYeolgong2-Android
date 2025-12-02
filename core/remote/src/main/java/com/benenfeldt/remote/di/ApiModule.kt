@@ -1,6 +1,8 @@
 package com.benenfeldt.remote.di
 
+import com.benenfeldt.remote.api.FriendService
 import com.benenfeldt.remote.api.LibraryService
+import com.benenfeldt.remote.api.NotificationService
 import com.benenfeldt.remote.api.StudyService
 import com.benenfeldt.remote.api.TokenService
 import com.benenfeldt.remote.api.UserPublicService
@@ -73,5 +75,21 @@ object ApiModule {
         @NeedAuthRetrofit retrofit: Retrofit,
     ): LibraryService {
         return retrofit.create(LibraryService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFriendService(
+        @NeedAuthRetrofit retrofit: Retrofit,
+    ): FriendService {
+        return retrofit.create(FriendService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNotificationService(
+        @NeedAuthRetrofit retrofit: Retrofit,
+    ): NotificationService {
+        return retrofit.create(NotificationService::class.java)
     }
 }

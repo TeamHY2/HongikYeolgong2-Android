@@ -81,6 +81,9 @@ dependencies {
     implementation(projects.userData)
     implementation(projects.userDomain)
 
+    implementation(projects.notificationData)
+    implementation(projects.notificationDomain)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.crashlytics)
     implementation(libs.firebase.analytics)

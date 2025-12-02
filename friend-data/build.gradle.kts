@@ -9,4 +9,5 @@ android {
 dependencies {
     implementation(projects.friendDomain)
     implementation(projects.core.remote)
+    implementation(projects.mainDomain)
 }
