@@ -10,23 +10,21 @@ import com.teamhy2.ranking.repository.RankingRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-class RemoteRankingRepository
-    @Inject
-    constructor(
-        private val weeklyService: WeeklyService,
-        private val studyService: StudyService,
-    ) : RankingRepository {
-        override suspend fun fetchWeekNumber(date: LocalDate): Result<WeekNumber> {
-            return weeklyService.getWeekNumber(date).toResult { baseResponse ->
-                baseResponse.data.toDomain()
-            }
-        }
-
-        override suspend fun fetchRanking(weekNumber: Int): Result<Ranking> {
-            return studyService.getRanking(weekNumber).toResult { baseResponse ->
-                baseResponse.data.toDomain().copy(
-                    departmentRankings = baseResponse.data.toDomain().departmentRankings,
-                )
-            }
+class RemoteRankingRepository @Inject constructor(
+    private val weeklyService: WeeklyService,
+    private val studyService: StudyService,
+) : RankingRepository {
+    override suspend fun fetchWeekNumber(date: LocalDate): Result<WeekNumber> {
+        return weeklyService.getWeekNumber(date).toResult { baseResponse ->
+            baseResponse.data.toDomain()
         }
     }
+
+    override suspend fun fetchRanking(weekNumber: Int): Result<Ranking> {
+        return studyService.getRanking(weekNumber).toResult { baseResponse ->
+            baseResponse.data.toDomain().copy(
+                departmentRankings = baseResponse.data.toDomain().departmentRankings,
+            )
+        }
+    }
+}
