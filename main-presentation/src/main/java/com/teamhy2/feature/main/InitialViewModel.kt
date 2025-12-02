@@ -22,83 +22,81 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class InitialViewModel
-    @Inject
-    constructor(
-        private val webViewRepository: WebViewRepository,
-        private val jwtManager: JwtManager,
-        private val tokenValidator: TokenValidator,
-    ) : ViewModel(), ContainerHost<InitialState, InitialSideEffect> {
-        override val container: Container<InitialState, InitialSideEffect> =
-            container(InitialState.Loading)
+class InitialViewModel @Inject constructor(
+    private val webViewRepository: WebViewRepository,
+    private val jwtManager: JwtManager,
+    private val tokenValidator: TokenValidator,
+) : ViewModel(), ContainerHost<InitialState, InitialSideEffect> {
+    override val container: Container<InitialState, InitialSideEffect> =
+        container(InitialState.Loading)
 
-        init {
-            initInitialState()
-        }
+    init {
+        initInitialState()
+    }
 
-        private fun initInitialState() =
-            intent {
-                runCatching {
-                    coroutineScope {
-                        val deferredStartDestination: Deferred<String> =
-                            async { getStartDestination() }
-                        val deferredUrls: Deferred<Map<String, String>> =
-                            async { webViewRepository.fetchFirebaseUrls() }
+    private fun initInitialState() =
+        intent {
+            runCatching {
+                coroutineScope {
+                    val deferredStartDestination: Deferred<String> =
+                        async { getStartDestination() }
+                    val deferredUrls: Deferred<Map<String, String>> =
+                        async { webViewRepository.fetchFirebaseUrls() }
 
-                        deferredStartDestination.await() to deferredUrls.await()
+                    deferredStartDestination.await() to deferredUrls.await()
+                }
+            }
+                .onSuccess { (startDestination, urls) ->
+                    reduce {
+                        InitialState.Success(
+                            startDestination = startDestination,
+                            urls = urls.toImmutableMap(),
+                        )
                     }
                 }
-                    .onSuccess { (startDestination, urls) ->
-                        reduce {
-                            InitialState.Success(
-                                startDestination = startDestination,
-                                urls = urls.toImmutableMap(),
-                            )
-                        }
-                    }
-                    .onFailure {
-                        postSideEffect(InitialSideEffect.ShowError(it))
-                    }
-            }
-
-        private suspend fun getStartDestination(): String {
-            jwtManager.getAccessJwt() ?: return resetToken()
-
-            val isValidToken = tokenValidator.validate().getOrNull() ?: return resetToken()
-
-            return when (isValidToken.role) {
-                TokenRole.USER -> Home.NAVIGATION_ROUTE
-                TokenRole.GUEST -> SignUp.ROUTE
-                TokenRole.ADMIN -> resetToken()
-            }
-        }
-
-        private suspend fun resetToken(): String {
-            jwtManager.clearAllTokens()
-            return Onboarding.ROUTE
-        }
-
-        fun getMinVersion(currentVersion: Long) =
-            intent {
-                val firebaseStore = FirebaseFirestore.getInstance()
-
-                runCatching {
-                    firebaseStore.collection(COLLECTION_APP_VERSION).document(DOCUMENT_ANDROID).get()
-                        .await()
+                .onFailure {
+                    postSideEffect(InitialSideEffect.ShowError(it))
                 }
-                    .onSuccess {
-                        val minVersion = it.get("minVersion")
-                        if (minVersion.toString().toLong() > currentVersion) {
-                            reduce { InitialState.NeedUpdate }
-                        }
-                    }
-                    .onFailure {
-                        Log.d("FireStore", "getMinVersion: ${it.message}")
-                    }
-            }
+        }
 
-        companion object {
-            private const val COLLECTION_APP_VERSION = "AppVersion"
-            private const val DOCUMENT_ANDROID = "Android"
+    private suspend fun getStartDestination(): String {
+        jwtManager.getAccessJwt() ?: return resetToken()
+
+        val isValidToken = tokenValidator.validate().getOrNull() ?: return resetToken()
+
+        return when (isValidToken.role) {
+            TokenRole.USER -> Home.NAVIGATION_ROUTE
+            TokenRole.GUEST -> SignUp.ROUTE
+            TokenRole.ADMIN -> resetToken()
         }
     }
+
+    private suspend fun resetToken(): String {
+        jwtManager.clearAllTokens()
+        return Onboarding.ROUTE
+    }
+
+    fun getMinVersion(currentVersion: Long) =
+        intent {
+            val firebaseStore = FirebaseFirestore.getInstance()
+
+            runCatching {
+                firebaseStore.collection(COLLECTION_APP_VERSION).document(DOCUMENT_ANDROID).get()
+                    .await()
+            }
+                .onSuccess {
+                    val minVersion = it.get("minVersion")
+                    if (minVersion.toString().toLong() > currentVersion) {
+                        reduce { InitialState.NeedUpdate }
+                    }
+                }
+                .onFailure {
+                    Log.d("FireStore", "getMinVersion: ${it.message}")
+                }
+        }
+
+    companion object {
+        private const val COLLECTION_APP_VERSION = "AppVersion"
+        private const val DOCUMENT_ANDROID = "Android"
+    }
+}
