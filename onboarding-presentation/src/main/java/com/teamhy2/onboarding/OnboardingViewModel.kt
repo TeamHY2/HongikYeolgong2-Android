@@ -10,40 +10,38 @@ import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel
-    @Inject
-    constructor(
-        private val userRepository: UserRepository,
-    ) : ViewModel(), ContainerHost<OnboardingState, OnboardingSideEffect> {
-        override val container: Container<OnboardingState, OnboardingSideEffect> =
-            container(OnboardingState)
+class OnboardingViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+) : ViewModel(), ContainerHost<OnboardingState, OnboardingSideEffect> {
+    override val container: Container<OnboardingState, OnboardingSideEffect> =
+        container(OnboardingState)
 
-        fun signInWithGoogleIdToken(googleSignIn: GoogleSignIn) =
-            intent {
-                googleSignIn.requestSignInWithIdToken()
-                    .onSuccess { idToken: String ->
-                        requestSignInToServerWithIdToken(idToken)
-                    }
-                    .onFailure { throwable ->
-                        postSideEffect(
-                            OnboardingSideEffect.ShowError(throwable.message),
-                        )
-                    }
-            }
+    fun signInWithGoogleIdToken(googleSignIn: GoogleSignIn) =
+        intent {
+            googleSignIn.requestSignInWithIdToken()
+                .onSuccess { idToken: String ->
+                    requestSignInToServerWithIdToken(idToken)
+                }
+                .onFailure { throwable ->
+                    postSideEffect(
+                        OnboardingSideEffect.ShowError(throwable.message),
+                    )
+                }
+        }
 
-        private fun requestSignInToServerWithIdToken(idToken: String) =
-            intent {
-                userRepository.signIn(idToken)
-                    .onSuccess { isAlreadyExist ->
-                        when (isAlreadyExist) {
-                            true -> postSideEffect(OnboardingSideEffect.NavigateToHome)
-                            false -> postSideEffect(OnboardingSideEffect.NavigateToSignIn)
-                        }
+    private fun requestSignInToServerWithIdToken(idToken: String) =
+        intent {
+            userRepository.signIn(idToken)
+                .onSuccess { isAlreadyExist ->
+                    when (isAlreadyExist) {
+                        true -> postSideEffect(OnboardingSideEffect.NavigateToHome)
+                        false -> postSideEffect(OnboardingSideEffect.NavigateToSignIn)
                     }
-                    .onFailure { throwable ->
-                        postSideEffect(
-                            OnboardingSideEffect.ShowError(throwable.message),
-                        )
-                    }
-            }
-    }
+                }
+                .onFailure { throwable ->
+                    postSideEffect(
+                        OnboardingSideEffect.ShowError(throwable.message),
+                    )
+                }
+        }
+}

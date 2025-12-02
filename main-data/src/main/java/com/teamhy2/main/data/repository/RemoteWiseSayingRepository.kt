@@ -7,14 +7,12 @@ import com.teamhy2.main.domain.model.WiseSaying
 import com.teamhy2.main.domain.repository.WiseSayingRepository
 import javax.inject.Inject
 
-class RemoteWiseSayingRepository
-    @Inject
-    constructor(
-        private val wiseSayingService: WiseSayingService,
-    ) : WiseSayingRepository {
-        override suspend fun fetchWiseSaying(): Result<WiseSaying> {
-            return wiseSayingService.getWiseSaying().toResult { baseResponse ->
-                baseResponse.data.toDomain()
-            }
+class RemoteWiseSayingRepository @Inject constructor(
+    private val wiseSayingService: WiseSayingService,
+) : WiseSayingRepository {
+    override suspend fun fetchWiseSaying(): Result<WiseSaying> {
+        return wiseSayingService.getWiseSaying().toResult { baseResponse ->
+            baseResponse.data.toDomain()
         }
     }
+}

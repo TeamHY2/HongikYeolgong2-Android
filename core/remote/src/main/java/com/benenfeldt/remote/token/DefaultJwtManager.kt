@@ -8,11 +8,9 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class DefaultJwtManager
-    @Inject
-    constructor(
-        private val dataStore: DataStore<Preferences>,
-    ) :
+class DefaultJwtManager @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
+) :
     JwtManager {
         override suspend fun saveAccessJwt(token: String) {
             dataStore.edit { preferences ->

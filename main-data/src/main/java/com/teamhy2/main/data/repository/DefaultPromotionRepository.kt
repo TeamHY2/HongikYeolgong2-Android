@@ -8,24 +8,22 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import javax.inject.Inject
 
-class DefaultPromotionRepository
-    @Inject
-    constructor(
-        private val dataSource: PromotionDataSource,
-        private val dataStore: PromotionDataStore,
-    ) : PromotionRepository {
-        override val isPromotionDismissed: Flow<Boolean>
-            get() = dataStore.isPromotionDismissed
+class DefaultPromotionRepository @Inject constructor(
+    private val dataSource: PromotionDataSource,
+    private val dataStore: PromotionDataStore,
+) : PromotionRepository {
+    override val isPromotionDismissed: Flow<Boolean>
+        get() = dataStore.isPromotionDismissed
 
-        override suspend fun fetchPromotionData(): Result<Promotion> {
-            return dataSource.fetchPromotionData()
-        }
-
-        override suspend fun savePromotionDismissPeriod(
-            startDate: LocalDate,
-            endDate: LocalDate,
-        ): Result<Unit> =
-            runCatching {
-                dataStore.savePromotionDismissPeriod(startDate, endDate)
-            }
+    override suspend fun fetchPromotionData(): Result<Promotion> {
+        return dataSource.fetchPromotionData()
     }
+
+    override suspend fun savePromotionDismissPeriod(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Result<Unit> =
+        runCatching {
+            dataStore.savePromotionDismissPeriod(startDate, endDate)
+        }
+}

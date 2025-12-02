@@ -13,25 +13,23 @@ private const val PREFERENCES_NAME = "settings_prefs"
 
 private val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 
-class LocalSettingsDataSource
-    @Inject
-    constructor(
-        @ApplicationContext private val context: Context,
-    ) {
-        val notificationSwitchState: Flow<Boolean> =
-            context.dataStore.data
-                .map { preferences ->
-                    preferences[NOTIFICATION_SWITCH_STATE_KEY] ?: true
-                }
-
-        suspend fun saveNotificationSwitchState(isChecked: Boolean) {
-            context.dataStore.edit { preferences ->
-                preferences[NOTIFICATION_SWITCH_STATE_KEY] = isChecked
+class LocalSettingsDataSource @Inject constructor(
+    @ApplicationContext private val context: Context,
+) {
+    val notificationSwitchState: Flow<Boolean> =
+        context.dataStore.data
+            .map { preferences ->
+                preferences[NOTIFICATION_SWITCH_STATE_KEY] ?: true
             }
-        }
 
-        companion object {
-            private val NOTIFICATION_SWITCH_STATE_KEY =
-                booleanPreferencesKey("notification_switch_state")
+    suspend fun saveNotificationSwitchState(isChecked: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[NOTIFICATION_SWITCH_STATE_KEY] = isChecked
         }
     }
+
+    companion object {
+        private val NOTIFICATION_SWITCH_STATE_KEY =
+            booleanPreferencesKey("notification_switch_state")
+    }
+}

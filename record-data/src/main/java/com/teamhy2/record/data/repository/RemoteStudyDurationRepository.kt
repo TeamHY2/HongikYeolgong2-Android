@@ -8,14 +8,12 @@ import com.teamhy2.record.domain.repository.StudyDurationRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-class RemoteStudyDurationRepository
-    @Inject
-    constructor(
-        private val studyService: StudyService,
-    ) : StudyDurationRepository {
-        override suspend fun fetchStudyDuration(date: LocalDate?): Result<StudyDuration> {
-            return studyService.getStudyDuration(date?.toString()).toResult { baseResponse ->
-                baseResponse.data.toDomain()
-            }
+class RemoteStudyDurationRepository @Inject constructor(
+    private val studyService: StudyService,
+) : StudyDurationRepository {
+    override suspend fun fetchStudyDuration(date: LocalDate?): Result<StudyDuration> {
+        return studyService.getStudyDuration(date?.toString()).toResult { baseResponse ->
+            baseResponse.data.toDomain()
         }
     }
+}
