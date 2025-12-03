@@ -8,6 +8,8 @@ data class FriendSearchResponse(
     @SerialName("userId") val userId: Long,
     @SerialName("nickname") val nickname: String,
     @SerialName("friendStatus") val friendStatus: FriendStatusResponse,
+    @SerialName("canSendRequest") val canSendRequest: Boolean,
+    @SerialName("canCancelRequest") val canCancelRequest: Boolean,
 )
 
 @Serializable

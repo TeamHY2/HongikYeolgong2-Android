@@ -27,23 +27,23 @@ import com.teamhy2.friend.domain.model.FriendStatus
 
 @Composable
 fun SearchResultItem(
+    modifier: Modifier = Modifier,
     nickname: String,
     status: FriendStatus,
-    modifier: Modifier = Modifier,
-    onStatusButtonClick: ((FriendStatus) -> Unit)? = null,
+    onStatusButtonClick: ((FriendStatus) -> Unit),
 ) {
     val friendRequestStatusButtonBackgroundColor =
         when (status) {
             FriendStatus.NONE -> Blue100
             FriendStatus.PENDING -> Gray400
-            else -> Blue100
+            else -> Gray400
         }
 
     val friendRequestStatusButtonTextColor =
         when (status) {
             FriendStatus.NONE -> White
             FriendStatus.PENDING -> Gray200
-            else -> White
+            else -> Gray200
         }
 
     val friendRequestStatusButtonText =
@@ -67,33 +67,29 @@ fun SearchResultItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        Box(
-            modifier =
-                Modifier
-                    .width(80.dp)
-                    .height(32.dp)
-                    .background(
-                        color = friendRequestStatusButtonBackgroundColor,
-                        shape = RoundedCornerShape(4.dp),
-                    )
-                    .let { base ->
-                        if (onStatusButtonClick != null) {
-                            base.clickable(enabled = status == FriendStatus.NONE) {
-                                onStatusButtonClick(
-                                    status,
-                                )
-                            }
-                        } else {
-                            base
-                        }
-                    },
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = friendRequestStatusButtonText,
-                style = HY2Theme.typography.body07,
-                color = friendRequestStatusButtonTextColor,
-            )
+        if (status == FriendStatus.NONE || status == FriendStatus.PENDING) {
+            Box(
+                modifier =
+                    Modifier
+                        .width(80.dp)
+                        .height(32.dp)
+                        .background(
+                            color = friendRequestStatusButtonBackgroundColor,
+                            shape = RoundedCornerShape(4.dp),
+                        )
+                        .clickable {
+                            onStatusButtonClick(status)
+                        },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = friendRequestStatusButtonText,
+                    style = HY2Theme.typography.body07,
+                    color = friendRequestStatusButtonTextColor,
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -112,6 +108,12 @@ private fun PreviewSearchResultItem() {
             SearchResultItem(
                 nickname = "말하는감자",
                 status = FriendStatus.PENDING,
+                onStatusButtonClick = { _ -> },
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            SearchResultItem(
+                nickname = "이미친구",
+                status = FriendStatus.ACCEPTED,
                 onStatusButtonClick = { _ -> },
             )
         }

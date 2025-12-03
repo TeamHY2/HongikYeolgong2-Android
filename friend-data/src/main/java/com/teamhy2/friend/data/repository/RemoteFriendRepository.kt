@@ -2,6 +2,7 @@ package com.teamhy2.friend.data.repository
 
 import com.benenfeldt.remote.api.FriendService
 import com.benenfeldt.remote.dto.AddFriendRequest
+import com.benenfeldt.remote.dto.CancelFriendRequest
 import com.benenfeldt.remote.dto.FriendStudyResponse
 import com.benenfeldt.remote.mapper.toResult
 import com.teamhy2.friend.data.mapper.toDomain
@@ -31,4 +32,7 @@ class RemoteFriendRepository
         override suspend fun addNewFriend(receiverId: Long): Result<FriendStatus> =
             friendService.addFriend(AddFriendRequest(receiverId))
                 .toResult { it.data.friendStatus.toDomain() }
+
+        override suspend fun cancelFriendRequest(cancelUserId: Long): Result<Unit> =
+            friendService.cancelFriend(CancelFriendRequest(cancelUserId)).toResult()
     }

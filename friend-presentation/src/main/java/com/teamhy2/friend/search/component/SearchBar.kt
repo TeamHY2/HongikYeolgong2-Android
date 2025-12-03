@@ -40,7 +40,6 @@ fun SearchBar(
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
     onBackClick: () -> Unit,
-    hintText: String,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -80,7 +79,7 @@ fun SearchBar(
                 shape = RoundedCornerShape(8.dp),
                 placeholder = {
                     Text(
-                        text = hintText,
+                        text = "친구를 검색해보세요",
                         style = HY2Theme.typography.body05,
                         color = Gray300,
                     )
@@ -127,7 +126,6 @@ private fun PreviewSearchBar() {
             onQueryChange = { text = it },
             onClearQuery = { text = "" },
             onBackClick = {},
-            hintText = "친구를 검색해보세요",
         )
     }
 }
