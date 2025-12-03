@@ -13,15 +13,12 @@ import com.teamhy2.friend.domain.model.SearchedFriend
 import com.teamhy2.friend.domain.repository.FriendRepository
 import javax.inject.Inject
 
-class RemoteFriendRepository
-    @Inject
-    constructor(
-        private val friendService: FriendService,
-    ) : FriendRepository {
-        override suspend fun fetchFriends(dateType: DateType): Result<List<Friend>> {
-            return friendService.getFriendsStudyTime(dateType.name).toResult { baseResponse ->
-                baseResponse.data.map(FriendStudyResponse::toDomain)
-            }
+class RemoteFriendRepository @Inject constructor(
+    private val friendService: FriendService,
+) : FriendRepository {
+    override suspend fun fetchFriends(dateType: DateType): Result<List<Friend>> {
+        return friendService.getFriendsStudyTime(dateType.name).toResult { baseResponse ->
+            baseResponse.data.map(FriendStudyResponse::toDomain)
         }
 
         override suspend fun searchFriends(nickname: String): Result<List<SearchedFriend>> =
@@ -36,3 +33,4 @@ class RemoteFriendRepository
         override suspend fun cancelFriendRequest(cancelUserId: Long): Result<Unit> =
             friendService.cancelFriend(CancelFriendRequest(cancelUserId)).toResult()
     }
+}
