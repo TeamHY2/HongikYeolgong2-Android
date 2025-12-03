@@ -8,8 +8,8 @@ data class NotificationResponse(
     val type: String,
     val content: String,
     val receivedAt: String,
-    val friendId: Long?,
+    val friendId: Long,
     val receiverId: Long,
-    val senderId: Long?,
-    val senderNickname: String?,
+    val senderId: Long,
+    val senderNickname: String,
 )

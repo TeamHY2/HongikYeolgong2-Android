@@ -13,9 +13,9 @@ import com.teamhy2.main.domain.model.WeeklyStudyDay
 import com.teamhy2.main.domain.repository.StudyRepository
 import javax.inject.Inject
 
-class RemoteStudyRepository
-    @Inject
-    constructor(private val studyService: StudyService) :
+class RemoteStudyRepository @Inject constructor(
+    private val studyService: StudyService,
+) :
     StudyRepository {
         override suspend fun fetchWeeklyStudyDay(): Result<List<WeeklyStudyDay>> {
             return studyService.getWeeklyStudyDay().toResult {

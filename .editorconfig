@@ -7,3 +7,5 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 ktlint_function_naming_ignore_when_annotated_with=Composable, Test
+# Keep @Inject constructor on the same line (see issue #220 / ktlint#2138)
+ktlint_standard_annotation=disabled

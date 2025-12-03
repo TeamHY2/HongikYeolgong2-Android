@@ -15,107 +15,105 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class RecordViewModel
-    @Inject
-    constructor(
-        private val studyDurationRepository: StudyDurationRepository,
-        private val calendarStudyDayRepository: CalendarStudyDayRepository,
-    ) : ViewModel(), ContainerHost<RecordState, RecordSideEffect> {
-        override val container: Container<RecordState, RecordSideEffect> =
-            container(RecordState(isLoading = true, studyDuration = StudyDuration.DEFAULT))
+class RecordViewModel @Inject constructor(
+    private val studyDurationRepository: StudyDurationRepository,
+    private val calendarStudyDayRepository: CalendarStudyDayRepository,
+) : ViewModel(), ContainerHost<RecordState, RecordSideEffect> {
+    override val container: Container<RecordState, RecordSideEffect> =
+        container(RecordState(isLoading = true, studyDuration = StudyDuration.DEFAULT))
 
-        fun fetchStudyDuration() =
-            intent {
-                reduce { state.copy(isLoading = true) }
+    fun fetchStudyDuration() =
+        intent {
+            reduce { state.copy(isLoading = true) }
 
-                studyDurationRepository.fetchStudyDuration()
-                    .onSuccess { studyDuration ->
-                        reduce { state.copy(isLoading = false, studyDuration = studyDuration) }
-                    }
-                    .onFailure {
-                        reduce { state.copy(isLoading = false) }
-                        postSideEffect(RecordSideEffect.ShowError(it))
-                    }
-            }
+            studyDurationRepository.fetchStudyDuration()
+                .onSuccess { studyDuration ->
+                    reduce { state.copy(isLoading = false, studyDuration = studyDuration) }
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(RecordSideEffect.ShowError(it))
+                }
+        }
 
-        fun fetchCalendar() =
-            intent {
-                reduce { state.copy(isLoading = true) }
-                calendarStudyDayRepository.updateCalendarStudyDay()
-                    .onSuccess {
-                        calendarStudyDayRepository.fetchStudyDaysForYearMonth(LocalDate.now())
-                            .onSuccess { calendarStudyDays ->
-                                reduce {
-                                    state.copy(
-                                        isLoading = false,
-                                        calendar = Calendar(studyDays = calendarStudyDays),
-                                    )
-                                }
+    fun fetchCalendar() =
+        intent {
+            reduce { state.copy(isLoading = true) }
+            calendarStudyDayRepository.updateCalendarStudyDay()
+                .onSuccess {
+                    calendarStudyDayRepository.fetchStudyDaysForYearMonth(LocalDate.now())
+                        .onSuccess { calendarStudyDays ->
+                            reduce {
+                                state.copy(
+                                    isLoading = false,
+                                    calendar = Calendar(studyDays = calendarStudyDays),
+                                )
                             }
-                            .onFailure {
-                                reduce { state.copy(isLoading = false) }
-                                postSideEffect(RecordSideEffect.ShowError(it))
-                            }
-                    }
-                    .onFailure {
-                        reduce { state.copy(isLoading = false) }
-                        postSideEffect(RecordSideEffect.ShowError(it))
-                    }
-            }
-
-        fun updateCalendarMonth(isNextMonth: Boolean) =
-            intent {
-                reduce { state.copy(isLoading = true, selectedStudyDay = null) }
-                val updatedCalendar =
-                    state.calendar.apply {
-                        if (isNextMonth) moveToNextMonth() else moveToPreviousMonth()
-                    }
-
-                calendarStudyDayRepository.fetchStudyDaysForYearMonth(updatedCalendar.date)
-                    .onSuccess { studyDays ->
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                calendar = updatedCalendar.copy(studyDays = studyDays),
-                            )
                         }
-                    }
-                    .onFailure {
-                        reduce { state.copy(isLoading = false) }
-                        postSideEffect(RecordSideEffect.ShowError(it))
-                    }
-            }
+                        .onFailure {
+                            reduce { state.copy(isLoading = false) }
+                            postSideEffect(RecordSideEffect.ShowError(it))
+                        }
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(RecordSideEffect.ShowError(it))
+                }
+        }
 
-        fun updateSelectedStudyDay(studyDay: StudyDay?) =
-            intent {
-                if (studyDay == null) {
-                    reduce { state.copy(selectedStudyDay = null) }
-                    return@intent
+    fun updateCalendarMonth(isNextMonth: Boolean) =
+        intent {
+            reduce { state.copy(isLoading = true, selectedStudyDay = null) }
+            val updatedCalendar =
+                state.calendar.apply {
+                    if (isNextMonth) moveToNextMonth() else moveToPreviousMonth()
                 }
 
-                studyDurationRepository.fetchStudyDuration(studyDay.date)
-                    .onSuccess { studyDuration ->
-                        reduce {
-                            state.copy(
-                                selectedStudyDay =
-                                    SelectedStudyDay(
-                                        studyDay = studyDay,
-                                        formattedDate = studyDay.date.toFormattedString(),
-                                        studyDuration = studyDuration,
-                                    ),
-                            )
-                        }
+            calendarStudyDayRepository.fetchStudyDaysForYearMonth(updatedCalendar.date)
+                .onSuccess { studyDays ->
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            calendar = updatedCalendar.copy(studyDays = studyDays),
+                        )
                     }
-                    .onFailure {
-                        postSideEffect(RecordSideEffect.ShowError(it))
-                    }
+                }
+                .onFailure {
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(RecordSideEffect.ShowError(it))
+                }
+        }
+
+    fun updateSelectedStudyDay(studyDay: StudyDay?) =
+        intent {
+            if (studyDay == null) {
+                reduce { state.copy(selectedStudyDay = null) }
+                return@intent
             }
 
-        fun handleImageSaveResult(isSuccess: Boolean) =
-            intent {
-                when (isSuccess) {
-                    true -> postSideEffect(RecordSideEffect.ShowSnackBar("이미지가 저장되었습니다."))
-                    false -> postSideEffect(RecordSideEffect.ShowToast("이미지 저장에 실패했습니다. 다시 시도해주세요."))
+            studyDurationRepository.fetchStudyDuration(studyDay.date)
+                .onSuccess { studyDuration ->
+                    reduce {
+                        state.copy(
+                            selectedStudyDay =
+                                SelectedStudyDay(
+                                    studyDay = studyDay,
+                                    formattedDate = studyDay.date.toFormattedString(),
+                                    studyDuration = studyDuration,
+                                ),
+                        )
+                    }
                 }
+                .onFailure {
+                    postSideEffect(RecordSideEffect.ShowError(it))
+                }
+        }
+
+    fun handleImageSaveResult(isSuccess: Boolean) =
+        intent {
+            when (isSuccess) {
+                true -> postSideEffect(RecordSideEffect.ShowSnackBar("이미지가 저장되었습니다."))
+                false -> postSideEffect(RecordSideEffect.ShowToast("이미지 저장에 실패했습니다. 다시 시도해주세요."))
             }
-    }
+        }
+}
