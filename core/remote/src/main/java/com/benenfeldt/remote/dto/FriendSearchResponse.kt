@@ -23,6 +23,9 @@ enum class FriendStatusResponse {
     @SerialName("REJECTED")
     REJECTED,
 
+    @SerialName("CANCELED")
+    CANCELED,
+
     @SerialName("NONE")
     NONE,
 }
