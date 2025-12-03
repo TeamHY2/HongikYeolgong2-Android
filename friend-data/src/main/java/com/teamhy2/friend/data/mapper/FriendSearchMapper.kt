@@ -27,4 +27,5 @@ internal fun FriendStatusResponse.toDomain(): FriendStatus =
         FriendStatusResponse.ACCEPTED -> FriendStatus.ACCEPTED
         FriendStatusResponse.REJECTED -> FriendStatus.REJECTED
         FriendStatusResponse.NONE -> FriendStatus.NONE
+        FriendStatusResponse.CANCELED -> FriendStatus.CANCELED
     }

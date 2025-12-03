@@ -8,24 +8,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
-import kotlinx.coroutines.launch
 
 @Composable
 fun FriendRoute(
     modifier: Modifier = Modifier,
     onAddFriendClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     friendViewModel: FriendViewModel = hiltViewModel(),
 ) {
     val friendState: FriendUiState by friendViewModel.uiState.collectAsStateWithLifecycle()
-    val localShowSnackBar = LocalShowSnackBar.current
+    val showSnackBar = LocalShowSnackBar.current
 
     LaunchedEffect(Unit) {
         friendViewModel.sendIntent(FriendUiIntent.EnterFriendScreen)
-        launch {
-            friendViewModel.sideEffect.collect { sideEffect ->
-                when (sideEffect) {
-                    is FriendSideEffect.ShowSnackBar -> localShowSnackBar.showSnackBar(sideEffect.message)
-                }
+        friendViewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is FriendSideEffect.ShowSnackBar -> showSnackBar.showSnackBar(effect.message)
             }
         }
     }
@@ -34,6 +32,7 @@ fun FriendRoute(
         state = friendState,
         modifier = modifier,
         onAddFriendClick = onAddFriendClick,
+        onNotificationClick = onNotificationClick,
         onEvent = friendViewModel::sendIntent,
     )
 }
@@ -43,6 +42,7 @@ fun FriendContent(
     state: FriendUiState,
     modifier: Modifier = Modifier,
     onAddFriendClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     onEvent: (FriendUiIntent) -> Unit,
 ) {
     when (state) {
@@ -53,6 +53,7 @@ fun FriendContent(
                     isNotificationOn = state.isNotificationOn,
                     onNotificationClick = {
                         onEvent(FriendUiIntent.MarkNotificationsAsRead)
+                        onNotificationClick()
                     },
                     onAddFriendClick = onAddFriendClick,
                     modifier = modifier,
@@ -62,9 +63,10 @@ fun FriendContent(
                     friends = state.friends,
                     selectedRecordFilterType = state.selectedRecordFilterType,
                     isNotificationOn = state.isNotificationOn,
-                    onAddFriendClick = {},
+                    onAddFriendClick = onAddFriendClick,
                     onNotificationButtonClick = {
                         onEvent(FriendUiIntent.MarkNotificationsAsRead)
+                        onNotificationClick()
                     },
                     onRecordFilterClick = { recordFilterType ->
                         onEvent(FriendUiIntent.ChangeRecordFilterType(recordFilterType))
