@@ -23,13 +23,14 @@ import com.teamhy2.friend.domain.model.FriendStatus
 import com.teamhy2.friend.search.component.SearchBar
 import com.teamhy2.friend.search.component.SearchResultItem
 import com.teamhy2.friend.search.model.SearchResultItemUiModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun FriendSearchRoute(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onNavigateToFriend: () -> Unit = onBackClick,
-    hintText: String = "친구를 검색해보세요",
     viewModel: FriendSearchViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -50,7 +51,6 @@ fun FriendSearchRoute(
         onClearQuery = viewModel::clearQuery,
         onBackClick = viewModel::onBackClicked,
         onStatusButtonClick = viewModel::onFriendStatusButtonClick,
-        hintText = hintText,
         results = uiState.results,
         modifier = modifier,
     )
@@ -60,12 +60,11 @@ fun FriendSearchRoute(
 fun FriendSearchScreen(
     modifier: Modifier = Modifier,
     query: String,
-    results: List<SearchResultItemUiModel>,
+    results: ImmutableList<SearchResultItemUiModel>,
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
     onBackClick: () -> Unit,
     onStatusButtonClick: (Long, String, FriendStatus) -> Unit = { _, _, _ -> },
-    hintText: String,
 ) {
     Column(
         modifier =
@@ -78,7 +77,6 @@ fun FriendSearchScreen(
             onQueryChange = onQueryChange,
             onClearQuery = onClearQuery,
             onBackClick = onBackClick,
-            hintText = hintText,
         )
         Spacer(modifier = Modifier.height(24.dp))
         LazyColumn(
@@ -89,13 +87,13 @@ fun FriendSearchScreen(
         ) {
             items(results) { item ->
                 SearchResultItem(
-                    nickname = item.nickname,
+                    nickname = item.friend.nickname,
                     status = item.friendStatus,
                     modifier = Modifier.fillMaxWidth(),
                     onStatusButtonClick = { status ->
                         onStatusButtonClick(
-                            item.userId,
-                            item.nickname,
+                            item.friend.userId,
+                            item.friend.nickname,
                             status,
                         )
                     },
@@ -114,8 +112,7 @@ private fun PreviewFriendSearchScreen_Empty() {
             onQueryChange = {},
             onClearQuery = {},
             onBackClick = {},
-            hintText = "친구를 검색해보세요",
-            results = emptyList(),
+            results = persistentListOf(),
         )
     }
 }
@@ -125,24 +122,11 @@ private fun PreviewFriendSearchScreen_Empty() {
 private fun PreviewFriendSearchScreen_Loaded() {
     HY2Theme {
         FriendSearchScreen(
-            query = "말",
+            query = "Android",
             onQueryChange = {},
             onClearQuery = {},
             onBackClick = {},
-            hintText = "친구를 검색해보세요",
-            results =
-                listOf(
-                    SearchResultItemUiModel(
-                        userId = 1,
-                        nickname = "말하는감자",
-                        friendStatus = FriendStatus.NONE,
-                    ),
-                    SearchResultItemUiModel(
-                        userId = 2,
-                        nickname = "말하는감자",
-                        friendStatus = FriendStatus.PENDING,
-                    ),
-                ),
+            results = persistentListOf(),
         )
     }
 }
