@@ -64,7 +64,7 @@ fun FriendSearchScreen(
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
     onBackClick: () -> Unit,
-    onStatusButtonClick: (Long, String, FriendStatus) -> Unit = { _, _, _ -> },
+    onStatusButtonClick: (userId: Long, userNickname: String, friendStatus: FriendStatus) -> Unit = { _, _, _ -> },
 ) {
     Column(
         modifier =
