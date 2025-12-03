@@ -103,7 +103,7 @@ fun FriendSearchScreen(
     }
 }
 
-@Preview(name = "ScreenPreview")
+@Preview(name = "FriendSearchScreen - Empty")
 @Composable
 private fun PreviewFriendSearchScreen_Empty() {
     HY2Theme {
