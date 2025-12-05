@@ -134,9 +134,9 @@ fun FriendNotificationContent(
     }
 }
 
-@Preview(name = "FriendNotificationScreen - Loaded")
+@Preview
 @Composable
-private fun PreviewFriendNotificationScreen_Loaded() {
+private fun FriendNotificationLoadedScreenPreview() {
     HY2Theme {
         FriendNotificationScreen(
             notifications =
