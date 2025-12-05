@@ -42,59 +42,7 @@ class FriendSearchViewModel
         private var requestAvailability: Map<Long, RequestAvailability> = emptyMap()
 
         init {
-            viewModelScope.launch {
-                uiState
-                    .map { it.query }
-                    .debounce(1000)
-                    .distinctUntilChanged()
-                    .collect { nickname ->
-                        if (nickname.isBlank()) {
-                            requestAvailability = emptyMap()
-                            _uiState.update {
-                                it.copy(results = persistentListOf(), isLoading = false)
-                            }
-                        } else {
-                            _uiState.update { it.copy(isLoading = true) }
-                            repository.searchFriends(nickname = nickname)
-                                .onSuccess { list ->
-                                    requestAvailability =
-                                        list.associate { item ->
-                                            item.friend.userId to
-                                                RequestAvailability(
-                                                    canSendRequest = item.canSendRequest,
-                                                    canCancelRequest = item.canCancelRequest,
-                                                )
-                                        }
-                                    _uiState.update {
-                                        it.copy(
-                                            results =
-                                                list.map { item ->
-                                                    SearchResultItemUiModel(
-                                                        friend = item.friend,
-                                                        friendStatus = item.friendStatus,
-                                                    )
-                                                }.toImmutableList(),
-                                            isLoading = false,
-                                        )
-                                    }
-                                }
-                                .onFailure { e ->
-                                    requestAvailability = emptyMap()
-                                    _uiState.update {
-                                        it.copy(
-                                            results = persistentListOf(),
-                                            isLoading = false,
-                                        )
-                                    }
-                                    _effect.send(
-                                        FriendSearchEffect.ShowSnackBar(
-                                            e.message ?: "알 수 없는 오류가 발생했습니다.",
-                                        ),
-                                    )
-                                }
-                        }
-                    }
-            }
+            observeQueryChanges()
         }
 
         fun onQueryChange(value: String) {
@@ -188,5 +136,62 @@ class FriendSearchViewModel
                         )
                     }
             }
+        }
+
+        private fun observeQueryChanges() {
+            viewModelScope.launch {
+                uiState
+                    .map { it.query }
+                    .debounce(1000)
+                    .distinctUntilChanged()
+                    .collect(::handleQuery)
+            }
+        }
+
+        private suspend fun handleQuery(nickname: String) {
+            if (nickname.isBlank()) {
+                requestAvailability = emptyMap()
+                _uiState.update { it.copy(results = persistentListOf(), isLoading = false) }
+                return
+            }
+
+            _uiState.update { it.copy(isLoading = true) }
+            repository.searchFriends(nickname = nickname)
+                .onSuccess { list ->
+                    requestAvailability =
+                        list.associate { item ->
+                            item.friend.userId to
+                                RequestAvailability(
+                                    canSendRequest = item.canSendRequest,
+                                    canCancelRequest = item.canCancelRequest,
+                                )
+                        }
+                    _uiState.update {
+                        it.copy(
+                            results =
+                                list.map { item ->
+                                    SearchResultItemUiModel(
+                                        friend = item.friend,
+                                        friendStatus = item.friendStatus,
+                                    )
+                                }.toImmutableList(),
+                            isLoading = false,
+                        )
+                    }
+                }
+                .onFailure { e ->
+                    requestAvailability = emptyMap()
+                    _uiState.update {
+                        it.copy(
+                            results = persistentListOf(),
+                            isLoading = false,
+                        )
+                    }
+                    _effect.send(
+                        FriendSearchEffect.ShowSnackBar(
+                            e.message ?: "알 수 없는 오류가 발생했습니다.",
+                        ),
+                    )
+                }
         }
     }
