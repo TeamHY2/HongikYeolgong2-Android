@@ -20,17 +20,17 @@ class RemoteFriendRepository @Inject constructor(
         return friendService.getFriendsStudyTime(dateType.name).toResult { baseResponse ->
             baseResponse.data.map(FriendStudyResponse::toDomain)
         }
-
-        override suspend fun searchFriends(nickname: String): Result<List<SearchedFriend>> =
-            friendService.searchFriends(nickname).toResult { response ->
-                response.data.map { it.toDomain() }
-            }
-
-        override suspend fun addNewFriend(receiverId: Long): Result<FriendStatus> =
-            friendService.addFriend(AddFriendRequest(receiverId))
-                .toResult { it.data.friendStatus.toDomain() }
-
-        override suspend fun cancelFriendRequest(cancelUserId: Long): Result<Unit> =
-            friendService.cancelFriend(CancelFriendRequest(cancelUserId)).toResult()
     }
+
+    override suspend fun searchFriends(nickname: String): Result<List<SearchedFriend>> =
+        friendService.searchFriends(nickname).toResult { response ->
+            response.data.map { it.toDomain() }
+        }
+
+    override suspend fun addNewFriend(receiverId: Long): Result<FriendStatus> =
+        friendService.addFriend(AddFriendRequest(receiverId))
+            .toResult { it.data.friendStatus.toDomain() }
+
+    override suspend fun cancelFriendRequest(cancelUserId: Long): Result<Unit> =
+        friendService.cancelFriend(CancelFriendRequest(cancelUserId)).toResult()
 }
