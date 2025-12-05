@@ -35,7 +35,6 @@ fun SearchResultItem(
     val friendRequestStatusButtonBackgroundColor =
         when (status) {
             FriendStatus.NONE -> Blue100
-            FriendStatus.CANCELED -> Blue100
             FriendStatus.PENDING -> Gray400
             else -> Gray400
         }
@@ -43,7 +42,6 @@ fun SearchResultItem(
     val friendRequestStatusButtonTextColor =
         when (status) {
             FriendStatus.NONE -> White
-            FriendStatus.CANCELED -> White
             FriendStatus.PENDING -> Gray200
             else -> Gray200
         }
@@ -51,7 +49,6 @@ fun SearchResultItem(
     val friendRequestStatusButtonText =
         when (status) {
             FriendStatus.NONE -> "친구 요청"
-            FriendStatus.CANCELED -> "친구 요청"
             FriendStatus.PENDING -> "친구요청됨"
             else -> ""
         }
@@ -70,7 +67,7 @@ fun SearchResultItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        if (status == FriendStatus.NONE || status == FriendStatus.PENDING || status == FriendStatus.CANCELED) {
+        if (status == FriendStatus.NONE || status == FriendStatus.PENDING) {
             Box(
                 modifier =
                     Modifier
