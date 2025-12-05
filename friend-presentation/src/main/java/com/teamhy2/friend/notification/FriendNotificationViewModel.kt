@@ -6,6 +6,7 @@ import com.teamhy2.friend.domain.model.FriendStatus
 import com.teamhy2.friend.domain.repository.FriendNotificationRepository
 import com.teamhy2.notification.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +41,12 @@ class FriendNotificationViewModel @Inject constructor(
             repository.fetchNotifications()
                 .onSuccess { list ->
                     notificationRepository.markNotificationsAsRead()
-                    _uiState.update { it.copy(isLoading = false, notifications = list) }
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            notifications = list.toImmutableList(),
+                        )
+                    }
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(isLoading = false) }
@@ -80,10 +86,13 @@ class FriendNotificationViewModel @Inject constructor(
                 .onSuccess {
                     _uiState.update { state ->
                         state.copy(
-                            notifications = state.notifications.filterNot { it.id == notificationId },
+                            notifications =
+                                state.notifications.filterNot { it.id == notificationId }
+                                    .toImmutableList(),
                         )
                     }
-                    val text = if (status == FriendStatus.ACCEPTED) "친구 요청을 수락했어요." else "요청을 거절했어요."
+                    val text =
+                        if (status == FriendStatus.ACCEPTED) "친구 요청을 수락했어요." else "요청을 거절했어요."
                     _effect.send(FriendNotificationEffect.ShowSnackBar(text))
                 }
                 .onFailure { e ->

@@ -31,6 +31,8 @@ import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.friend.domain.model.FriendNotification
 import com.teamhy2.friend.notification.component.FriendNotificationItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun FriendNotificationRoute(
@@ -61,7 +63,7 @@ fun FriendNotificationRoute(
 
 @Composable
 fun FriendNotificationScreen(
-    notifications: List<FriendNotification>,
+    notifications: ImmutableList<FriendNotification>,
     onBackClick: () -> Unit,
     onAccept: (notificationId: Long, friendId: Long, senderId: Long) -> Unit,
     onReject: (notificationId: Long, friendId: Long, senderId: Long) -> Unit,
@@ -115,7 +117,7 @@ private fun FriendNotificationHeader(
 @Composable
 private fun FriendNotificationContent(
     modifier: Modifier = Modifier,
-    notifications: List<FriendNotification>,
+    notifications: ImmutableList<FriendNotification>,
     onAccept: (notificationId: Long, friendId: Long, senderId: Long) -> Unit,
     onReject: (notificationId: Long, friendId: Long, senderId: Long) -> Unit,
 ) {
@@ -140,7 +142,7 @@ private fun FriendNotificationLoadedScreenPreview() {
     HY2Theme {
         FriendNotificationScreen(
             notifications =
-                listOf(
+                persistentListOf(
                     FriendNotification(
                         id = 1,
                         senderId = 2,
