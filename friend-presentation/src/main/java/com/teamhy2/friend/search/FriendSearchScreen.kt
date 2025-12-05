@@ -103,9 +103,9 @@ fun FriendSearchScreen(
     }
 }
 
-@Preview(name = "FriendSearchScreen - Empty")
+@Preview
 @Composable
-private fun PreviewFriendSearchScreen_Empty() {
+private fun FriendSearchScreenEmptyPreview() {
     HY2Theme {
         FriendSearchScreen(
             query = "",
@@ -117,9 +117,9 @@ private fun PreviewFriendSearchScreen_Empty() {
     }
 }
 
-@Preview(name = "FriendSearchScreen - Loaded")
+@Preview
 @Composable
-private fun PreviewFriendSearchScreen_Loaded() {
+private fun FriendSearchScreenLoadedPreview() {
     HY2Theme {
         FriendSearchScreen(
             query = "Android",
