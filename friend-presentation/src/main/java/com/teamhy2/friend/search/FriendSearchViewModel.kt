@@ -47,15 +47,15 @@ class FriendSearchViewModel
                     .map { it.query }
                     .debounce(1000)
                     .distinctUntilChanged()
-                    .collect { q ->
-                        if (q.isBlank()) {
+                    .collect { nickname ->
+                        if (nickname.isBlank()) {
                             requestAvailability = emptyMap()
                             _uiState.update {
                                 it.copy(results = persistentListOf(), isLoading = false)
                             }
                         } else {
                             _uiState.update { it.copy(isLoading = true) }
-                            repository.searchFriends(q)
+                            repository.searchFriends(nickname = nickname)
                                 .onSuccess { list ->
                                     requestAvailability =
                                         list.associate { item ->
