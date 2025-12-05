@@ -88,7 +88,7 @@ fun FriendNotificationScreen(
 }
 
 @Composable
-fun FriendNotificationHeader(
+private fun FriendNotificationHeader(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
 ) {
@@ -113,7 +113,7 @@ fun FriendNotificationHeader(
 }
 
 @Composable
-fun FriendNotificationContent(
+private fun FriendNotificationContent(
     modifier: Modifier = Modifier,
     notifications: List<FriendNotification>,
     onAccept: (notificationId: Long, friendId: Long, senderId: Long) -> Unit,
