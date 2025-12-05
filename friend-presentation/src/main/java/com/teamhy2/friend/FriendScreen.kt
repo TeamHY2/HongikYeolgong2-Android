@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FriendRoute(
     modifier: Modifier = Modifier,
-    onAddFriendClick: () -> Unit = {},
+    onAddFriendClick: () -> Unit,
     friendViewModel: FriendViewModel = hiltViewModel(),
 ) {
     val friendState: FriendUiState by friendViewModel.uiState.collectAsStateWithLifecycle()
@@ -42,7 +42,7 @@ fun FriendRoute(
 fun FriendContent(
     state: FriendUiState,
     modifier: Modifier = Modifier,
-    onAddFriendClick: () -> Unit = {},
+    onAddFriendClick: () -> Unit,
     onEvent: (FriendUiIntent) -> Unit,
 ) {
     when (state) {
