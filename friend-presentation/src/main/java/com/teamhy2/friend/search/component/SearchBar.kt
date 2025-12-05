@@ -117,7 +117,7 @@ fun SearchBar(
 
 @Preview(showBackground = false)
 @Composable
-private fun PreviewSearchBar() {
+private fun SearchBarPreview() {
     var text by remember { mutableStateOf("") }
 
     HY2Theme {
