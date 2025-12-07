@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teamhy2.friend.domain.model.FriendStatus
 import com.teamhy2.friend.domain.repository.FriendNotificationRepository
-import com.teamhy2.notification.domain.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendNotificationViewModel @Inject constructor(
     private val repository: FriendNotificationRepository,
-    private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FriendNotificationUiState(isLoading = true))
     val uiState: StateFlow<FriendNotificationUiState> = _uiState.asStateFlow()
@@ -40,7 +38,6 @@ class FriendNotificationViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             repository.fetchNotifications()
                 .onSuccess { list ->
-                    notificationRepository.markNotificationsAsRead()
                     _uiState.update {
                         it.copy(
                             isLoading = false,
