@@ -125,7 +125,10 @@ private fun FriendNotificationContent(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        items(notifications) { item ->
+        items(
+            notifications,
+            key = { it.id },
+        ) { item ->
             FriendNotificationItem(
                 content = item.content,
                 receivedAt = item.receivedAt,
