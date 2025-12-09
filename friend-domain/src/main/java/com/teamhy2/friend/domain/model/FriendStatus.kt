@@ -4,5 +4,6 @@ enum class FriendStatus {
     PENDING,
     ACCEPTED,
     REJECTED,
+    CANCELED,
     NONE,
 }

@@ -63,7 +63,7 @@ class FriendSearchViewModel
             status: FriendStatus,
         ) {
             val availability = requestAvailability[userId] ?: return
-            if (availability.canSendRequest && status == FriendStatus.NONE) {
+            if (availability.canSendRequest && (status == FriendStatus.NONE || status == FriendStatus.CANCELED)) {
                 sendFriendRequest(userId, nickname)
                 return
             }
