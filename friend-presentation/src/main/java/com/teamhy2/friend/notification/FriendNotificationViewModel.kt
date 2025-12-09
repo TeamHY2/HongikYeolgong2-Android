@@ -22,7 +22,7 @@ class FriendNotificationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FriendNotificationUiState(isLoading = true))
     val uiState: StateFlow<FriendNotificationUiState> = _uiState.asStateFlow()
 
-    private val _effect = Channel<FriendNotificationEffect>(Channel.BUFFERED)
+    private val _effect = Channel<FriendNotificationSideEffect>(Channel.BUFFERED)
     val effect = _effect.receiveAsFlow()
 
     init {
@@ -30,7 +30,7 @@ class FriendNotificationViewModel @Inject constructor(
     }
 
     fun onBackClicked() {
-        viewModelScope.launch { _effect.send(FriendNotificationEffect.NavigateBack) }
+        viewModelScope.launch { _effect.send(FriendNotificationSideEffect.NavigateBack) }
     }
 
     fun refresh() {
@@ -48,7 +48,7 @@ class FriendNotificationViewModel @Inject constructor(
                 .onFailure { e ->
                     _uiState.update { it.copy(isLoading = false) }
                     _effect.send(
-                        FriendNotificationEffect.ShowSnackBar(
+                        FriendNotificationSideEffect.ShowSnackBar(
                             e.message ?: "알 수 없는 오류가 발생했습니다.",
                         ),
                     )
@@ -90,11 +90,11 @@ class FriendNotificationViewModel @Inject constructor(
                     }
                     val text =
                         if (status == FriendStatus.ACCEPTED) "친구 요청을 수락했어요." else "요청을 거절했어요."
-                    _effect.send(FriendNotificationEffect.ShowSnackBar(text))
+                    _effect.send(FriendNotificationSideEffect.ShowSnackBar(text))
                 }
                 .onFailure { e ->
                     _effect.send(
-                        FriendNotificationEffect.ShowSnackBar(
+                        FriendNotificationSideEffect.ShowSnackBar(
                             e.message ?: "요청 처리 중 오류가 발생했어요.",
                         ),
                     )

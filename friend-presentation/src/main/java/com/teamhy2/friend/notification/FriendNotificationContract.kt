@@ -9,8 +9,8 @@ data class FriendNotificationUiState(
     val notifications: ImmutableList<FriendNotification> = persistentListOf(),
 )
 
-sealed interface FriendNotificationEffect {
-    data class ShowSnackBar(val message: String) : FriendNotificationEffect
+sealed interface FriendNotificationSideEffect {
+    data class ShowSnackBar(val message: String) : FriendNotificationSideEffect
 
-    data object NavigateBack : FriendNotificationEffect
+    data object NavigateBack : FriendNotificationSideEffect
 }

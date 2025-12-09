@@ -46,8 +46,8 @@ fun FriendNotificationRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is FriendNotificationEffect.ShowSnackBar -> localSnackBar.showSnackBar(effect.message)
-                FriendNotificationEffect.NavigateBack -> onBackClick()
+                is FriendNotificationSideEffect.ShowSnackBar -> localSnackBar.showSnackBar(effect.message)
+                FriendNotificationSideEffect.NavigateBack -> onBackClick()
             }
         }
     }
