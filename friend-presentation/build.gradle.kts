@@ -10,4 +10,6 @@ dependencies {
     implementation(projects.core.designsystem)
     implementation(projects.friendDomain)
     implementation(projects.notificationDomain)
+
+    implementation(libs.kotlinx.immutable.collection)
 }
