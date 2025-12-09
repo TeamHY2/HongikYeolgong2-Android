@@ -11,9 +11,9 @@ fun NavController.navigateToFriend() {
     }
 }
 
-fun NavGraphBuilder.friendScreen() {
+fun NavGraphBuilder.friendScreen(onAddFriendClick: () -> Unit) {
     composable(route = Friend.ROUTE) {
-        FriendRoute()
+        FriendRoute(onAddFriendClick = onAddFriendClick)
     }
 }
 
