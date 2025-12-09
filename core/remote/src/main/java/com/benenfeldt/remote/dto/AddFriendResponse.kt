@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AddFriendResponse(
-    @SerialName("id") val id: Long,
+    @SerialName("id") val friendId: Long,
     @SerialName("receiverId") val receiverId: Long,
     @SerialName("friendStatus") val friendStatus: FriendStatusResponse,
 )
