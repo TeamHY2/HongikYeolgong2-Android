@@ -6,6 +6,8 @@ import com.benenfeldt.remote.dto.BaseResponse
 import com.benenfeldt.remote.dto.CancelFriendRequest
 import com.benenfeldt.remote.dto.FriendSearchResponse
 import com.benenfeldt.remote.dto.FriendStudyResponse
+import com.benenfeldt.remote.dto.UpdateFriendStatusRequest
+import com.benenfeldt.remote.dto.UpdateFriendStatusResponse
 import kotlinx.serialization.json.JsonElement
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -28,6 +30,11 @@ interface FriendService {
     suspend fun cancelFriend(
         @Body request: CancelFriendRequest,
     ): Result<BaseResponse<JsonElement?>>
+
+    @PATCH("/api/v2/friends")
+    suspend fun updateFriendStatus(
+        @Body request: UpdateFriendStatusRequest,
+    ): Result<BaseResponse<UpdateFriendStatusResponse>>
 
     @GET("/api/v2/friends/study")
     suspend fun getFriendsStudyTime(

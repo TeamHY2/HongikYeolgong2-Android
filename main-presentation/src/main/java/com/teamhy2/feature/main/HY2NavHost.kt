@@ -12,6 +12,8 @@ import com.teamhy2.feature.main.webviews.inquiry.navigation.inquiryScreen
 import com.teamhy2.feature.main.webviews.inquiry.navigation.navigateToInquiry
 import com.teamhy2.feature.setting.presentation.navigation.settingScreen
 import com.teamhy2.friend.navigation.friendScreen
+import com.teamhy2.friend.notification.navigation.friendNotificationScreen
+import com.teamhy2.friend.notification.navigation.navigateToFriendNotification
 import com.teamhy2.friend.search.navigation.friendSearchScreen
 import com.teamhy2.friend.search.navigation.navigateToFriendSearch
 import com.teamhy2.onboarding.navigation.Onboarding
@@ -56,9 +58,14 @@ fun HY2NavHost(
 
             friendScreen(
                 onAddFriendClick = navController::navigateToFriendSearch,
+                onNotificationClick = navController::navigateToFriendNotification,
             )
 
             friendSearchScreen(
+                onBackClick = navController::popBackStack,
+            )
+
+            friendNotificationScreen(
                 onBackClick = navController::popBackStack,
             )
 

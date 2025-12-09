@@ -105,12 +105,19 @@ class MainActivity : AppCompatActivity() {
                             MainBottomBar(
                                 currentTab = MainTab.fromRoute(currentDestination),
                                 onTabSelected = { tab ->
-                                    navController.navigate(tab.route) {
-                                        popUpTo(Home.ROUTE) {
-                                            saveState = true
+                                    if (tab == MainTab.FRIEND) {
+                                        navController.navigate(tab.route) {
+                                            popUpTo(tab.route) { inclusive = true }
+                                            launchSingleTop = true
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
+                                    } else {
+                                        navController.navigate(tab.route) {
+                                            popUpTo(Home.ROUTE) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
                                     }
                                 },
                             )
