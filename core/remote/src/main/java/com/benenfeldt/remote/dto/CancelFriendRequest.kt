@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CancelFriendRequest(
-    @SerialName("cancelUserId") val cancelUserId: Long,
+    @SerialName("cancelUserId") val userIdForCancelFriendRequest: Long,
 )

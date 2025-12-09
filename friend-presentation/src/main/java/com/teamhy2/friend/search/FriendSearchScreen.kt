@@ -29,7 +29,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun FriendSearchRoute(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
+    onBackClick: () -> Unit ,
     onNavigateToFriend: () -> Unit = onBackClick,
     viewModel: FriendSearchViewModel = hiltViewModel(),
 ) {
