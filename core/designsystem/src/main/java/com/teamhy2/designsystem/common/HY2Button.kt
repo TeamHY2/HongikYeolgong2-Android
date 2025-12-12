@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.ui.theme.Blue100
@@ -27,6 +28,7 @@ fun HY2Button(
     textColor: Color = White,
     backgroundColor: Color = Blue100,
     roundedCornerSize: Int = BUTTON_ROUNDED_CORNER_SIZE,
+    textStyle: TextStyle? = null,
 ) {
     ThrottleButton(
         onClick = onClick,
@@ -44,7 +46,7 @@ fun HY2Button(
         Text(
             text = text,
             color = textColor,
-            style = HY2Theme.typography.body02,
+            style = textStyle ?: HY2Theme.typography.body02,
         )
     }
 }

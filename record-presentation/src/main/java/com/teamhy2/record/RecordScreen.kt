@@ -29,7 +29,7 @@ import com.teamhy2.designsystem.common.HY2CircularLoading
 import com.teamhy2.designsystem.common.HY2IconTextButton
 import com.teamhy2.designsystem.ui.theme.BackgroundBlack
 import com.teamhy2.designsystem.ui.theme.Gray100
-import com.teamhy2.designsystem.ui.theme.Gray600
+import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowSnackBar
 import com.teamhy2.designsystem.util.compositionlocal.LocalShowToast
@@ -131,18 +131,18 @@ fun RecordScreen(
                 Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 32.dp),
+                    .padding(start = 32.dp, end = 32.dp, top = 32.dp),
         )
         HY2IconTextButton(
             text = "기록 공유하기",
             iconResId = R.drawable.ic_share,
-            backgroundColor = Gray600,
+            backgroundColor = Gray800,
             textColor = Gray100,
             onClick = onRecordShareButtonClick,
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, bottom = 28.dp),
+                    .padding(start = 32.dp, end = 32.dp, bottom = 36.dp),
         )
     }
 }

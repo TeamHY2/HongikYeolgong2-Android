@@ -56,7 +56,7 @@ fun FriendNotificationItem(
             Spacer(modifier = Modifier.size(8.dp))
             Text(text = receivedAt, style = HY2Theme.typography.caption, color = Gray300)
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(7.dp),
@@ -66,14 +66,22 @@ fun FriendNotificationItem(
                 onClick = onReject,
                 backgroundColor = Gray400,
                 textColor = White,
-                modifier = Modifier.weight(1f),
+                textStyle = HY2Theme.typography.body07,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(34.dp),
             )
             HY2Button(
                 text = "수락",
                 onClick = onAccept,
                 backgroundColor = Blue100,
                 textColor = White,
-                modifier = Modifier.weight(1f),
+                textStyle = HY2Theme.typography.body07,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .height(34.dp),
             )
         }
     }

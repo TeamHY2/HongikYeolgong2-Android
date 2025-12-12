@@ -28,16 +28,16 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.teamhy2.designsystem.common.ActivatedToggleButton
-import com.teamhy2.designsystem.common.HY2Button
+import com.teamhy2.designsystem.common.HY2IconTextButton
 import com.teamhy2.designsystem.common.HY2Spacer
 import com.teamhy2.designsystem.common.HY2ToggleTextButton
 import com.teamhy2.designsystem.ui.theme.Gray100
-import com.teamhy2.designsystem.ui.theme.Gray600
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
 import com.teamhy2.friend.component.FriendItem
 import com.teamhy2.friend.component.NotificationButton
 import com.teamhy2.friend.domain.model.Friend
+import com.teamhy2.hongikyeolgong2.friend.presentation.R
 import kotlin.time.Duration.Companion.seconds
 
 private val ScreenHorizontalPadding = 32.dp
@@ -131,21 +131,22 @@ internal fun FriendScreen(
                         ),
             )
         }
-        HY2Button(
+        HY2IconTextButton(
             text = "친구 추가하기",
-            onClick = onAddFriendClick,
+            iconResId = R.drawable.ic_friend_add,
+            backgroundColor = Gray800,
             textColor = Gray100,
-            backgroundColor = Gray600,
+            onClick = onAddFriendClick,
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
                     .padding(
                         start = ScreenHorizontalPadding,
                         end = ScreenHorizontalPadding,
                         bottom = ScreenVerticalPadding,
                     )
-                    .height(FriendAddButtonHeight)
-                    .fillMaxWidth(),
+                    .height(FriendAddButtonHeight),
         )
     }
 }
