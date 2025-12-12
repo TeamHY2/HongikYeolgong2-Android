@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,12 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.teamhy2.designsystem.R.drawable.ic_arrow_left
 import com.teamhy2.designsystem.ui.theme.Gray100
 import com.teamhy2.designsystem.ui.theme.Gray200
 import com.teamhy2.designsystem.ui.theme.Gray300
 import com.teamhy2.designsystem.ui.theme.Gray800
 import com.teamhy2.designsystem.ui.theme.HY2Theme
+import com.teamhy2.designsystem.ui.theme.HY2Typography
 import com.teamhy2.hongikyeolgong2.friend.presentation.R
 
 @Composable
@@ -49,7 +50,7 @@ fun SearchBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = painterResource(id = ic_arrow_left),
+            painter = painterResource(id = R.drawable.ic_calendar_left),
             contentDescription = "back",
             modifier =
                 Modifier
@@ -62,6 +63,7 @@ fun SearchBar(
             modifier =
                 Modifier
                     .weight(1f)
+                    .height(48.dp)
                     .background(color = Gray800, shape = RoundedCornerShape(8.dp))
                     .padding(start = 16.dp, end = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -110,6 +112,7 @@ fun SearchBar(
                         focusedPlaceholderColor = Gray800,
                         unfocusedPlaceholderColor = Gray800,
                     ),
+                textStyle = HY2Typography().body05,
             )
         }
     }
