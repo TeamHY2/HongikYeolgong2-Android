@@ -1,0 +1,116 @@
+name: Release to Play Store
+
+# Release/* 브랜치 PR이 main에 "머지"될 때만 실행된다.
+# (PR을 머지 없이 닫기만 하면 아래 if의 merged == true 조건에서 걸러져 실행되지 않음)
+on:
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - closed
+  workflow_dispatch: # 필요 시 수동 재실행
+
+permissions:
+  contents: write # main에 태그를 푸시하기 위해 필요
+
+jobs:
+  release:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       startsWith(github.event.pull_request.head.ref, 'Release/'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main # 머지가 반영된 main 최신 커밋을 기준으로 빌드/태그
+          fetch-depth: 0 # 전체 히스토리 + 태그(중복 태그 판별용)
+
+      # 빌드/업로드 같은 비가역 작업 "전에" 버전을 검증해 빠르게 실패시킨다.
+      - name: Resolve & validate version (fail fast)
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION_NAME=$(awk -F'"' '/^versionName[[:space:]]*=/{print $2; exit}' gradle/libs.versions.toml)
+          VERSION_CODE=$(awk -F'"' '/^versionCode[[:space:]]*=/{print $2; exit}' gradle/libs.versions.toml)
+          echo "Resolved versionName=$VERSION_NAME versionCode=$VERSION_CODE"
+          [ -n "$VERSION_NAME" ] || { echo "::error::versionName을 libs.versions.toml에서 찾지 못했습니다."; exit 1; }
+          [[ "$VERSION_CODE" =~ ^[0-9]+$ ]] || { echo "::error::versionCode가 정수가 아닙니다: '$VERSION_CODE'"; exit 1; }
+          if git rev-parse -q --verify "refs/tags/$VERSION_NAME" >/dev/null; then
+            echo "::error::태그 $VERSION_NAME 가 이미 존재합니다. 릴리스 전에 gradle/libs.versions.toml의 versionCode/versionName을 올리세요."
+            exit 1
+          fi
+          echo "name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: gradle # ~/.gradle 캐싱은 여기서 일원화 (별도 actions/cache 미사용)
+
+      - name: Load google-services.json
+        env:
+          DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$DATA" | base64 -d > app/google-services.json
+
+      - name: Create local.properties
+        env:
+          LOCAL_PROPERTIES_CONTENTS: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
+        run: printf '%s\n' "$LOCAL_PROPERTIES_CONTENTS" > local.properties
+
+      - name: Decode release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_BASE64" | base64 -d > "${RUNNER_TEMP}/release.jks"
+          [ -s "${RUNNER_TEMP}/release.jks" ] || { echo "::error::디코딩된 키스토어가 비어 있습니다. KEYSTORE_BASE64 시크릿을 확인하세요."; exit 1; }
+          chmod 600 "${RUNNER_TEMP}/release.jks"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build signed release bundle (.aab)
+        env:
+          KEYSTORE_FILE: ${{ runner.temp }}/release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          # CI에서는 서명 정보를 시크릿(env)으로만 받는다. 비어 있으면 local.properties로
+          # 조용히 폴백하지 않고 즉시 실패시킨다.
+          [ -n "${KEY_ALIAS}" ] || { echo "::error::KEY_ALIAS 시크릿이 비어 있습니다."; exit 1; }
+          [ -n "${KEYSTORE_PASSWORD}" ] || { echo "::error::KEYSTORE_PASSWORD 시크릿이 비어 있습니다."; exit 1; }
+          [ -n "${KEY_PASSWORD}" ] || { echo "::error::KEY_PASSWORD 시크릿이 비어 있습니다."; exit 1; }
+          ./gradlew :app:bundleRelease
+
+      - name: Verify AAB exists
+        run: |
+          set -euo pipefail
+          AAB=app/build/outputs/bundle/release/app-release.aab
+          [ -f "$AAB" ] || { echo "::error::예상 경로에 AAB가 없습니다: $AAB"; exit 1; }
+          echo "Built $AAB"
+
+      - name: Upload AAB to Play Store (production)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.teamhy2.hongikyeolgong2
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed # 100% 즉시 출시. 단계적 출시는 status: inProgress + userFraction 사용
+
+      - name: Create and push git tag on main
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.version.outputs.name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG (versionCode ${{ steps.version.outputs.code }})"
+          git push origin "$TAG"
+          echo "Pushed tag $TAG"
