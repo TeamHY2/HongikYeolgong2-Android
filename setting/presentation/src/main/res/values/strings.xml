@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">setting-presentation</string>
-
     <!-- setting -->
     <string name="setting_notice">공지사항</string>
     <string name="setting_inquiry">문의사항</string>
