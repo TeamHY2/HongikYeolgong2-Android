@@ -10,5 +10,5 @@ android {
 dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging.ktx)
-    implementation(projects.userDomain)
+    implementation(projects.user.domain)
 }
