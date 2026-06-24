@@ -3,10 +3,10 @@ plugins {
 }
 
 android {
-    namespace = "com.teamhy2.hongikyeolgong2.notification"
+    namespace = "com.teamhy2.hongikyeolgong2.setting.data"
 }
 
 dependencies {
     implementation(projects.setting.domain)
-    implementation(projects.setting.data)
+    implementation(libs.datastore.preferences)
 }
