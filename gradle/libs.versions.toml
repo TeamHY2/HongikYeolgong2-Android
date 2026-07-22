@@ -1,7 +1,7 @@
 [versions]
 versionCode = "10402"
 versionName = "1.4.2"
-targetSdk = "35"
+targetSdk = "36"
 
 accompanistPermissions = "0.31.1-alpha"
 agp = "8.6.0"
